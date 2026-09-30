@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Family Registration</title>
+<title>Family Registration - Yerukula Kaikadi</title>
 
 <style>
 * {
@@ -13,39 +13,46 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: #f4f7fb;
   color: #222;
 }
 
 .container {
-  max-width: 700px;
-  margin: auto;
-  padding: 20px;
+  max-width: 850px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 22px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
 }
 
 h1 {
   text-align: center;
+  color: #173b6c;
   margin-bottom: 25px;
 }
 
-.section {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+h2 {
+  color: #173b6c;
+  border-bottom: 2px solid #e5eaf1;
+  padding-bottom: 8px;
 }
 
-.section h2 {
-  margin-top: 0;
-  font-size: 20px;
+h3 {
+  color: #444;
+  margin-top: 25px;
 }
 
 label {
   display: block;
-  margin-top: 14px;
+  font-weight: bold;
+  margin-top: 15px;
   margin-bottom: 6px;
-  font-weight: 600;
 }
 
 input,
@@ -53,67 +60,82 @@ select,
 textarea {
   width: 100%;
   padding: 11px;
-  border: 1px solid #ccc;
+  border: 1px solid #cbd5e1;
   border-radius: 7px;
   font-size: 15px;
 }
 
 textarea {
-  min-height: 90px;
+  min-height: 80px;
   resize: vertical;
 }
 
 .member {
-  border: 1px solid #ddd;
-  padding: 15px;
-  margin-top: 15px;
+  border: 1px solid #dbe3ee;
   border-radius: 10px;
-  background: #fafafa;
+  padding: 18px;
+  margin-top: 18px;
+  background: #fafcff;
 }
 
-.member h3 {
-  margin-top: 0;
-}
-
-button {
-  width: 100%;
-  padding: 13px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 12px;
-}
-
-.add-btn {
-  background: #198754;
-  color: white;
-}
-
-.remove-btn {
-  background: #dc3545;
-  color: white;
-}
-
-.submit-btn {
-  background: #0d6efd;
-  color: white;
+.member-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #173b6c;
 }
 
 .hidden {
   display: none;
 }
 
-.note {
-  font-size: 13px;
-  color: #666;
-  margin-top: 5px;
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-#message {
-  text-align: center;
+.add-btn {
+  background: #173b6c;
+  color: white;
   margin-top: 15px;
+}
+
+.submit-btn {
+  width: 100%;
+  background: #198754;
+  color: white;
+  margin-top: 10px;
+  font-size: 17px;
   font-weight: bold;
+}
+
+.remove-btn {
+  background: #dc3545;
+  color: white;
+  margin-top: 15px;
+}
+
+.message {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin: 5px auto;
+    padding: 10px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
 }
 </style>
 </head>
@@ -122,19 +144,20 @@ button {
 
 <div class="container">
 
-<h1>Family Registration</h1>
+<h1>Yerukula Kaikadi Samaj<br>Family Registration</h1>
 
 <form id="registrationForm">
 
-<!-- 1. FAMILY DETAILS -->
-<div class="section">
+<!-- FAMILY DETAILS -->
+<div class="card">
+
 <h2>1. Family Details</h2>
 
 <label>Family Head Name</label>
 <input type="text" name="family_head_name" required>
 
 <label>Mobile Number</label>
-<input type="tel" name="mobile_number" maxlength="10" required>
+<input type="tel" name="family_mobile" maxlength="10" pattern="[0-9]{10}" required>
 
 <label>State</label>
 <input type="text" name="state" required>
@@ -149,7 +172,7 @@ button {
 <textarea name="full_address" required></textarea>
 
 <label>Total Family Members</label>
-<input type="number" name="total_family_members" min="1" required>
+<input type="number" id="totalMembers" name="total_members" min="1" required>
 
 <label>Housing</label>
 <select name="housing" required>
@@ -160,15 +183,22 @@ button {
 </select>
 
 <label>House Condition</label>
-<textarea name="house_condition"></textarea>
+<select name="house_condition" required>
+  <option value="">Select</option>
+  <option value="Good">Good</option>
+  <option value="Average">Average</option>
+  <option value="Poor">Poor</option>
+</select>
 
 </div>
 
 
-<!-- 2. FAMILY MEMBERS -->
-<div class="section">
+<!-- FAMILY MEMBERS -->
+<div class="card">
 
 <h2>2. Family Members</h2>
+
+<p>Enter complete details of every family member.</p>
 
 <div id="membersContainer"></div>
 
@@ -179,37 +209,16 @@ button {
 </div>
 
 
-<!-- 3. EDUCATION -->
-<div class="section">
+<!-- HEALTHCARE ACCESS -->
+<div class="card">
 
-<h2>3. Education</h2>
-
-<label>Is any family member facing an education-related problem?</label>
-
-<select id="educationProblem" name="education_problem" onchange="toggleEducationDetails()" required>
-  <option value="">Select</option>
-  <option value="Yes">Yes</option>
-  <option value="No">No</option>
-</select>
-
-<div id="educationDetails" class="hidden">
-
-<label>Education Problem Details</label>
-<textarea name="education_problem_details"></textarea>
-
-</div>
-
-</div>
-
-
-<!-- 4. HEALTHCARE ACCESS -->
-<div class="section">
-
-<h2>4. Healthcare Access</h2>
+<h2>3. Healthcare Access</h2>
 
 <label>Difficulty Accessing Healthcare</label>
-
-<select id="healthcareProblem" name="healthcare_access_problem" onchange="toggleHealthcareDetails()" required>
+<select
+  name="healthcare_access_problem"
+  onchange="toggleHealthcare(this)"
+  required>
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
@@ -218,17 +227,19 @@ button {
 <div id="healthcareDetails" class="hidden">
 
 <label>Healthcare Access Details</label>
-<textarea name="healthcare_access_details"></textarea>
+<textarea
+  name="healthcare_access_details"
+  placeholder="Please describe the healthcare access problem"></textarea>
 
 </div>
 
 </div>
 
 
-<!-- 5. FAMILY INSURANCE -->
-<div class="section">
+<!-- INSURANCE -->
+<div class="card">
 
-<h2>5. Family Insurance</h2>
+<h2>4. Family Insurance</h2>
 
 <label>Health Insurance</label>
 <select name="health_insurance" required>
@@ -254,11 +265,15 @@ button {
 </div>
 
 
+<div class="card">
+
 <button type="submit" class="submit-btn">
 Submit Registration
 </button>
 
-<div id="message"></div>
+<div id="message" class="message"></div>
+
+</div>
 
 </form>
 
@@ -268,6 +283,9 @@ Submit Registration
 <script>
 
 let memberCount = 0;
+
+
+/* ADD MEMBER */
 
 function addMember() {
 
@@ -279,193 +297,518 @@ function addMember() {
 
   member.className = "member";
 
+  member.id = "member_" + memberCount;
+
   member.innerHTML = `
 
-    <h3>Family Member ${memberCount}</h3>
+    <div class="member-title">
+      Family Member ${memberCount}
+    </div>
 
     <label>Full Name</label>
-    <input type="text" name="member_${memberCount}_name" required>
+    <input
+      type="text"
+      name="member_${memberCount}_full_name"
+      required>
+
 
     <label>Date of Birth</label>
-    <input type="date" name="member_${memberCount}_dob" required>
+    <input
+      type="date"
+      name="member_${memberCount}_dob"
+      required>
+
 
     <label>Age</label>
-    <input type="number" name="member_${memberCount}_age" min="0" required>
+    <input
+      type="number"
+      name="member_${memberCount}_age"
+      min="0"
+      max="120"
+      required>
+
 
     <label>Gender</label>
-    <select name="member_${memberCount}_gender" required>
+    <select
+      name="member_${memberCount}_gender"
+      required>
       <option value="">Select</option>
       <option value="Male">Male</option>
       <option value="Female">Female</option>
       <option value="Other">Other</option>
     </select>
 
+
     <label>Relationship to Family Head</label>
-    <input type="text" name="member_${memberCount}_relationship" required>
+    <input
+      type="text"
+      name="member_${memberCount}_relationship"
+      placeholder="Example: Son, Daughter, Wife, Brother"
+      required>
+
 
     <label>Marital Status</label>
-    <select name="member_${memberCount}_marital_status" required>
+    <select
+      name="member_${memberCount}_marital_status"
+      required>
       <option value="">Select</option>
-      <option value="Single">Single</option>
       <option value="Married">Married</option>
-      <option value="Widowed">Widowed</option>
+      <option value="Unmarried">Unmarried</option>
+      <option value="Widow/Widower">Widow/Widower</option>
       <option value="Divorced">Divorced</option>
-      <option value="Other">Other</option>
+      <option value="Separated">Separated</option>
+      <option value="Not Applicable">Not Applicable</option>
     </select>
 
+
     <label>Mobile Number</label>
-    <input type="tel" name="member_${memberCount}_mobile" maxlength="10">
+    <input
+      type="tel"
+      name="member_${memberCount}_mobile"
+      maxlength="10"
+      pattern="[0-9]{10}">
+
 
     <label>Education</label>
-    <input type="text" name="member_${memberCount}_education">
+    <input
+      type="text"
+      name="member_${memberCount}_education"
+      placeholder="Example: 10th, 12th, Graduate, etc.">
+
 
     <label>Education Status</label>
-    <select name="member_${memberCount}_education_status">
+    <select
+      name="member_${memberCount}_education_status"
+      onchange="toggleEducation(this, ${memberCount})"
+      required>
+
       <option value="">Select</option>
       <option value="Currently Studying">Currently Studying</option>
       <option value="Completed">Completed</option>
-      <option value="Not Studying">Not Studying</option>
+      <option value="Education Discontinued">Education Discontinued</option>
+      <option value="Never Studied">Never Studied</option>
       <option value="Not Applicable">Not Applicable</option>
+
     </select>
 
-    <label>Occupation</label>
-    <input type="text" name="member_${memberCount}_occupation">
 
-    <label>Employment Status</label>
-    <select name="member_${memberCount}_employment_status">
-      <option value="">Select</option>
-      <option value="Employed">Employed</option>
-      <option value="Self Employed">Self Employed</option>
-      <option value="Unemployed">Unemployed</option>
-      <option value="Student">Student</option>
-      <option value="Not Applicable">Not Applicable</option>
-    </select>
+    <!-- EDUCATION DISCONTINUED -->
 
-    <label>Health Condition</label>
-    <select name="member_${memberCount}_health_condition"
-            onchange="toggleMemberHealth(this, ${memberCount})"
-            required>
-      <option value="">Select</option>
-      <option value="Good">Good</option>
-      <option value="Not Good">Not Good</option>
-    </select>
+    <div id="education_${memberCount}" class="hidden">
 
-    <div id="health_${memberCount}" class="hidden">
+      <label>Reason for Discontinuing Education</label>
+      <textarea
+        name="member_${memberCount}_education_discontinue_reason">
+      </textarea>
 
-      <label>Health Problem / Disease Details</label>
-      <textarea name="member_${memberCount}_health_problem"></textarea>
 
-      <label>Long-term Health Problem</label>
-      <select name="member_${memberCount}_long_term_health">
+      <label>Would like to continue education in future?</label>
+      <select
+        name="member_${memberCount}_future_education"
+        onchange="toggleFutureEducation(this, ${memberCount})">
+
         <option value="">Select</option>
         <option value="Yes">Yes</option>
         <option value="No">No</option>
+
       </select>
 
-      <label>Regular Treatment Required</label>
-      <select name="member_${memberCount}_regular_treatment">
-        <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
 
-      <label>Disability</label>
-      <select name="member_${memberCount}_disability">
-        <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
+      <div id="future_education_${memberCount}" class="hidden">
 
-      <label>Help / Support Required</label>
-      <select name="member_${memberCount}_help_required"
-              onchange="toggleHelpDetails(this, ${memberCount})">
-        <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-      </select>
+        <label>Help / Support Required for Education?</label>
 
-      <div id="help_${memberCount}" class="hidden">
+        <select
+          name="member_${memberCount}_education_help"
+          onchange="toggleEducationHelp(this, ${memberCount})">
 
-        <label>Help / Support Details</label>
-        <textarea name="member_${memberCount}_help_details"></textarea>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+
+        </select>
+
+
+        <div id="education_help_${memberCount}" class="hidden">
+
+          <label>Education Help / Support Details</label>
+
+          <textarea
+            name="member_${memberCount}_education_help_details"
+            placeholder="Please describe the help or support needed">
+          </textarea>
+
+        </div>
 
       </div>
 
     </div>
 
-    <button type="button"
-            class="remove-btn"
-            onclick="this.parentElement.remove()">
+
+    <!-- OCCUPATION -->
+
+    <div id="occupation_${memberCount}">
+
+      <label>Occupation</label>
+      <input
+        type="text"
+        name="member_${memberCount}_occupation"
+        placeholder="Example: Worker, Business, Farmer, etc.">
+
+
+      <label>Employment Status</label>
+      <select
+        name="member_${memberCount}_employment_status">
+
+        <option value="">Select</option>
+        <option value="Employed">Employed</option>
+        <option value="Self Employed">Self Employed</option>
+        <option value="Unemployed">Unemployed</option>
+        <option value="Not Applicable">Not Applicable</option>
+
+      </select>
+
+    </div>
+
+
+    <!-- HEALTH -->
+
+    <h3>Health Information</h3>
+
+    <label>Any Health Problem?</label>
+
+    <select
+      name="member_${memberCount}_health_problem"
+      onchange="toggleMemberHealth(this, ${memberCount})"
+      required>
+
+      <option value="">Select</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+
+    </select>
+
+
+    <div id="health_${memberCount}" class="hidden">
+
+      <label>Health Problem / Disease Details</label>
+
+      <textarea
+        name="member_${memberCount}_health_details"
+        placeholder="Please describe the health problem or disease">
+      </textarea>
+
+
+      <label>Long-term Health Problem</label>
+
+      <select name="member_${memberCount}_long_term_health">
+
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+
+      </select>
+
+
+      <label>Regular Treatment Required</label>
+
+      <select name="member_${memberCount}_regular_treatment">
+
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+
+      </select>
+
+
+      <label>Help / Support Required</label>
+
+      <select
+        name="member_${memberCount}_health_help_required"
+        onchange="toggleHealthHelp(this, ${memberCount})">
+
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+
+      </select>
+
+
+      <div id="health_help_${memberCount}" class="hidden">
+
+        <label>Help / Support Details</label>
+
+        <textarea
+          name="member_${memberCount}_health_help_details"
+          placeholder="Please describe the help or support required">
+        </textarea>
+
+      </div>
+
+    </div>
+
+
+    <!-- DISABILITY -->
+
+    <h3>Disability Information</h3>
+
+    <label>Disability</label>
+
+    <select
+      name="member_${memberCount}_disability"
+      onchange="toggleDisability(this, ${memberCount})"
+      required>
+
+      <option value="">Select</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+
+    </select>
+
+
+    <div id="disability_${memberCount}" class="hidden">
+
+      <label>Type of Disability</label>
+
+      <select name="member_${memberCount}_disability_type">
+
+        <option value="">Select</option>
+        <option value="Physical">Physical</option>
+        <option value="Visual">Visual</option>
+        <option value="Hearing">Hearing</option>
+        <option value="Speech">Speech</option>
+        <option value="Intellectual">Intellectual</option>
+        <option value="Multiple">Multiple</option>
+        <option value="Other">Other</option>
+
+      </select>
+
+
+      <label>Disability Details</label>
+
+      <textarea
+        name="member_${memberCount}_disability_details"
+        placeholder="Please provide disability details">
+      </textarea>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="remove-btn"
+      onclick="removeMember(${memberCount})">
+
       Remove Member
+
     </button>
+
   `;
 
   container.appendChild(member);
+
 }
 
+
+/* EDUCATION */
+
+function toggleEducation(select, id) {
+
+  const educationBox =
+    document.getElementById("education_" + id);
+
+  const occupationBox =
+    document.getElementById("occupation_" + id);
+
+  if (select.value === "Education Discontinued") {
+
+    educationBox.classList.remove("hidden");
+
+  } else {
+
+    educationBox.classList.add("hidden");
+
+  }
+
+
+  if (select.value === "Currently Studying") {
+
+    occupationBox.classList.add("hidden");
+
+  } else {
+
+    occupationBox.classList.remove("hidden");
+
+  }
+
+}
+
+
+/* FUTURE EDUCATION */
+
+function toggleFutureEducation(select, id) {
+
+  const box =
+    document.getElementById("future_education_" + id);
+
+  if (select.value === "Yes") {
+
+    box.classList.remove("hidden");
+
+  } else {
+
+    box.classList.add("hidden");
+
+    document.getElementById(
+      "education_help_" + id
+    ).classList.add("hidden");
+
+  }
+
+}
+
+
+/* EDUCATION HELP */
+
+function toggleEducationHelp(select, id) {
+
+  const box =
+    document.getElementById("education_help_" + id);
+
+  if (select.value === "Yes") {
+
+    box.classList.remove("hidden");
+
+  } else {
+
+    box.classList.add("hidden");
+
+  }
+
+}
+
+
+/* HEALTH */
 
 function toggleMemberHealth(select, id) {
 
-  const box = document.getElementById("health_" + id);
-
-  if (select.value === "Not Good") {
-    box.classList.remove("hidden");
-  } else {
-    box.classList.add("hidden");
-  }
-}
-
-
-function toggleHelpDetails(select, id) {
-
-  const box = document.getElementById("help_" + id);
+  const box =
+    document.getElementById("health_" + id);
 
   if (select.value === "Yes") {
+
     box.classList.remove("hidden");
+
   } else {
+
     box.classList.add("hidden");
+
+    document.getElementById(
+      "health_help_" + id
+    ).classList.add("hidden");
+
   }
+
 }
 
 
-function toggleEducationDetails() {
+/* HEALTH HELP */
 
-  const value = document.getElementById("educationProblem").value;
-  const box = document.getElementById("educationDetails");
+function toggleHealthHelp(select, id) {
 
-  if (value === "Yes") {
+  const box =
+    document.getElementById("health_help_" + id);
+
+  if (select.value === "Yes") {
+
     box.classList.remove("hidden");
+
   } else {
+
     box.classList.add("hidden");
+
   }
+
 }
 
 
-function toggleHealthcareDetails() {
+/* DISABILITY */
 
-  const value = document.getElementById("healthcareProblem").value;
-  const box = document.getElementById("healthcareDetails");
+function toggleDisability(select, id) {
 
-  if (value === "Yes") {
+  const box =
+    document.getElementById("disability_" + id);
+
+  if (select.value === "Yes") {
+
     box.classList.remove("hidden");
+
   } else {
+
     box.classList.add("hidden");
+
   }
+
 }
 
 
-document.getElementById("registrationForm").addEventListener("submit", function(event) {
+/* HEALTHCARE ACCESS */
 
-  event.preventDefault();
+function toggleHealthcare(select) {
 
-  document.getElementById("message").style.color = "green";
-  document.getElementById("message").textContent =
-    "Form is ready. Database submission will be connected next.";
+  const box =
+    document.getElementById("healthcareDetails");
 
-});
+  if (select.value === "Yes") {
+
+    box.classList.remove("hidden");
+
+  } else {
+
+    box.classList.add("hidden");
+
+  }
+
+}
 
 
-// First family member automatically added
+/* REMOVE MEMBER */
+
+function removeMember(id) {
+
+  const member =
+    document.getElementById("member_" + id);
+
+  if (member) {
+
+    member.remove();
+
+  }
+
+}
+
+
+/* FORM SUBMIT */
+
+document
+  .getElementById("registrationForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const message =
+      document.getElementById("message");
+
+    message.style.color = "green";
+
+    message.textContent =
+      "Form is ready. Database submission will be connected next.";
+
+  });
+
+
+/* FIRST MEMBER */
+
 addMember();
 
 </script>
