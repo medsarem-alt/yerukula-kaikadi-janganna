@@ -1,2 +1,2 @@
-const SUPABASE_URL = "PASTE_YOUR_API_URL_HERE";
-const SUPABASE_PUBLISHABLE_KEY = "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_URL = "https://dncpytissribxjsbrfxp.supabase.co/rest/v1/";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ARgUWSyNuJL3izkC7xd3cQ_vyUqAsEn";
