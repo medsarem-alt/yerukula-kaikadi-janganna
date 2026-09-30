@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Yerukula Kaikadi - Admin Login</title>
+
   <style>
     body {
       margin: 0;
@@ -62,7 +63,6 @@
       color: white;
       font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
     }
 
     #message {
@@ -77,13 +77,15 @@
 
   <div class="login-box">
     <h1>Admin Login</h1>
+
     <div class="subtitle">
       Yerukula Kaikadi Samaj Seva Sangh<br>
       Samaj Janganna
     </div>
 
     <form id="loginForm">
-      <label for="email">Email</label>
+
+      <label>Email</label>
       <input
         type="email"
         id="email"
@@ -91,7 +93,7 @@
         required
       >
 
-      <label for="password">Password</label>
+      <label>Password</label>
       <input
         type="password"
         id="password"
@@ -102,15 +104,44 @@
       <button type="submit">Login</button>
 
       <div id="message"></div>
+
     </form>
   </div>
 
+  <!-- Supabase library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Your configuration -->
+  <script src="config.js"></script>
+
   <script>
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    document.getElementById("loginForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
-      document.getElementById("message").textContent =
-        "Login connection will be added in the next step.";
+      const message = document.getElementById("message");
+      message.textContent = "Logging in...";
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+      if (error) {
+        message.textContent = error.message;
+        return;
+      }
+
+      message.style.color = "green";
+      message.textContent = "Login successful!";
     });
   </script>
 
