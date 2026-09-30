@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Family Registration - Yerukula Kaikadi</title>
+<title>Family Registration - Yerukula Kaikadi Samaj</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -14,47 +14,43 @@
 
 body {
   margin: 0;
+  padding: 15px;
   font-family: Arial, sans-serif;
-  background: #f4f7fb;
+  background: #f4f6f8;
   color: #222;
 }
 
 .container {
   max-width: 850px;
-  margin: 20px auto;
-  padding: 15px;
-}
-
-.card {
-  background: white;
-  padding: 22px;
-  margin-bottom: 20px;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
 }
 
 h1 {
   text-align: center;
-  color: #173b6c;
-  margin-bottom: 25px;
+  font-size: 24px;
+  margin-bottom: 5px;
 }
 
 h2 {
-  color: #173b6c;
-  border-bottom: 2px solid #e5eaf1;
+  font-size: 19px;
+  margin-top: 25px;
   padding-bottom: 8px;
+  border-bottom: 2px solid #eee;
 }
 
 h3 {
-  color: #444;
-  margin-top: 25px;
+  font-size: 17px;
+  margin-top: 10px;
 }
 
 label {
   display: block;
-  font-weight: bold;
-  margin-top: 15px;
-  margin-bottom: 6px;
+  margin-top: 13px;
+  font-weight: 600;
 }
 
 input,
@@ -62,7 +58,8 @@ select,
 textarea {
   width: 100%;
   padding: 11px;
-  border: 1px solid #cbd5e1;
+  margin-top: 6px;
+  border: 1px solid #ccc;
   border-radius: 7px;
   font-size: 15px;
 }
@@ -73,80 +70,70 @@ textarea {
 }
 
 .member {
-  border: 1px solid #dbe3ee;
+  border: 1px solid #ddd;
   border-radius: 10px;
-  padding: 18px;
-  margin-top: 18px;
-  background: #fafcff;
-}
-
-.member-title {
-  font-size: 18px;
-  font-weight: bold;
-  color: #173b6c;
+  padding: 15px;
+  margin-top: 15px;
+  background: #fafafa;
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 button {
-  border: none;
-  border-radius: 8px;
-  padding: 12px 18px;
-  font-size: 16px;
+  border: 0;
+  border-radius: 7px;
+  padding: 12px 16px;
+  font-size: 15px;
   cursor: pointer;
 }
 
 .add-btn {
-  background: #173b6c;
+  background: #1976d2;
+  color: white;
+  width: 100%;
+  margin-top: 15px;
+}
+
+.remove-btn {
+  background: #d32f2f;
   color: white;
   margin-top: 15px;
 }
 
 .submit-btn {
-  width: 100%;
-  background: #198754;
+  background: #2e7d32;
   color: white;
-  margin-top: 10px;
+  width: 100%;
+  margin-top: 25px;
   font-size: 17px;
   font-weight: bold;
 }
 
-.remove-btn {
-  background: #dc3545;
-  color: white;
+.status {
   margin-top: 15px;
-}
-
-.message {
-  text-align: center;
-  font-weight: bold;
-  margin-top: 15px;
-  white-space: pre-line;
+  padding: 12px;
+  border-radius: 7px;
+  display: none;
 }
 
 .success {
-  color: green;
+  display: block;
+  background: #e8f5e9;
+  color: #1b5e20;
 }
 
 .error {
-  color: #dc3545;
+  display: block;
+  background: #ffebee;
+  color: #b71c1c;
 }
 
-@media (max-width: 600px) {
-  .container {
-    margin: 5px auto;
-    padding: 10px;
-  }
-
-  .card {
-    padding: 15px;
-  }
-
-  h1 {
-    font-size: 24px;
-  }
+.small-note {
+  font-size: 13px;
+  color: #666;
+  margin-top: 5px;
 }
 </style>
 </head>
@@ -155,51 +142,34 @@ button {
 
 <div class="container">
 
-<h1>
-Yerukula Kaikadi Samaj<br>
-Family Registration
-</h1>
+<h1>Yerukula-Kaikadi Samaj</h1>
+<p style="text-align:center;">Family Census / Registration Form</p>
 
-<form id="registrationForm">
+<form id="familyForm">
 
 <!-- ================= FAMILY DETAILS ================= -->
 
-<div class="card">
-
 <h2>1. Family Details</h2>
 
-<label>Family Head Name</label>
+<label>Family Head Name *</label>
 <input type="text" name="family_head_name" required>
 
-<label>Mobile Number</label>
-<input
-  type="tel"
-  name="family_mobile"
-  maxlength="10"
-  pattern="[0-9]{10}"
-  required>
+<label>Family Head Mobile Number *</label>
+<input type="tel" name="family_mobile" required>
 
-<label>State</label>
+<label>State *</label>
 <input type="text" name="state" required>
 
-<label>District</label>
+<label>District *</label>
 <input type="text" name="district" required>
 
-<label>City / Village</label>
+<label>City / Village *</label>
 <input type="text" name="city_village" required>
 
-<label>Full Address</label>
+<label>Full Address *</label>
 <textarea name="full_address" required></textarea>
 
-<label>Total Family Members</label>
-<input
-  type="number"
-  id="totalMembers"
-  name="total_members"
-  min="1"
-  required>
-
-<label>Housing</label>
+<label>Housing *</label>
 <select name="housing" required>
   <option value="">Select</option>
   <option value="Own House">Own House</option>
@@ -207,7 +177,7 @@ Family Registration
   <option value="Other">Other</option>
 </select>
 
-<label>House Condition</label>
+<label>House Condition *</label>
 <select name="house_condition" required>
   <option value="">Select</option>
   <option value="Good">Good</option>
@@ -215,252 +185,223 @@ Family Registration
   <option value="Poor">Poor</option>
 </select>
 
-</div>
+<label>Total Family Members *</label>
+<input type="number" id="totalMembers" name="total_members" min="1" required>
 
+<!-- ================= FAMILY HEAD EDUCATION ================= -->
+
+<h2>2. Family Head Education</h2>
+
+<label>Education</label>
+<input type="text" name="family_head_education"
+       placeholder="Example: 10th, 12th, Graduate">
+
+<label>Education Status</label>
+<select name="family_head_education_status"
+        onchange="toggleFamilyHeadEducation(this)">
+  <option value="">Select</option>
+  <option value="Currently Studying">Currently Studying</option>
+  <option value="Completed">Completed</option>
+  <option value="Education Discontinued">Education Discontinued</option>
+  <option value="Never Studied">Never Studied</option>
+  <option value="Not Applicable">Not Applicable</option>
+</select>
+
+<div id="familyHeadEducationDiscontinuedBox" class="hidden">
+
+  <label>Reason for Discontinuing Education</label>
+  <textarea name="family_head_education_discontinue_reason"></textarea>
+
+  <label>Would you like to continue education in future?</label>
+  <select name="family_head_future_education"
+          onchange="toggleFamilyHeadFutureEducation(this)">
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <div id="familyHeadEducationHelpBox" class="hidden">
+
+    <label>Education Help / Support Required?</label>
+    <select name="family_head_education_help"
+            onchange="toggleFamilyHeadEducationHelp(this)">
+      <option value="">Select</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+
+    <div id="familyHeadEducationHelpDetailsBox" class="hidden">
+      <label>Education Help / Support Details</label>
+      <textarea name="family_head_education_help_details"></textarea>
+    </div>
+
+  </div>
+
+</div>
 
 <!-- ================= FAMILY MEMBERS ================= -->
 
-<div class="card">
-
-<h2>2. Family Members</h2>
-
-<p>Enter complete details of every family member.</p>
+<h2>3. Family Members</h2>
 
 <div id="membersContainer"></div>
 
-<button
-  type="button"
-  class="add-btn"
-  onclick="addMember()">
+<button type="button" class="add-btn" id="addMemberBtn">
   + Add Family Member
 </button>
 
-</div>
+<!-- ================= HEALTHCARE ================= -->
 
+<h2>4. Healthcare Access</h2>
 
-<!-- ================= HEALTHCARE ACCESS ================= -->
-
-<div class="card">
-
-<h2>3. Healthcare Access</h2>
-
-<label>Difficulty Accessing Healthcare</label>
-
-<select
-  name="healthcare_access_problem"
-  onchange="toggleHealthcare(this)"
-  required>
-
+<label>Difficulty Accessing Healthcare?</label>
+<select name="healthcare_access_problem"
+        onchange="toggleHealthcare(this)">
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
-
 </select>
 
-<div id="healthcareDetails" class="hidden">
-
-<label>Healthcare Access Details</label>
-
-<textarea
-  name="healthcare_access_details"
-  placeholder="Please describe the healthcare access problem">
-</textarea>
-
+<div id="healthcareDetailsBox" class="hidden">
+  <label>Healthcare Access Details</label>
+  <textarea name="healthcare_access_details"></textarea>
 </div>
 
-</div>
+<!-- ================= INSURANCE ================= -->
 
-
-<!-- ================= FAMILY INSURANCE ================= -->
-
-<div class="card">
-
-<h2>4. Family Insurance</h2>
+<h2>5. Family Insurance</h2>
 
 <label>Health Insurance</label>
-
-<select name="health_insurance" required>
+<select name="health_insurance">
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
 </select>
-
 
 <label>Term Life Insurance</label>
-
-<select name="term_life_insurance" required>
+<select name="term_life_insurance">
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
 </select>
-
 
 <label>Other Insurance</label>
-
-<select name="other_insurance" required>
+<select name="other_insurance">
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
 </select>
 
-</div>
-
-
-<!-- ================= SUBMIT ================= -->
-
-<div class="card">
-
-<button
-  type="submit"
-  class="submit-btn"
-  id="submitButton">
-
+<button type="submit" class="submit-btn">
   Submit Registration
-
 </button>
 
-<div id="message" class="message"></div>
-
-</div>
+<div id="statusMessage" class="status"></div>
 
 </form>
 
 </div>
 
-
 <script>
 
-/* =====================================================
-   SUPABASE CONNECTION
-===================================================== */
+/* =========================================================
+   SUPABASE CONFIGURATION
+   ========================================================= */
 
-const SUPABASE_URL =
-  "https://dncpytissribxjsbrfxp.supabase.co";
+const SUPABASE_URL = "https://dncpytissribxjsbrfxp.supabase.co";
 
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuY3B5dGlzc3JpYnhqc2JyZnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3NTEzMDgsImV4cCI6MjEwNjMyNzMwOH0.CeKPnDQn4-ADL7D_ZLf7XhBgK9Gys_IkWUXstkG6Amo";
+/*
+  IMPORTANT:
+  Yahan apni existing FULL Supabase anon/public key paste karo.
+  Service Role Key yahan MAT paste karna.
+*/
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuY3B5dGlzc3JpYnhqc2JyZnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3NTEzMDgsImV4cCI6MjEwNjMyNzMwOH0.CeKPnDQn4-ADL7D_ZLf7XhBgK9Gys_IkWUXstkG6Amo";
 
-const supabaseClient =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
+
+/* =========================================================
+   MEMBER COUNTER
+   ========================================================= */
 
 let memberCount = 0;
 
 
-/* =====================================================
-   ADD MEMBER
-===================================================== */
+/* =========================================================
+   ADD FAMILY MEMBER
+   ========================================================= */
 
 function addMember() {
 
   memberCount++;
 
-  const container =
-    document.getElementById("membersContainer");
+  const id = memberCount;
 
-  const member =
-    document.createElement("div");
+  const div = document.createElement("div");
 
-  member.className = "member";
+  div.className = "member";
 
-  member.id =
-    "member_" + memberCount;
+  div.dataset.memberId = id;
 
-  member.innerHTML = `
+  div.innerHTML = `
 
-    <div class="member-title">
-      Family Member ${memberCount}
-    </div>
+    <h3>Family Member ${id}</h3>
 
-    <label>Full Name</label>
-    <input
-      type="text"
-      name="member_${memberCount}_full_name"
-      required>
-
+    <label>Full Name *</label>
+    <input type="text"
+           name="member_${id}_full_name"
+           required>
 
     <label>Date of Birth</label>
-    <input
-      type="date"
-      name="member_${memberCount}_dob"
-      required>
-
+    <input type="date"
+           name="member_${id}_dob">
 
     <label>Age</label>
-    <input
-      type="number"
-      name="member_${memberCount}_age"
-      min="0"
-      max="120"
-      required>
-
+    <input type="number"
+           name="member_${id}_age"
+           min="0">
 
     <label>Gender</label>
-
-    <select
-      name="member_${memberCount}_gender"
-      required>
-
+    <select name="member_${id}_gender">
       <option value="">Select</option>
       <option value="Male">Male</option>
       <option value="Female">Female</option>
       <option value="Other">Other</option>
-
     </select>
 
-
     <label>Relationship to Family Head</label>
-
-    <input
-      type="text"
-      name="member_${memberCount}_relationship"
-      placeholder="Example: Son, Daughter, Wife, Brother"
-      required>
-
+    <input type="text"
+           name="member_${id}_relationship"
+           placeholder="Example: Wife, Son, Daughter">
 
     <label>Marital Status</label>
-
-    <select
-      name="member_${memberCount}_marital_status"
-      required>
-
+    <select name="member_${id}_marital_status">
       <option value="">Select</option>
       <option value="Married">Married</option>
       <option value="Unmarried">Unmarried</option>
       <option value="Widow/Widower">Widow/Widower</option>
       <option value="Divorced">Divorced</option>
-      <option value="Separated">Separated</option>
-      <option value="Not Applicable">Not Applicable</option>
-
+      <option value="Other">Other</option>
     </select>
 
-
     <label>Mobile Number</label>
+    <input type="tel"
+           name="member_${id}_mobile">
 
-    <input
-      type="tel"
-      name="member_${memberCount}_mobile"
-      maxlength="10"
-      pattern="[0-9]{10}">
+    <!-- EDUCATION -->
 
+    <h3>Education</h3>
 
     <label>Education</label>
-
-    <input
-      type="text"
-      name="member_${memberCount}_education"
-      placeholder="Example: 10th, 12th, Graduate, etc.">
-
+    <input type="text"
+           name="member_${id}_education"
+           placeholder="Example: 10th, 12th, Graduate">
 
     <label>Education Status</label>
-
-    <select
-      name="member_${memberCount}_education_status"
-      onchange="toggleEducation(this, ${memberCount})"
-      required>
+    <select name="member_${id}_education_status"
+            onchange="toggleMemberEducation(this, ${id})">
 
       <option value="">Select</option>
       <option value="Currently Studying">Currently Studying</option>
@@ -471,23 +412,19 @@ function addMember() {
 
     </select>
 
-
-    <div
-      id="education_${memberCount}"
-      class="hidden">
+    <div id="memberEducationDiscontinued_${id}" class="hidden">
 
       <label>Reason for Discontinuing Education</label>
 
       <textarea
-        name="member_${memberCount}_education_discontinue_reason">
+        name="member_${id}_education_discontinue_reason">
       </textarea>
 
-
-      <label>Would like to continue education in future?</label>
+      <label>Would you like to continue education in future?</label>
 
       <select
-        name="member_${memberCount}_future_education"
-        onchange="toggleFutureEducation(this, ${memberCount})">
+        name="member_${id}_future_education"
+        onchange="toggleMemberFutureEducation(this, ${id})">
 
         <option value="">Select</option>
         <option value="Yes">Yes</option>
@@ -495,16 +432,13 @@ function addMember() {
 
       </select>
 
+      <div id="memberEducationHelp_${id}" class="hidden">
 
-      <div
-        id="future_education_${memberCount}"
-        class="hidden">
-
-        <label>Help / Support Required for Education?</label>
+        <label>Education Help / Support Required?</label>
 
         <select
-          name="member_${memberCount}_education_help"
-          onchange="toggleEducationHelp(this, ${memberCount})">
+          name="member_${id}_education_help"
+          onchange="toggleMemberEducationHelp(this, ${id})">
 
           <option value="">Select</option>
           <option value="Yes">Yes</option>
@@ -512,16 +446,12 @@ function addMember() {
 
         </select>
 
-
-        <div
-          id="education_help_${memberCount}"
-          class="hidden">
+        <div id="memberEducationHelpDetails_${id}" class="hidden">
 
           <label>Education Help / Support Details</label>
 
           <textarea
-            name="member_${memberCount}_education_help_details"
-            placeholder="Please describe the help or support needed">
+            name="member_${id}_education_help_details">
           </textarea>
 
         </div>
@@ -531,42 +461,39 @@ function addMember() {
     </div>
 
 
-    <div id="occupation_${memberCount}">
+    <!-- OCCUPATION -->
 
-      <label>Occupation</label>
+    <h3>Employment</h3>
 
-      <input
-        type="text"
-        name="member_${memberCount}_occupation"
-        placeholder="Example: Worker, Business, Farmer, etc.">
+    <label>Occupation</label>
 
+    <input type="text"
+           name="member_${id}_occupation">
 
-      <label>Employment Status</label>
+    <label>Employment Status</label>
 
-      <select
-        name="member_${memberCount}_employment_status">
+    <select name="member_${id}_employment_status">
 
-        <option value="">Select</option>
-        <option value="Employed">Employed</option>
-        <option value="Self Employed">Self Employed</option>
-        <option value="Unemployed">Unemployed</option>
-        <option value="Not Applicable">Not Applicable</option>
+      <option value="">Select</option>
+      <option value="Employed">Employed</option>
+      <option value="Self Employed">Self Employed</option>
+      <option value="Unemployed">Unemployed</option>
+      <option value="Currently Studying">Currently Studying</option>
+      <option value="Retired">Retired</option>
+      <option value="Other">Other</option>
 
-      </select>
-
-    </div>
+    </select>
 
 
     <!-- HEALTH -->
 
-    <h3>Health Information</h3>
+    <h3>Health Condition</h3>
 
     <label>Any Health Problem?</label>
 
     <select
-      name="member_${memberCount}_health_problem"
-      onchange="toggleMemberHealth(this, ${memberCount})"
-      required>
+      name="member_${id}_health_condition"
+      onchange="toggleMemberHealth(this, ${id})">
 
       <option value="">Select</option>
       <option value="Yes">Yes</option>
@@ -575,34 +502,18 @@ function addMember() {
     </select>
 
 
-    <div
-      id="health_${memberCount}"
-      class="hidden">
+    <div id="memberHealth_${id}" class="hidden">
 
       <label>Health Problem / Disease Details</label>
 
       <textarea
-        name="member_${memberCount}_health_details"
-        placeholder="Please describe the health problem or disease">
+        name="member_${id}_disease_details">
       </textarea>
 
 
-      <label>Long-term Health Problem</label>
+      <label>Long-term Health Problem?</label>
 
-      <select
-        name="member_${memberCount}_long_term_health">
-
-        <option value="">Select</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-
-      </select>
-
-
-      <label>Regular Treatment Required</label>
-
-      <select
-        name="member_${memberCount}_regular_treatment">
+      <select name="member_${id}_long_term_condition">
 
         <option value="">Select</option>
         <option value="Yes">Yes</option>
@@ -611,11 +522,9 @@ function addMember() {
       </select>
 
 
-      <label>Help / Support Required</label>
+      <label>Regular Treatment Required?</label>
 
-      <select
-        name="member_${memberCount}_health_help_required"
-        onchange="toggleHealthHelp(this, ${memberCount})">
+      <select name="member_${id}_treatment_status">
 
         <option value="">Select</option>
         <option value="Yes">Yes</option>
@@ -624,15 +533,25 @@ function addMember() {
       </select>
 
 
-      <div
-        id="health_help_${memberCount}"
-        class="hidden">
+      <label>Help / Support Required?</label>
 
-        <label>Help / Support Details</label>
+      <select
+        name="member_${id}_health_help_required"
+        onchange="toggleMemberHealthHelp(this, ${id})">
+
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+
+      </select>
+
+
+      <div id="memberHealthHelpDetails_${id}" class="hidden">
+
+        <label>Health Help / Support Details</label>
 
         <textarea
-          name="member_${memberCount}_health_help_details"
-          placeholder="Please describe the help / support required">
+          name="member_${id}_health_help_details">
         </textarea>
 
       </div>
@@ -642,14 +561,13 @@ function addMember() {
 
     <!-- DISABILITY -->
 
-    <h3>Disability Information</h3>
+    <h3>Disability</h3>
 
-    <label>Disability</label>
+    <label>Any Disability?</label>
 
     <select
-      name="member_${memberCount}_disability"
-      onchange="toggleDisability(this, ${memberCount})"
-      required>
+      name="member_${id}_disability"
+      onchange="toggleDisability(this, ${id})">
 
       <option value="">Select</option>
       <option value="Yes">Yes</option>
@@ -658,32 +576,17 @@ function addMember() {
     </select>
 
 
-    <div
-      id="disability_${memberCount}"
-      class="hidden">
+    <div id="memberDisability_${id}" class="hidden">
 
       <label>Type of Disability</label>
 
-      <select
-        name="member_${memberCount}_disability_type">
-
-        <option value="">Select</option>
-        <option value="Physical">Physical</option>
-        <option value="Visual">Visual</option>
-        <option value="Hearing">Hearing</option>
-        <option value="Speech">Speech</option>
-        <option value="Intellectual">Intellectual</option>
-        <option value="Multiple">Multiple</option>
-        <option value="Other">Other</option>
-
-      </select>
-
+      <input type="text"
+             name="member_${id}_disability_type">
 
       <label>Disability Details</label>
 
       <textarea
-        name="member_${memberCount}_disability_details"
-        placeholder="Please provide disability details">
+        name="member_${id}_disability_details">
       </textarea>
 
     </div>
@@ -692,7 +595,7 @@ function addMember() {
     <button
       type="button"
       class="remove-btn"
-      onclick="removeMember(${memberCount})">
+      onclick="removeMember(this)">
 
       Remove Member
 
@@ -700,359 +603,330 @@ function addMember() {
 
   `;
 
-  container.appendChild(member);
+  document.getElementById("membersContainer").appendChild(div);
+
+  updateTotalMembers();
+
 }
 
 
-/* =====================================================
-   EDUCATION
-===================================================== */
+/* =========================================================
+   REMOVE MEMBER
+   ========================================================= */
 
-function toggleEducation(select, id) {
+function removeMember(button) {
 
-  const educationBox =
-    document.getElementById("education_" + id);
+  const member = button.closest(".member");
 
-  const occupationBox =
-    document.getElementById("occupation_" + id);
+  if (member) {
+    member.remove();
+  }
+
+  updateMemberNumbers();
+  updateTotalMembers();
+}
+
+
+/* =========================================================
+   UPDATE MEMBER NUMBERS
+   ========================================================= */
+
+function updateMemberNumbers() {
+
+  const members =
+    document.querySelectorAll(".member");
+
+  members.forEach((member, index) => {
+
+    const number = index + 1;
+
+    const heading = member.querySelector("h3");
+
+    if (heading) {
+      heading.textContent = "Family Member " + number;
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   TOTAL MEMBERS
+   ========================================================= */
+
+function updateTotalMembers() {
+
+  const total =
+    document.querySelectorAll(".member").length;
+
+  const input =
+    document.getElementById("totalMembers");
+
+  if (input && total > 0) {
+    input.value = total;
+  }
+
+}
+
+
+/* =========================================================
+   FAMILY HEAD EDUCATION
+   ========================================================= */
+
+function toggleFamilyHeadEducation(select) {
+
+  const box =
+    document.getElementById(
+      "familyHeadEducationDiscontinuedBox"
+    );
 
   if (select.value === "Education Discontinued") {
-
-    educationBox.classList.remove("hidden");
-
-  } else {
-
-    educationBox.classList.add("hidden");
-
-  }
-
-  if (select.value === "Currently Studying") {
-
-    occupationBox.classList.add("hidden");
-
-  } else {
-
-    occupationBox.classList.remove("hidden");
-
-  }
-}
-
-
-/* =====================================================
-   FUTURE EDUCATION
-===================================================== */
-
-function toggleFutureEducation(select, id) {
-
-  const box =
-    document.getElementById(
-      "future_education_" + id
-    );
-
-  if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
 
+    document.querySelector(
+      '[name="family_head_education_discontinue_reason"]'
+    ).value = "";
+
+    document.querySelector(
+      '[name="family_head_future_education"]'
+    ).value = "";
+
     document.getElementById(
-      "education_help_" + id
+      "familyHeadEducationHelpBox"
     ).classList.add("hidden");
 
+    document.getElementById(
+      "familyHeadEducationHelpDetailsBox"
+    ).classList.add("hidden");
   }
+
 }
 
 
-/* =====================================================
-   EDUCATION HELP
-===================================================== */
-
-function toggleEducationHelp(select, id) {
+function toggleFamilyHeadFutureEducation(select) {
 
   const box =
     document.getElementById(
-      "education_help_" + id
+      "familyHeadEducationHelpBox"
     );
 
   if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
 
+    document.querySelector(
+      '[name="family_head_education_help"]'
+    ).value = "";
+
+    document.getElementById(
+      "familyHeadEducationHelpDetailsBox"
+    ).classList.add("hidden");
   }
+
 }
 
 
-/* =====================================================
+function toggleFamilyHeadEducationHelp(select) {
+
+  const box =
+    document.getElementById(
+      "familyHeadEducationHelpDetailsBox"
+    );
+
+  if (select.value === "Yes") {
+    box.classList.remove("hidden");
+  } else {
+    box.classList.add("hidden");
+  }
+
+}
+
+
+/* =========================================================
+   MEMBER EDUCATION
+   ========================================================= */
+
+function toggleMemberEducation(select, id) {
+
+  const box =
+    document.getElementById(
+      `memberEducationDiscontinued_${id}`
+    );
+
+  if (select.value === "Education Discontinued") {
+    box.classList.remove("hidden");
+  } else {
+    box.classList.add("hidden");
+
+    const future =
+      document.querySelector(
+        `[name="member_${id}_future_education"]`
+      );
+
+    if (future) future.value = "";
+
+    document.getElementById(
+      `memberEducationHelp_${id}`
+    ).classList.add("hidden");
+
+    document.getElementById(
+      `memberEducationHelpDetails_${id}`
+    ).classList.add("hidden");
+  }
+
+}
+
+
+function toggleMemberFutureEducation(select, id) {
+
+  const box =
+    document.getElementById(
+      `memberEducationHelp_${id}`
+    );
+
+  if (select.value === "Yes") {
+    box.classList.remove("hidden");
+  } else {
+    box.classList.add("hidden");
+
+    const help =
+      document.querySelector(
+        `[name="member_${id}_education_help"]`
+      );
+
+    if (help) help.value = "";
+
+    document.getElementById(
+      `memberEducationHelpDetails_${id}`
+    ).classList.add("hidden");
+  }
+
+}
+
+
+function toggleMemberEducationHelp(select, id) {
+
+  const box =
+    document.getElementById(
+      `memberEducationHelpDetails_${id}`
+    );
+
+  if (select.value === "Yes") {
+    box.classList.remove("hidden");
+  } else {
+    box.classList.add("hidden");
+  }
+
+}
+
+
+/* =========================================================
    MEMBER HEALTH
-===================================================== */
+   ========================================================= */
 
 function toggleMemberHealth(select, id) {
 
   const box =
     document.getElementById(
-      "health_" + id
+      `memberHealth_${id}`
     );
 
   if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
 
-    document.getElementById(
-      "health_help_" + id
-    ).classList.add("hidden");
+    const helpBox =
+      document.getElementById(
+        `memberHealthHelpDetails_${id}`
+      );
+
+    if (helpBox) {
+      helpBox.classList.add("hidden");
+    }
+
+    const helpSelect =
+      document.querySelector(
+        `[name="member_${id}_health_help_required"]`
+      );
+
+    if (helpSelect) {
+      helpSelect.value = "";
+    }
 
   }
+
 }
 
 
-/* =====================================================
-   HEALTH HELP
-===================================================== */
+/* =========================================================
+   MEMBER HEALTH HELP
+   ========================================================= */
 
-function toggleHealthHelp(select, id) {
+function toggleMemberHealthHelp(select, id) {
 
   const box =
     document.getElementById(
-      "health_help_" + id
+      `memberHealthHelpDetails_${id}`
     );
 
   if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
-
   }
+
 }
 
 
-/* =====================================================
+/* =========================================================
    DISABILITY
-===================================================== */
+   ========================================================= */
 
 function toggleDisability(select, id) {
 
   const box =
     document.getElementById(
-      "disability_" + id
+      `memberDisability_${id}`
     );
 
   if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
-
   }
+
 }
 
 
-/* =====================================================
-   HEALTHCARE ACCESS
-===================================================== */
+/* =========================================================
+   FAMILY HEALTHCARE
+   ========================================================= */
 
 function toggleHealthcare(select) {
 
   const box =
     document.getElementById(
-      "healthcareDetails"
+      "healthcareDetailsBox"
     );
 
   if (select.value === "Yes") {
-
     box.classList.remove("hidden");
-
   } else {
-
     box.classList.add("hidden");
-
   }
+
 }
 
 
-/* =====================================================
-   REMOVE MEMBER
-===================================================== */
-
-function removeMember(id) {
-
-  const member =
-    document.getElementById(
-      "member_" + id
-    );
-
-  if (member) {
-
-    member.remove();
-
-  }
-}
-
-
-/* =====================================================
-   FORM SUBMIT
-===================================================== */
+/* =========================================================
+   ADD FIRST MEMBER
+   ========================================================= */
 
 document
-  .getElementById("registrationForm")
-  .addEventListener("submit", async function(event) {
-
-    event.preventDefault();
-
-    const message =
-      document.getElementById("message");
-
-    const submitButton =
-      document.getElementById("submitButton");
-
-    message.className = "message";
-    message.textContent = "";
-
-    submitButton.disabled = true;
-    submitButton.textContent = "Saving...";
-
-
-    try {
-
-      /* ---------------------------------------------
-         CHECK LOGIN
-      --------------------------------------------- */
-
-      const {
-        data: {
-          user
-        },
-        error: authError
-      } = await supabaseClient.auth.getUser();
-
-
-      if (authError) {
-        throw authError;
-      }
-
-
-      if (!user) {
-
-        throw new Error(
-          "Please login before submitting the registration."
-        );
-
-      }
-
-
-      /* ---------------------------------------------
-         GET FORM
-      --------------------------------------------- */
-
-      const form =
-        document.getElementById(
-          "registrationForm"
-        );
-
-      const formData =
-        new FormData(form);
-
-
-      const totalMembers =
-        Number(
-          formData.get("total_members")
-        );
-
-
-      /* ---------------------------------------------
-         CHECK MEMBER COUNT
-      --------------------------------------------- */
-
-      const memberElements =
-        document.querySelectorAll(
-          "#membersContainer .member"
-        );
-
-
-      if (
-        memberElements.length !==
-        totalMembers
-      ) {
-
-        throw new Error(
-          "Total Family Members is " +
-          totalMembers +
-          ", but you have entered " +
-          memberElements.length +
-          " member(s). Please make both numbers the same."
-        );
-
-      }
-
-
-      /* ---------------------------------------------
-         FAMILY DATA
-      --------------------------------------------- */
-
-      const familyData = {
-
-        user_id: user.id,
-
-        family_head_name:
-          formData.get("family_head_name"),
-
-        family_mobile_number:
-          formData.get("family_mobile"),
-
-        state:
-          formData.get("state"),
-
-        district:
-          formData.get("district"),
-
-        city_village:
-          formData.get("city_village"),
-
-        full_address:
-          formData.get("full_address"),
-
-        own_house:
-          formData.get("housing"),
-
-        total_members:
-          totalMembers,
-
-        house_condition:
-          formData.get("house_condition"),
-
-        healthcare_access_problem:
-          formData.get(
-            "healthcare_access_problem"
-          ),
-
-        healthcare_access_details:
-          formData.get(
-            "healthcare_access_details"
-          ) || null,
-
-        health_insurance:
-          formData.get("health_insurance"),
-
-        term_life_insurance:
-          formData.get(
-            "term_life_insurance"
-          ),
-
-        other_insurance:
-          formData.get(
-            "other_insurance"
-        
+  .getElementById("addMemberBtn")
+  .addEventListener("clic
