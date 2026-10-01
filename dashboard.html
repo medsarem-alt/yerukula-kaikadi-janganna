@@ -446,16 +446,7 @@
       SUM(families.total_members)
     */
 
-    const totalMembers = familiesData.reduce((sum, family) => {
-
-      const n = Number(family.total_members);
-
-      return sum + (
-        Number.isFinite(n) ? n : 0
-      );
-
-    }, 0);
-
+    const totalMembers = familiesData.length + membersData.length;
     const ownHouseCount = familiesData.filter(
       family =>
         family.own_house === true ||
