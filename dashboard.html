@@ -831,13 +831,6 @@ async function loadDashboard() {
       validMembersData.length;
 
 
-    /*
-      IMPORTANT:
-
-      Total Members =
-      Family Heads + Family Members
-    */
-
     const totalMembers =
       totalFamilyHeads +
       totalFamilyMembers;
@@ -845,11 +838,27 @@ async function loadDashboard() {
 
     /* =====================================================
        OWN HOUSE
+       DATABASE:
+       own_house = boolean
+       housing_type = text
     ===================================================== */
 
-    const ownHouseCount = familiesData.filter(
-  family => family.own_house === true
-).length;
+    const ownHouseCount =
+      familiesData.filter(
+        family => {
+
+          return (
+            family.own_house === true ||
+            family.own_house === "true" ||
+            family.own_house === "True" ||
+            family.own_house === "TRUE" ||
+            family.own_house === 1 ||
+            family.own_house === "1"
+          );
+
+        }
+      ).length;
+
 
     /* =====================================================
        DISABILITY
@@ -1032,6 +1041,8 @@ function renderFamilies() {
 
           family.family_head_name,
 
+          family.family_mobile,
+
           family.mobile_number,
 
           family.district,
@@ -1040,7 +1051,7 @@ function renderFamilies() {
 
           family.state,
 
-          family.housing
+          family.housing_type
 
         ]
           .filter(
@@ -1156,6 +1167,7 @@ function renderFamilies() {
           <td>
 
             ${escapeHtml(
+              family.family_mobile ||
               family.mobile_number
             )}
 
@@ -1192,7 +1204,12 @@ function renderFamilies() {
           <td>
 
             ${escapeHtml(
-              family.housing
+              family.housing_type ||
+              (
+                family.own_house === true
+                  ? "Own House"
+                  : ""
+              )
             )}
 
           </td>
@@ -1278,6 +1295,15 @@ function viewFamily(
     familyMembers.length;
 
 
+  const housingValue =
+    family.housing_type ||
+    (
+      family.own_house === true
+        ? "Own House"
+        : ""
+    );
+
+
   let html = `
 
     <div class="details-header">
@@ -1332,6 +1358,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_mobile ||
           family.mobile_number
         )}
 
@@ -1345,6 +1372,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_dob ||
           family.dob
         )}
 
@@ -1358,6 +1386,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_age ||
           family.age
         )}
 
@@ -1371,6 +1400,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_gender ||
           family.gender
         )}
 
@@ -1384,6 +1414,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_marital_status ||
           family.marital_status
         )}
 
@@ -1397,6 +1428,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_occupation ||
           family.occupation
         )}
 
@@ -1410,6 +1442,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_employment_status ||
           family.employment_status
         )}
 
@@ -1473,7 +1506,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
-          family.housing
+          housingValue
         )}
 
       </div>
@@ -1538,6 +1571,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_education ||
           family.education
         )}
 
@@ -1551,6 +1585,7 @@ function viewFamily(
         </strong>
 
         ${escapeHtml(
+          family.family_head_education_status ||
           family.education_status
         )}
 
