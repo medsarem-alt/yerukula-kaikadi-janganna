@@ -9,109 +9,39 @@
   <script src="config.js"></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #222;
-    }
-
-    header {
-      background: #1f2937;
-      color: white;
-      padding: 18px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
-
-    header p {
-      margin: 6px 0 0;
-      opacity: 0.8;
-      font-size: 14px;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: 0;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    #logoutBtn {
-      background: #dc2626;
-      color: white;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .card-title {
-      color: #666;
-      font-size: 14px;
-    }
-
-    .card-number {
-      font-size: 32px;
-      font-weight: bold;
-      margin-top: 8px;
-    }
-
-    .section {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    .status {
-      padding: 12px;
-      border-radius: 8px;
-      background: #eef2ff;
-      margin-bottom: 15px;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .success {
-      background: #dcfce7;
-      color: #166534;
-    }
+    body { margin:0; font-family:Arial,sans-serif; background:#f5f7fb; color:#222; }
+    header { background:#1f2937; color:#fff; padding:18px; }
+    header h1 { margin:0; font-size:22px; }
+    header p { margin:6px 0 0; opacity:.8; font-size:14px; }
+    .container { padding:20px; max-width:1200px; margin:auto; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+    button { border:0; border-radius:8px; padding:10px 16px; cursor:pointer; font-weight:bold; }
+    #logoutBtn { background:#dc2626; color:#fff; }
+    #refreshBtn { background:#2563eb; color:#fff; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:15px; margin-bottom:25px; }
+    .card { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); }
+    .card-title { color:#666; font-size:14px; }
+    .card-number { font-size:32px; font-weight:bold; margin-top:8px; }
+    .card-note { margin-top:6px; color:#777; font-size:12px; line-height:1.4; }
+    .section { background:#fff; padding:20px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.08); margin-bottom:20px; }
+    .status { padding:12px; border-radius:8px; background:#eef2ff; margin-bottom:15px; }
+    .error { background:#fee2e2; color:#991b1b; }
+    .success { background:#dcfce7; color:#166534; }
+    .info { background:#eef2ff; color:#3730a3; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px; }
+    .toolbar input { flex:1; min-width:250px; padding:11px; border:1px solid #ccc; border-radius:8px; font-size:15px; }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; min-width:900px; }
+    th,td { padding:10px 8px; border-bottom:1px solid #eee; text-align:left; vertical-align:top; }
+    th { background:#f8fafc; }
+    .view-btn { background:#111827; color:#fff; padding:8px 12px; }
+    .muted { color:#6b7280; font-size:13px; }
+    .details-box { margin-top:15px; padding:15px; background:#f8fafc; border-radius:10px; }
+    .details-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 18px; }
+    .member-box { background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:12px; margin-top:10px; }
+    @media(max-width:700px){ .details-grid{grid-template-columns:1fr;} }
   </style>
 </head>
-
 <body>
 
 <header>
@@ -126,16 +56,15 @@
       <h2>Dashboard</h2>
       <div id="adminEmail"></div>
     </div>
-
-    <button id="logoutBtn">Logout</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <button id="refreshBtn">Refresh</button>
+      <button id="logoutBtn">Logout</button>
+    </div>
   </div>
 
-  <div id="status" class="status">
-    Checking admin access...
-  </div>
+  <div id="status" class="status">Checking admin access...</div>
 
   <div class="cards">
-
     <div class="card">
       <div class="card-title">Total Families</div>
       <div class="card-number" id="familyCount">0</div>
@@ -144,23 +73,53 @@
     <div class="card">
       <div class="card-title">Total Members</div>
       <div class="card-number" id="memberCount">0</div>
+      <div class="card-note">Sum of total_members saved for all families.</div>
     </div>
 
     <div class="card">
       <div class="card-title">Own House</div>
       <div class="card-number" id="houseCount">0</div>
+      <div class="card-note">Families where Housing = Own House.</div>
     </div>
 
     <div class="card">
       <div class="card-title">Members with Disability</div>
-      <div class="card-number" id="disabilityCount">0</div>
+      <div class="card-number" id="disabilityCount">—</div>
+      <div class="card-note" id="disabilityNote">Checking available disability field...</div>
     </div>
-
   </div>
 
   <div class="section">
-    <h3>Admin Panel</h3>
-    <p>Family registration data will appear here after the registration form is connected.</p>
+    <h3>Family Registration Data</h3>
+    <div class="toolbar">
+      <input id="searchInput" type="search" placeholder="Search Family Head / Mobile / District / City / Village">
+      <button id="clearSearchBtn">Clear</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Family Head</th>
+            <th>Mobile</th>
+            <th>District</th>
+            <th>City / Village</th>
+            <th>Total Members</th>
+            <th>Housing</th>
+            <th>Health Insurance</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="familiesBody">
+          <tr><td colspan="8">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Selected Family Details</h3>
+    <div id="familyDetails" class="muted">Click View to open complete family and member details.</div>
   </div>
 
 </div>
@@ -172,111 +131,262 @@
   );
 
   const statusBox = document.getElementById("status");
+  const familiesBody = document.getElementById("familiesBody");
+  const familyDetails = document.getElementById("familyDetails");
+  const searchInput = document.getElementById("searchInput");
+
+  let familiesData = [];
+  let membersData = [];
+
+  function setStatus(message, type = "info") {
+    statusBox.textContent = message;
+    statusBox.className = "status " + type;
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function getMobile(family) {
+    return family.family_mobile ?? family.family_mobile_number ?? "";
+  }
+
+  function getHousing(family) {
+    if (family.housing_type) return family.housing_type;
+    if (family.own_house === true) return "Own House";
+    if (family.own_house === false) return "Rented / Other";
+    return "";
+  }
 
   async function checkAdminAndLoad() {
-
-    const {
-      data: { session }
-    } = await supabaseClient.auth.getSession();
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
       window.location.href = "index.html";
       return;
     }
 
-    document.getElementById("adminEmail").textContent =
-      session.user.email || "";
+    document.getElementById("adminEmail").textContent = session.user.email || "";
 
-    const { data: isAdmin, error: adminError } =
-      await supabaseClient.rpc("is_admin");
+    const { data: isAdmin, error: adminError } = await supabaseClient.rpc("is_admin");
 
     if (adminError) {
-      statusBox.textContent =
-        "Admin verification failed: " + adminError.message;
-      statusBox.className = "status error";
+      setStatus("Admin verification failed: " + adminError.message, "error");
       return;
     }
 
     if (!isAdmin) {
-      statusBox.textContent =
-        "Access denied. This account is not authorized as an admin.";
-      statusBox.className = "status error";
+      setStatus("Access denied. This account is not authorized as an admin.", "error");
       return;
     }
 
-    statusBox.textContent = "Admin access verified.";
-    statusBox.className = "status success";
-
+    setStatus("Admin access verified.", "success");
     await loadDashboard();
   }
 
-
   async function loadDashboard() {
+    setStatus("Loading dashboard data...", "info");
 
-    const { count: families, error: familyError } =
-      await supabaseClient
-        .from("families")
-        .select("*", { count: "exact", head: true });
+    const { data: families, error: familyError } = await supabaseClient
+      .from("families")
+      .select("*")
+      .order("created_at", { ascending:false, nullsFirst:false });
 
     if (familyError) {
-      statusBox.textContent =
-        "Family data error: " + familyError.message;
-      statusBox.className = "status error";
+      setStatus("Family data error: " + familyError.message, "error");
       return;
     }
 
-    document.getElementById("familyCount").textContent =
-      families || 0;
-
-
-    const { count: members, error: memberError } =
-      await supabaseClient
-        .from("family_members")
-        .select("*", { count: "exact", head: true });
+    const { data: members, error: memberError } = await supabaseClient
+      .from("family_members")
+      .select("*");
 
     if (memberError) {
-      statusBox.textContent =
-        "Member data error: " + memberError.message;
-      statusBox.className = "status error";
+      setStatus("Member data error: " + memberError.message, "error");
       return;
     }
 
-    document.getElementById("memberCount").textContent =
-      members || 0;
+    familiesData = families || [];
+    membersData = members || [];
 
+    // Correct totals:
+    // Total Members = SUM(families.total_members), not number of family rows.
+    const totalMembers = familiesData.reduce((sum, family) => {
+      const n = Number(family.total_members);
+      return sum + (Number.isFinite(n) ? n : 0);
+    }, 0);
 
-    const { count: houses, error: houseError } =
-      await supabaseClient
-        .from("families")
-        .select("*", { count: "exact", head: true })
-        .eq("own_house", true);
+    const ownHouseCount = familiesData.filter(
+      family => family.own_house === true || family.housing_type === "Own House"
+    ).length;
 
-    if (!houseError) {
-      document.getElementById("houseCount").textContent =
-        houses || 0;
+    document.getElementById("familyCount").textContent = familiesData.length;
+    document.getElementById("memberCount").textContent = totalMembers;
+    document.getElementById("houseCount").textContent = ownHouseCount;
+
+    // Disability is not currently stored by the V7 registration form.
+    // Detect it only if a disability-related field actually exists in family_members.
+    const disabilityKeys = [
+      "disability",
+      "has_disability",
+      "disability_status",
+      "member_disability"
+    ];
+
+    const disabilityKey = disabilityKeys.find(key =>
+      membersData.some(member => Object.prototype.hasOwnProperty.call(member, key))
+    );
+
+    if (disabilityKey) {
+      const count = membersData.filter(member => {
+        const value = member[disabilityKey];
+        return value === true || value === "Yes" || value === "yes" || value === 1;
+      }).length;
+      document.getElementById("disabilityCount").textContent = count;
+      document.getElementById("disabilityNote").textContent = "Counted from " + disabilityKey + ".";
+    } else {
+      document.getElementById("disabilityCount").textContent = "—";
+      document.getElementById("disabilityNote").textContent = "Disability is not currently stored in family_members.";
     }
 
-
-    const { count: disabled, error: disabilityError } =
-      await supabaseClient
-        .from("family_members")
-        .select("*", { count: "exact", head: true })
-        .eq("disability", true);
-
-    if (!disabilityError) {
-      document.getElementById("disabilityCount").textContent =
-        disabled || 0;
-    }
+    renderFamilies();
+    setStatus("Admin access verified. Dashboard data loaded successfully.", "success");
   }
 
+  function renderFamilies() {
+    const q = searchInput.value.trim().toLowerCase();
+
+    const rows = familiesData.filter(family => {
+      if (!q) return true;
+      const text = [
+        family.family_head_name,
+        getMobile(family),
+        family.district,
+        family.city_village,
+        family.state,
+        family.full_address
+      ].map(v => String(v ?? "").toLowerCase()).join(" ");
+      return text.includes(q);
+    });
+
+    if (rows.length === 0) {
+      familiesBody.innerHTML = '<tr><td colspan="8">No family records found.</td></tr>';
+      return;
+    }
+
+    familiesBody.innerHTML = rows.map(family => `
+      <tr>
+        <td>${escapeHtml(family.family_head_name)}</td>
+        <td>${escapeHtml(getMobile(family))}</td>
+        <td>${escapeHtml(family.district)}</td>
+        <td>${escapeHtml(family.city_village)}</td>
+        <td>${escapeHtml(family.total_members)}</td>
+        <td>${escapeHtml(getHousing(family))}</td>
+        <td>${escapeHtml(family.health_insurance)}</td>
+        <td><button class="view-btn" onclick="viewFamily('${escapeHtml(family.id)}')">View</button></td>
+      </tr>
+    `).join("");
+  }
+
+  window.viewFamily = function(familyId) {
+    const family = familiesData.find(item => item.id === familyId);
+    if (!family) return;
+
+    const familyMembers = membersData.filter(member => member.family_id === familyId);
+
+    const memberHtml = familyMembers.length
+      ? familyMembers.map((member, index) => `
+          <div class="member-box">
+            <strong>Family Member ${index + 1}: ${escapeHtml(member.full_name)}</strong>
+            <div class="details-grid" style="margin-top:10px;">
+              <div><strong>DOB:</strong> ${escapeHtml(member.dob)}</div>
+              <div><strong>Age:</strong> ${escapeHtml(member.age)}</div>
+              <div><strong>Gender:</strong> ${escapeHtml(member.gender)}</div>
+              <div><strong>Relationship:</strong> ${escapeHtml(member.relationship_to_family_head)}</div>
+              <div><strong>Marital Status:</strong> ${escapeHtml(member.marital_status)}</div>
+              <div><strong>Mobile:</strong> ${escapeHtml(member.mobile_number)}</div>
+              <div><strong>Education:</strong> ${escapeHtml(member.education)}</div>
+              <div><strong>Education Status:</strong> ${escapeHtml(member.education_status)}</div>
+              <div><strong>Occupation:</strong> ${escapeHtml(member.occupation)}</div>
+              <div><strong>Employment Status:</strong> ${escapeHtml(member.employment_status)}</div>
+              <div><strong>Health:</strong> ${escapeHtml(member.health_condition)}</div>
+              <div><strong>Disease Details:</strong> ${escapeHtml(member.disease_details)}</div>
+            </div>
+          </div>
+        `).join("")
+      : '<div class="muted">No family member rows found.</div>';
+
+    familyDetails.innerHTML = `
+      <div class="details-box">
+        <h3>${escapeHtml(family.family_head_name)}</h3>
+        <div class="details-grid">
+          <div><strong>Family ID:</strong> ${escapeHtml(family.id)}</div>
+          <div><strong>Mobile:</strong> ${escapeHtml(getMobile(family))}</div>
+          <div><strong>DOB:</strong> ${escapeHtml(family.family_head_dob)}</div>
+          <div><strong>Age:</strong> ${escapeHtml(family.family_head_age)}</div>
+          <div><strong>Gender:</strong> ${escapeHtml(family.family_head_gender)}</div>
+          <div><strong>Marital Status:</strong> ${escapeHtml(family.family_head_marital_status)}</div>
+          <div><strong>Occupation:</strong> ${escapeHtml(family.family_head_occupation)}</div>
+          <div><strong>Employment Status:</strong> ${escapeHtml(family.family_head_employment_status)}</div>
+          <div><strong>State:</strong> ${escapeHtml(family.state)}</div>
+          <div><strong>District:</strong> ${escapeHtml(family.district)}</div>
+          <div><strong>City/Village:</strong> ${escapeHtml(family.city_village)}</div>
+          <div><strong>Total Members:</strong> ${escapeHtml(family.total_members)}</div>
+          <div><strong>Housing:</strong> ${escapeHtml(getHousing(family))}</div>
+          <div><strong>House Condition:</strong> ${escapeHtml(family.house_condition)}</div>
+          <div><strong>Health Insurance:</strong> ${escapeHtml(family.health_insurance)}</div>
+          <div><strong>Term Life Insurance:</strong> ${escapeHtml(family.term_life_insurance)}</div>
+          <div><strong>Other Insurance:</strong> ${escapeHtml(family.other_insurance)}</div>
+          <div style="grid-column:1/-1;"><strong>Full Address:</strong> ${escapeHtml(family.full_address)}</div>
+        </div>
+
+        <h3 style="margin-top:20px;">Family Head Education</h3>
+        <div class="details-grid">
+          <div><strong>Education:</strong> ${escapeHtml(family.family_head_education)}</div>
+          <div><strong>Status:</strong> ${escapeHtml(family.family_head_education_status)}</div>
+        </div>
+
+        <h3 style="margin-top:20px;">Health Condition</h3>
+        <div class="details-grid">
+          <div><strong>Any Health Problem:</strong> ${escapeHtml(family.healthcare_access_problem)}</div>
+          <div><strong>Long-term:</strong> ${escapeHtml(family.family_head_long_term_condition)}</div>
+          <div><strong>Regular Treatment:</strong> ${escapeHtml(family.family_head_treatment_status)}</div>
+          <div><strong>Help Required:</strong> ${escapeHtml(family.healthcare_help_required)}</div>
+          <div style="grid-column:1/-1;"><strong>Health Details:</strong> ${escapeHtml(family.healthcare_access_details)}</div>
+          <div style="grid-column:1/-1;"><strong>Help Details:</strong> ${escapeHtml(family.healthcare_help_details)}</div>
+        </div>
+
+        <h3 style="margin-top:20px;">Family Members</h3>
+        ${memberHtml}
+      </div>
+    `;
+  };
+
+  document.getElementById("searchInput").addEventListener("input", renderFamilies);
+  document.getElementById("clearSearchBtn").addEventListener("click", () => {
+    searchInput.value = "";
+    renderFamilies();
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", () => {
+    loadDashboard();
+  });
 
   document.getElementById("logoutBtn").addEventListener("click", async () => {
-
     await supabaseClient.auth.signOut();
-
     window.location.href = "index.html";
   });
 
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    if (!session) {
+      window.location.href = "index.html";
+    }
+  });
 
   checkAdminAndLoad();
 </script>
