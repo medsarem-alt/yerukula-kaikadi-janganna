@@ -1161,4 +1161,308 @@ function addMember() {
     </div>
 
 
-    <!-- ====
+    <button
+      type="button"
+      class="remove-btn"
+      onclick="this.closest('.member').remove(); updateMemberCount();"
+    >
+      Remove Family Member
+    </button>
+
+  `;
+
+  membersContainer.appendChild(member);
+  updateMemberCount();
+
+  // Education flow for this member
+  const educationStatus = member.querySelector(".memberEducationStatus");
+  const educationSection = member.querySelector(".memberEducationSection");
+  const futureEducation = member.querySelector(".memberFutureEducation");
+  const educationHelpSection = member.querySelector(".memberEducationHelpSection");
+  const educationHelp = member.querySelector(".memberEducationHelp");
+  const educationHelpDetails = member.querySelector(".memberEducationHelpDetailsSection");
+
+  educationStatus.addEventListener("change", function () {
+    if (this.value === "Education Discontinued") {
+      educationSection.classList.remove("hidden");
+    } else {
+      educationSection.classList.add("hidden");
+      educationHelpSection.classList.add("hidden");
+      educationHelpDetails.classList.add("hidden");
+    }
+  });
+
+  futureEducation.addEventListener("change", function () {
+    if (this.value === "Yes") {
+      educationHelpSection.classList.remove("hidden");
+    } else {
+      educationHelpSection.classList.add("hidden");
+      educationHelpDetails.classList.add("hidden");
+    }
+  });
+
+  educationHelp.addEventListener("change", function () {
+    if (this.value === "Yes") {
+      educationHelpDetails.classList.remove("hidden");
+    } else {
+      educationHelpDetails.classList.add("hidden");
+    }
+  });
+
+  // Health flow for this member
+  const healthStatus = member.querySelector(".memberHealthStatus");
+  const healthSection = member.querySelector(".memberHealthSection");
+  const healthHelp = member.querySelector(".memberHealthHelp");
+  const healthHelpDetails = member.querySelector(".memberHealthHelpDetailsSection");
+
+  healthStatus.addEventListener("change", function () {
+    if (this.value === "Yes") {
+      healthSection.classList.remove("hidden");
+    } else {
+      healthSection.classList.add("hidden");
+      healthHelpDetails.classList.add("hidden");
+    }
+  });
+
+  healthHelp.addEventListener("change", function () {
+    if (this.value === "Yes") {
+      healthHelpDetails.classList.remove("hidden");
+    } else {
+      healthHelpDetails.classList.add("hidden");
+    }
+  });
+}
+
+
+/* =====================================================
+   ADD MEMBER BUTTON
+===================================================== */
+
+addMemberBtn.addEventListener("click", addMember);
+
+
+/* =====================================================
+   HEALTHCARE ACCESS DETAILS
+===================================================== */
+
+// Clear the optional healthcare fields when the main answer is No.
+document.getElementById("healthcareAccess").addEventListener("change", function () {
+  const details = document.getElementById("healthcareAccessDetails");
+  const help = document.getElementById("healthcareHelpRequired");
+  const helpDetails = document.getElementById("healthcareHelpDetails");
+  const section = document.getElementById("healthcareDetailsSection");
+  const helpSection = document.getElementById("healthcareHelpDetailsSection");
+
+  if (this.value === "Yes") {
+    section.classList.remove("hidden");
+  } else {
+    section.classList.add("hidden");
+    help.value = "";
+    details.value = "";
+    helpDetails.value = "";
+    helpSection.classList.add("hidden");
+  }
+});
+
+document.getElementById("healthcareHelpRequired").addEventListener("change", function () {
+  const section = document.getElementById("healthcareHelpDetailsSection");
+  const details = document.getElementById("healthcareHelpDetails");
+
+  if (this.value === "Yes") {
+    section.classList.remove("hidden");
+  } else {
+    section.classList.add("hidden");
+    details.value = "";
+  }
+});
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+familyForm.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  // Native required-field validation
+  if (!familyForm.checkValidity()) {
+    familyForm.reportValidity();
+    return;
+  }
+
+  const members = Array.from(
+    membersContainer.querySelectorAll(".member")
+  );
+
+  const totalFamilyMembers = Number(
+    document.getElementById("totalMembers").value || 0
+  );
+
+  if (members.length !== totalFamilyMembers) {
+    showStatus(
+      "Please add exactly " +
+      totalFamilyMembers +
+      " family member(s). Currently " +
+      members.length +
+      " member(s) have been added.",
+      "error"
+    );
+    return;
+  }
+
+  submitBtn.disabled = true;
+  addMemberBtn.disabled = true;
+
+  showStatus("Saving registration. Please wait...", "info");
+
+  try {
+    const formData = new FormData(familyForm);
+
+    const familyData = {
+      family_head_name: formData.get("family_head_name") || null,
+      family_mobile_number: formData.get("family_mobile_number") || null,
+      state: formData.get("state") || null,
+      district: formData.get("district") || null,
+      city_village: formData.get("city_village") || null,
+      full_address: formData.get("full_address") || null,
+      own_house: formData.get("own_house") || null,
+      house_condition: formData.get("house_condition") || null,
+      total_members: totalFamilyMembers,
+      family_head_education: formData.get("family_head_education") || null,
+      family_head_education_status:
+        formData.get("family_head_education_status") || null,
+      family_head_education_discontinue_reason:
+        formData.get("family_head_education_discontinue_reason") || null,
+      family_head_future_education:
+        formData.get("family_head_future_education") || null,
+      family_head_education_help:
+        formData.get("family_head_education_help") || null,
+      family_head_education_help_details:
+        formData.get("family_head_education_help_details") || null,
+      healthcare_access_problem:
+        formData.get("healthcare_access_problem") || null,
+      healthcare_access_details:
+        document.getElementById("healthcareAccessDetails").value || null,
+      healthcare_help_required:
+        document.getElementById("healthcareHelpRequired").value || null,
+      healthcare_help_details:
+        document.getElementById("healthcareHelpDetails").value || null,
+      health_insurance: formData.get("health_insurance") || null,
+      term_life_insurance: formData.get("term_life_insurance") || null,
+      other_insurance: formData.get("other_insurance") || null
+    };
+
+    // Insert family first so we can use its UUID for family_members.
+    const { data: family, error: familyError } =
+      await supabaseClient
+        .from("families")
+        .insert([familyData])
+        .select("id")
+        .single();
+
+    if (familyError) {
+      throw new Error(
+        "Family registration failed:\n" + familyError.message
+      );
+    }
+
+    const familyId = family.id;
+
+    const memberRows = members.map((member) => {
+      const get = (name) => {
+        const element = member.querySelector(`[name="${name}"]`);
+        return element ? element.value || null : null;
+      };
+
+      return {
+        family_id: familyId,
+        full_name: get(`member_${member.dataset.id}_full_name`),
+        dob: get(`member_${member.dataset.id}_dob`),
+        age: get(`member_${member.dataset.id}_age`)
+          ? Number(get(`member_${member.dataset.id}_age`))
+          : null,
+        gender: get(`member_${member.dataset.id}_gender`),
+        relationship_to_family_head:
+          get(`member_${member.dataset.id}_relationship_to_family_head`),
+        marital_status: get(`member_${member.dataset.id}_marital_status`),
+        mobile_number: get(`member_${member.dataset.id}_mobile_number`),
+        education: get(`member_${member.dataset.id}_education`),
+        education_status: get(`member_${member.dataset.id}_education_status`),
+        education_discontinue_reason:
+          get(`member_${member.dataset.id}_education_discontinue_reason`),
+        future_education:
+          get(`member_${member.dataset.id}_future_education`),
+        education_help:
+          get(`member_${member.dataset.id}_education_help`),
+        education_help_details:
+          get(`member_${member.dataset.id}_education_help_details`),
+        occupation: get(`member_${member.dataset.id}_occupation`),
+        employment_status:
+          get(`member_${member.dataset.id}_employment_status`),
+        health_condition:
+          get(`member_${member.dataset.id}_health_condition`),
+        disease_details:
+          get(`member_${member.dataset.id}_disease_details`),
+        long_term_condition:
+          get(`member_${member.dataset.id}_long_term_condition`),
+        treatment_status:
+          get(`member_${member.dataset.id}_treatment_status`),
+        health_help_required:
+          get(`member_${member.dataset.id}_health_help_required`),
+        health_help_details:
+          get(`member_${member.dataset.id}_health_help_details`)
+      };
+    });
+
+    if (memberRows.length > 0) {
+      const { error: memberError } =
+        await supabaseClient
+          .from("family_members")
+          .insert(memberRows);
+
+      if (memberError) {
+        // Do not hide the actual database error.
+        throw new Error(
+          "Family was saved, but family members could not be saved:\n" +
+          memberError.message +
+          "\n\nFamily ID: " +
+          familyId
+        );
+      }
+    }
+
+    showStatus(
+      "Registration submitted successfully!\nFamily ID: " + familyId,
+      "success"
+    );
+
+    // Do NOT reload the page automatically.
+    submitBtn.disabled = false;
+    addMemberBtn.disabled = false;
+
+  } catch (error) {
+    console.error(error);
+
+    showStatus(
+      error && error.message
+        ? error.message
+        : "Something went wrong while submitting the registration.",
+      "error"
+    );
+
+    submitBtn.disabled = false;
+    addMemberBtn.disabled = false;
+  }
+});
+
+
+/* =====================================================
+   INITIAL STATE
+===================================================== */
+
+updateMemberCount();
+
+</script>
+
+</body>
+</html>
