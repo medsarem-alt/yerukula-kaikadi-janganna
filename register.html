@@ -221,6 +221,21 @@ Family Census / Registration Form
   <option value="Other">Other</option>
 </select>
 
+<label>Family Head Marital Status *</label>
+<select
+  id="familyHeadMaritalStatus"
+  name="family_head_marital_status"
+  required
+>
+  <option value="">Select</option>
+  <option value="Married">Married</option>
+  <option value="Unmarried">Unmarried</option>
+  <option value="Widowed">Widowed</option>
+  <option value="Divorced">Divorced</option>
+  <option value="Separated">Separated</option>
+  <option value="Other">Other</option>
+</select>
+
 <label>Family Head Mobile Number *</label>
 <input
   type="tel"
@@ -401,31 +416,10 @@ Family Census / Registration Form
 
 
 <!-- =====================================================
-     3. FAMILY MEMBERS
-===================================================== -->
-
-<h2>3. Family Members</h2>
-
-<div id="membersContainer"></div>
-
-<div id="memberCount">
-  No family members added yet.
-</div>
-
-<button
-  type="button"
-  id="addMemberBtn"
-  class="add-btn"
->
-  + Add Family Member
-</button>
-
-
-<!-- =====================================================
      4. HEALTHCARE ACCESS
 ===================================================== -->
 
-<h2>4. Healthcare Access</h2>
+<h2>3. Healthcare Access</h2>
 
 <label>
   Difficulty Accessing Healthcare?
@@ -462,6 +456,7 @@ Family Census / Registration Form
 
   <select
     id="healthcareHelpRequired"
+    name="healthcare_help_required"
   >
 
     <option value="">Select</option>
@@ -481,12 +476,36 @@ Family Census / Registration Form
 
     <textarea
       id="healthcareHelpDetails"
+      name="healthcare_help_details"
       placeholder="Please describe the help or support required"
     ></textarea>
 
   </div>
 
 </div>
+
+
+
+
+<!-- =====================================================
+     3. FAMILY MEMBERS
+===================================================== -->
+
+<h2>4. Family Members</h2>
+
+<div id="membersContainer"></div>
+
+<div id="memberCount">
+  No family members added yet.
+</div>
+
+<button
+  type="button"
+  id="addMemberBtn"
+  class="add-btn"
+>
+  + Add Family Member
+</button>
 
 
 <!-- =====================================================
@@ -588,7 +607,7 @@ Family Census / Registration Form
 const SUPABASE_URL =
   "https://dncpytissribxjsbrfxp.supabase.co";
 
-const SUPABASE_ANON_KEY = "PASTE_YOUR_REAL_SUPABASE_ANON_OR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_ANON_KEY = "sb_publishable_ARgUWSyNuJL3izkC7xd3cQ_vyUqAsEn";
 
 const supabaseClient =
   supabase.createClient(
@@ -1453,6 +1472,8 @@ familyForm.addEventListener("submit", async function (event) {
         ? Number(formData.get("family_head_age"))
         : null,
       family_head_gender: formData.get("family_head_gender") || null,
+      family_head_marital_status:
+        formData.get("family_head_marital_status") || null,
       family_mobile_number: formData.get("family_mobile_number") || null,
       state: formData.get("state") || null,
       district: formData.get("district") || null,
