@@ -100,8 +100,11 @@ button {
 
 .debug-info {
   margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #f8fafc;
   font-size: 12px;
-  color: #666;
+  color: #555;
 }
 
 .cards {
@@ -133,6 +136,13 @@ button {
   margin-top: 8px;
   color: #777;
   font-size: 12px;
+}
+
+.member-source {
+  margin-top: 5px;
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .search-box {
@@ -424,6 +434,13 @@ td {
         Family Heads + Family Members.
       </div>
 
+      <div
+        class="member-source"
+        id="memberCountSource"
+      >
+        Loading...
+      </div>
+
     </div>
 
 
@@ -527,8 +544,6 @@ let supabaseClient = null;
 let familiesData = [];
 
 let membersData = [];
-
-let validMembersData = [];
 
 
 /* =========================================================
@@ -766,31 +781,34 @@ async function loadDashboard() {
 
 
     /* =====================================================
-       CREATE FAMILY ID SET
+       FAMILY IDS
     ===================================================== */
 
     const familyIds =
       new Set(
         familiesData.map(
-          family => family.id
+          family => String(family.id)
         )
       );
 
 
     /* =====================================================
-       ONLY MEMBERS LINKED TO REAL FAMILIES
+       VALID FAMILY MEMBERS
     ===================================================== */
 
-    validMembersData =
+    const validMembersData =
       membersData.filter(
         member => {
 
-          return (
-            member &&
-            member.family_id &&
-            familyIds.has(
-              member.family_id
-            )
+          if (
+            !member ||
+            !member.family_id
+          ) {
+            return false;
+          }
+
+          return familyIds.has(
+            String(member.family_id)
           );
 
         }
@@ -809,22 +827,20 @@ async function loadDashboard() {
       familiesData.length;
 
 
-    const totalAdditionalMembers =
+    const totalFamilyMembers =
       validMembersData.length;
 
 
     /*
-      FINAL FORMULA:
+      IMPORTANT:
 
       Total Members =
-      Family Heads
-      +
-      Family Members
+      Family Heads + Family Members
     */
 
     const totalMembers =
       totalFamilyHeads +
-      totalAdditionalMembers;
+      totalFamilyMembers;
 
 
     /* =====================================================
@@ -844,8 +860,8 @@ async function loadDashboard() {
 
 
           return (
-            housing ===
-            "own house"
+            housing === "own house" ||
+            housing === "own"
           );
 
         }
@@ -894,19 +910,34 @@ async function loadDashboard() {
 
 
     /* =====================================================
-       SHOW DATA INFORMATION
+       MEMBER COUNT INFORMATION
+    ===================================================== */
+
+    document.getElementById(
+      "memberCountSource"
+    ).textContent =
+      "Heads: " +
+      totalFamilyHeads +
+      " + Members: " +
+      totalFamilyMembers;
+
+
+    /* =====================================================
+       DEBUG INFORMATION
     ===================================================== */
 
     document.getElementById(
       "debugInfo"
     ).textContent =
-      "Database data: " +
+      "Supabase returned " +
       totalFamilies +
-      " Family Heads + " +
-      totalAdditionalMembers +
-      " Family Members = " +
-      totalMembers +
-      " Total Members.";
+      " family records and " +
+      membersData.length +
+      " family-member records. " +
+      "Linked members counted: " +
+      totalFamilyMembers +
+      ". Total members: " +
+      totalMembers;
 
 
     /* =====================================================
@@ -1102,20 +1133,13 @@ function renderFamilies() {
   filteredFamilies.forEach(
     family => {
 
-
-      /* =================================================
-         COUNT MEMBERS OF THIS FAMILY
-
-         1 = Family Head
-
-         + family_members rows
-      ================================================= */
-
       const familyMembers =
-        validMembersData.filter(
+        membersData.filter(
           member =>
-            member.family_id ===
-            family.id
+            member &&
+            member.family_id &&
+            String(member.family_id) ===
+            String(family.id)
         );
 
 
@@ -1246,8 +1270,8 @@ function viewFamily(
   const family =
     familiesData.find(
       item =>
-        item.id ===
-        familyId
+        String(item.id) ===
+        String(familyId)
     );
 
 
@@ -1257,10 +1281,12 @@ function viewFamily(
 
 
   const familyMembers =
-    validMembersData.filter(
+    membersData.filter(
       member =>
-        member.family_id ===
-        familyId
+        member &&
+        member.family_id &&
+        String(member.family_id) ===
+        String(familyId)
     );
 
 
@@ -1590,13 +1616,11 @@ function viewFamily(
 
   } else {
 
-
     familyMembers.forEach(
       (
         member,
         index
       ) => {
-
 
         const disability =
           getDisabilityValue(
