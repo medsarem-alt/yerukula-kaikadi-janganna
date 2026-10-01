@@ -420,27 +420,34 @@ Family Census / Registration Form
      3. FAMILY HEAD EMPLOYMENT
 ===================================================== -->
 
+<div id="familyHeadEmploymentSection">
+
 <h2>3. Family Head Employment</h2>
 
 <label>Occupation</label>
 <input
   type="text"
+  id="familyHeadOccupation"
   name="family_head_occupation"
   placeholder="Example: Driver, Labourer, Business, Housewife"
 >
 
 <label>Employment Status</label>
 <select
+  id="familyHeadEmploymentStatus"
   name="family_head_employment_status"
 >
   <option value="">Select</option>
   <option value="Employed">Employed</option>
   <option value="Self Employed">Self Employed</option>
   <option value="Unemployed">Unemployed</option>
+  <option value="Currently Studying">Currently Studying</option>
   <option value="Retired">Retired</option>
   <option value="Not Applicable">Not Applicable</option>
   <option value="Other">Other</option>
 </select>
+
+</div>
 
 <!-- =====================================================
      4. HEALTHCARE ACCESS
@@ -702,6 +709,23 @@ document
         "familyHeadDiscontinuedSection"
       );
 
+    const employmentSection =
+      document.getElementById("familyHeadEmploymentSection");
+    const employmentStatus =
+      document.getElementById("familyHeadEmploymentStatus");
+    const occupation =
+      document.getElementById("familyHeadOccupation");
+
+    // Same behavior as Family Members: students do not see
+    // Occupation / Employment Status.
+    if (this.value === "Currently Studying") {
+      employmentSection.classList.add("hidden");
+      employmentStatus.value = "";
+      occupation.value = "";
+    } else {
+      employmentSection.classList.remove("hidden");
+    }
+
     if (this.value === "Education Discontinued") {
 
       section.classList.remove("hidden");
@@ -754,6 +778,18 @@ document
 
   });
 
+
+// Set correct initial visibility for Family Head Employment.
+(function () {
+  const educationStatus =
+    document.getElementById("familyHeadEducationStatus");
+  const employmentSection =
+    document.getElementById("familyHeadEmploymentSection");
+
+  if (educationStatus.value === "Currently Studying") {
+    employmentSection.classList.add("hidden");
+  }
+})();
 
 document
   .getElementById("familyHeadEducationHelp")
@@ -1603,7 +1639,7 @@ familyForm.addEventListener("submit", async function (event) {
                message.toLowerCase().includes("could not find the")) {
       showStatus(
         message +
-        "\n\nPlease add the missing column(s) in Supabase SQL Editor using the SQL provided with this version.",
+        "\n\nPlease run the latest Supabase SQL update for this version in SQL Editor.",
         "error"
       );
     } else {
