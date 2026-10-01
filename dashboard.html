@@ -98,6 +98,12 @@ button {
   font-size: 14px;
 }
 
+.debug-info {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
 .cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -292,14 +298,6 @@ td {
   margin-bottom: 15px;
 }
 
-.success-box {
-  background: #ecfdf5;
-  color: #166534;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
-}
-
 .loading {
   text-align: center;
   padding: 30px;
@@ -342,6 +340,7 @@ td {
 <div class="container">
 
   <div class="header">
+
     <div class="header-top">
 
       <div>
@@ -350,20 +349,37 @@ td {
       </div>
 
       <div class="header-actions">
-        <button class="refresh-btn" onclick="loadDashboard()">
+
+        <button
+          class="refresh-btn"
+          onclick="loadDashboard()"
+        >
           Refresh
         </button>
 
-        <button class="logout-btn" onclick="logout()">
+        <button
+          class="logout-btn"
+          onclick="logout()"
+        >
           Logout
         </button>
+
       </div>
 
     </div>
 
-    <div id="statusMessage" class="status">
+    <div
+      id="statusMessage"
+      class="status"
+    >
       Checking admin authorization...
     </div>
+
+    <div
+      id="debugInfo"
+      class="debug-info"
+    ></div>
+
   </div>
 
 
@@ -372,62 +388,82 @@ td {
   <div class="cards">
 
     <div class="card">
+
       <div class="card-title">
         Total Families
       </div>
 
-      <div class="card-number" id="familyCount">
+      <div
+        class="card-number"
+        id="familyCount"
+      >
         0
       </div>
 
       <div class="card-note">
         Total registered families.
       </div>
+
     </div>
 
 
     <div class="card">
+
       <div class="card-title">
         Total Members
       </div>
 
-      <div class="card-number" id="memberCount">
+      <div
+        class="card-number"
+        id="memberCount"
+      >
         0
       </div>
 
       <div class="card-note">
         Family Heads + Family Members.
       </div>
+
     </div>
 
 
     <div class="card">
+
       <div class="card-title">
         Own House
       </div>
 
-      <div class="card-number" id="ownHouseCount">
+      <div
+        class="card-number"
+        id="ownHouseCount"
+      >
         0
       </div>
 
       <div class="card-note">
         Families where Housing = Own House.
       </div>
+
     </div>
 
 
     <div class="card">
+
       <div class="card-title">
         Members with Disability
       </div>
 
-      <div class="card-number" id="disabilityCount">
+      <div
+        class="card-number"
+        id="disabilityCount"
+      >
         0
       </div>
 
       <div class="card-note">
         Counted from family members.
       </div>
+
     </div>
 
   </div>
@@ -463,9 +499,11 @@ td {
   <div class="table-card">
 
     <div id="tableContainer">
+
       <div class="loading">
         Loading family registration data...
       </div>
+
     </div>
 
   </div>
@@ -484,15 +522,18 @@ td {
 
 <script>
 
-let supabaseClient;
+let supabaseClient = null;
 
 let familiesData = [];
+
 let membersData = [];
 
+let validMembersData = [];
 
-/* =========================
+
+/* =========================================================
    INITIALIZE SUPABASE
-========================= */
+========================================================= */
 
 function initializeSupabase() {
 
@@ -500,21 +541,24 @@ function initializeSupabase() {
     typeof SUPABASE_URL === "undefined" ||
     typeof SUPABASE_PUBLISHABLE_KEY === "undefined"
   ) {
+
     throw new Error(
       "Supabase configuration missing. Please check config.js."
     );
+
   }
 
-  supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_PUBLISHABLE_KEY
-  );
+  supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 }
 
 
-/* =========================
+/* =========================================================
    ESCAPE HTML
-========================= */
+========================================================= */
 
 function escapeHtml(value) {
 
@@ -534,33 +578,38 @@ function escapeHtml(value) {
 }
 
 
-/* =========================
-   DISABILITY VALUE
-========================= */
+/* =========================================================
+   DISABILITY
+========================================================= */
 
 function getDisabilityValue(member) {
 
-  const value = member.disability;
+  const value =
+    member.disability;
 
   if (
     value === true ||
     value === "true" ||
     value === "True" ||
+    value === "TRUE" ||
     value === "Yes" ||
     value === "yes" ||
+    value === "YES" ||
     value === 1 ||
     value === "1"
   ) {
+
     return "Yes";
+
   }
 
   return "No";
 }
 
 
-/* =========================
-   CHECK ADMIN
-========================= */
+/* =========================================================
+   ADMIN CHECK
+========================================================= */
 
 async function checkAdmin() {
 
@@ -569,7 +618,8 @@ async function checkAdmin() {
       session
     },
     error: sessionError
-  } = await supabaseClient.auth.getSession();
+  } =
+    await supabaseClient.auth.getSession();
 
 
   if (sessionError) {
@@ -579,20 +629,28 @@ async function checkAdmin() {
 
   if (!session) {
 
-    window.location.href = "index.html";
+    window.location.href =
+      "index.html";
 
     return false;
+
   }
 
 
-  document.getElementById("adminEmail").textContent =
-    session.user.email || "Admin";
+  document.getElementById(
+    "adminEmail"
+  ).textContent =
+    session.user.email ||
+    "Admin";
 
 
   const {
     data: isAdmin,
     error: adminError
-  } = await supabaseClient.rpc("is_admin");
+  } =
+    await supabaseClient.rpc(
+      "is_admin"
+    );
 
 
   if (adminError) {
@@ -602,59 +660,74 @@ async function checkAdmin() {
 
   if (!isAdmin) {
 
-    document.getElementById("statusMessage").textContent =
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
       "Admin authorization failed.";
 
-    document.getElementById("statusMessage").style.background =
+
+    document.getElementById(
+      "statusMessage"
+    ).style.background =
       "#fef2f2";
 
-    document.getElementById("statusMessage").style.color =
+
+    document.getElementById(
+      "statusMessage"
+    ).style.color =
       "#991b1b";
 
+
     return false;
+
   }
 
-
-  document.getElementById("statusMessage").textContent =
-    "Admin access verified. Dashboard data loaded successfully.";
 
   return true;
 }
 
 
-/* =========================
+/* =========================================================
    LOAD DASHBOARD
-========================= */
+========================================================= */
 
 async function loadDashboard() {
 
   try {
 
-    document.getElementById("statusMessage").textContent =
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
       "Loading dashboard data...";
 
 
-    const adminOk = await checkAdmin();
+    const adminOk =
+      await checkAdmin();
+
 
     if (!adminOk) {
       return;
     }
 
 
-    /* =========================
-       LOAD FAMILIES
-    ========================= */
+    /* =====================================================
+       GET ALL FAMILIES
+    ===================================================== */
 
     const {
       data: families,
       error: familyError
-    } = await supabaseClient
-      .from("families")
-      .select("*")
-      .order("created_at", {
-        ascending: false,
-        nullsFirst: false
-      });
+    } =
+      await supabaseClient
+        .from("families")
+        .select("*")
+        .order(
+          "created_at",
+          {
+            ascending: false,
+            nullsFirst: false
+          }
+        );
 
 
     if (familyError) {
@@ -662,16 +735,17 @@ async function loadDashboard() {
     }
 
 
-    /* =========================
-       LOAD FAMILY MEMBERS
-    ========================= */
+    /* =====================================================
+       GET ALL FAMILY MEMBERS
+    ===================================================== */
 
     const {
       data: members,
       error: memberError
-    } = await supabaseClient
-      .from("family_members")
-      .select("*");
+    } =
+      await supabaseClient
+        .from("family_members")
+        .select("*");
 
 
     if (memberError) {
@@ -679,35 +753,53 @@ async function loadDashboard() {
     }
 
 
-    familiesData = families || [];
-
-    membersData = members || [];
-
-
-    /* =========================
-       VALID MEMBER ROWS
-       
-       Only count members whose
-       family_id exists in families.
-    ========================= */
-
-    const familyIds = new Set(
-      familiesData.map(
-        family => family.id
-      )
-    );
+    familiesData =
+      Array.isArray(families)
+        ? families
+        : [];
 
 
-    const validMembers = membersData.filter(
-      member =>
-        member.family_id &&
-        familyIds.has(member.family_id)
-    );
+    membersData =
+      Array.isArray(members)
+        ? members
+        : [];
 
 
-    /* =========================
-       TOTAL COUNTS
-    ========================= */
+    /* =====================================================
+       CREATE FAMILY ID SET
+    ===================================================== */
+
+    const familyIds =
+      new Set(
+        familiesData.map(
+          family => family.id
+        )
+      );
+
+
+    /* =====================================================
+       ONLY MEMBERS LINKED TO REAL FAMILIES
+    ===================================================== */
+
+    validMembersData =
+      membersData.filter(
+        member => {
+
+          return (
+            member &&
+            member.family_id &&
+            familyIds.has(
+              member.family_id
+            )
+          );
+
+        }
+      );
+
+
+    /* =====================================================
+       COUNTS
+    ===================================================== */
 
     const totalFamilies =
       familiesData.length;
@@ -718,21 +810,16 @@ async function loadDashboard() {
 
 
     const totalAdditionalMembers =
-      validMembers.length;
+      validMembersData.length;
 
 
     /*
-      IMPORTANT:
+      FINAL FORMULA:
 
       Total Members =
-      Family Heads +
-      Additional Family Members
-
-      Example:
-
-      4 Family Heads
-      + 4 Family Members
-      = 8 Total Members
+      Family Heads
+      +
+      Family Members
     */
 
     const totalMembers =
@@ -740,41 +827,47 @@ async function loadDashboard() {
       totalAdditionalMembers;
 
 
-    /* =========================
-       OWN HOUSE COUNT
-    ========================= */
+    /* =====================================================
+       OWN HOUSE
+    ===================================================== */
 
     const ownHouseCount =
-      familiesData.filter(family => {
+      familiesData.filter(
+        family => {
 
-        const housing =
-          String(
-            family.housing || ""
-          ).trim().toLowerCase();
-
-        return housing === "own house";
-
-      }).length;
+          const housing =
+            String(
+              family.housing || ""
+            )
+              .trim()
+              .toLowerCase();
 
 
-    /* =========================
-       DISABILITY COUNT
-    ========================= */
+          return (
+            housing ===
+            "own house"
+          );
+
+        }
+      ).length;
+
+
+    /* =====================================================
+       DISABILITY
+    ===================================================== */
 
     const disabilityCount =
-      validMembers.filter(member => {
-
-        const value =
-          getDisabilityValue(member);
-
-        return value === "Yes";
-
-      }).length;
+      validMembersData.filter(
+        member =>
+          getDisabilityValue(
+            member
+          ) === "Yes"
+      ).length;
 
 
-    /* =========================
+    /* =====================================================
        UPDATE CARDS
-    ========================= */
+    ===================================================== */
 
     document.getElementById(
       "familyCount"
@@ -800,9 +893,25 @@ async function loadDashboard() {
       disabilityCount;
 
 
-    /* =========================
+    /* =====================================================
+       SHOW DATA INFORMATION
+    ===================================================== */
+
+    document.getElementById(
+      "debugInfo"
+    ).textContent =
+      "Database data: " +
+      totalFamilies +
+      " Family Heads + " +
+      totalAdditionalMembers +
+      " Family Members = " +
+      totalMembers +
+      " Total Members.";
+
+
+    /* =====================================================
        RENDER TABLE
-    ========================= */
+    ===================================================== */
 
     renderFamilies();
 
@@ -811,6 +920,18 @@ async function loadDashboard() {
       "statusMessage"
     ).textContent =
       "Admin access verified. Dashboard data loaded successfully.";
+
+
+    document.getElementById(
+      "statusMessage"
+    ).style.background =
+      "#ecfdf5";
+
+
+    document.getElementById(
+      "statusMessage"
+    ).style.color =
+      "#166534";
 
 
   } catch (error) {
@@ -825,7 +946,10 @@ async function loadDashboard() {
       "statusMessage"
     ).textContent =
       "Dashboard error: " +
-      (error.message || error);
+      (
+        error.message ||
+        error
+      );
 
 
     document.getElementById(
@@ -843,68 +967,83 @@ async function loadDashboard() {
     document.getElementById(
       "tableContainer"
     ).innerHTML = `
+
       <div class="error-box">
+
         ${escapeHtml(
-          error.message || error
+          error.message ||
+          error
         )}
+
       </div>
+
     `;
+
   }
 }
 
 
-/* =========================
-   RENDER FAMILIES
-========================= */
+/* =========================================================
+   RENDER FAMILY TABLE
+========================================================= */
 
 function renderFamilies() {
 
-  const searchValue =
+  const searchInput =
     document.getElementById(
       "searchInput"
-    ).value
-      .trim()
-      .toLowerCase();
+    );
+
+
+  const searchValue =
+    searchInput
+      ? searchInput.value
+          .trim()
+          .toLowerCase()
+      : "";
 
 
   const filteredFamilies =
-    familiesData.filter(family => {
+    familiesData.filter(
+      family => {
 
-      if (!searchValue) {
-        return true;
+        if (!searchValue) {
+          return true;
+        }
+
+
+        const searchableText = [
+
+          family.id,
+
+          family.family_head_name,
+
+          family.mobile_number,
+
+          family.district,
+
+          family.city_village,
+
+          family.state,
+
+          family.housing
+
+        ]
+          .filter(
+            value =>
+              value !== null &&
+              value !== undefined
+          )
+          .join(" ")
+          .toLowerCase();
+
+
+        return searchableText.includes(
+          searchValue
+        );
+
       }
-
-
-      const searchableText = [
-
-        family.id,
-
-        family.family_head_name,
-
-        family.mobile_number,
-
-        family.district,
-
-        family.city_village,
-
-        family.state,
-
-        family.housing
-
-      ]
-        .filter(value =>
-          value !== null &&
-          value !== undefined
-        )
-        .join(" ")
-        .toLowerCase();
-
-
-      return searchableText.includes(
-        searchValue
-      );
-
-    });
+    );
 
 
   if (
@@ -914,9 +1053,11 @@ function renderFamilies() {
     document.getElementById(
       "tableContainer"
     ).innerHTML = `
+
       <div class="empty">
         No family records found.
       </div>
+
     `;
 
     return;
@@ -954,29 +1095,33 @@ function renderFamilies() {
       </thead>
 
       <tbody>
+
   `;
 
 
   filteredFamilies.forEach(
     family => {
 
-      /*
-        FAMILY-SPECIFIC TOTAL:
 
-        1 Family Head
-        +
-        linked family_members rows
-      */
+      /* =================================================
+         COUNT MEMBERS OF THIS FAMILY
+
+         1 = Family Head
+
+         + family_members rows
+      ================================================= */
 
       const familyMembers =
-        membersData.filter(
+        validMembersData.filter(
           member =>
-            member.family_id === family.id
+            member.family_id ===
+            family.id
         );
 
 
       const familyTotalMembers =
-        1 + familyMembers.length;
+        1 +
+        familyMembers.length;
 
 
       html += `
@@ -984,56 +1129,82 @@ function renderFamilies() {
         <tr>
 
           <td class="family-id">
-            ${escapeHtml(family.id)}
+
+            ${escapeHtml(
+              family.id
+            )}
+
           </td>
 
+
           <td>
+
             ${escapeHtml(
               family.family_head_name
             )}
+
           </td>
 
+
           <td>
+
             ${escapeHtml(
               family.mobile_number
             )}
+
           </td>
 
+
           <td>
+
             ${escapeHtml(
               family.district
             )}
+
           </td>
 
+
           <td>
+
             ${escapeHtml(
               family.city_village
             )}
+
           </td>
 
-          <td>
-            ${familyTotalMembers}
-          </td>
 
           <td>
+
+            <strong>
+              ${familyTotalMembers}
+            </strong>
+
+          </td>
+
+
+          <td>
+
             ${escapeHtml(
               family.housing
             )}
+
           </td>
 
+
           <td>
+
             ${escapeHtml(
               family.health_insurance
             )}
+
           </td>
+
 
           <td>
 
             <button
               class="view-btn"
-              onclick="viewFamily('${escapeHtml(
-                family.id
-              )}')"
+              onclick="viewFamily('${family.id}')"
             >
               View
             </button>
@@ -1041,7 +1212,9 @@ function renderFamilies() {
           </td>
 
         </tr>
+
       `;
+
     }
   );
 
@@ -1051,25 +1224,30 @@ function renderFamilies() {
       </tbody>
 
     </table>
+
   `;
 
 
   document.getElementById(
     "tableContainer"
-  ).innerHTML = html;
+  ).innerHTML =
+    html;
 }
 
 
-/* =========================
+/* =========================================================
    VIEW FAMILY
-========================= */
+========================================================= */
 
-function viewFamily(familyId) {
+function viewFamily(
+  familyId
+) {
 
   const family =
     familiesData.find(
       item =>
-        item.id === familyId
+        item.id ===
+        familyId
     );
 
 
@@ -1079,20 +1257,16 @@ function viewFamily(familyId) {
 
 
   const familyMembers =
-    membersData.filter(
+    validMembersData.filter(
       member =>
-        member.family_id === familyId
+        member.family_id ===
+        familyId
     );
 
 
-  /*
-    Selected family total:
-
-    1 Head + Additional Members
-  */
-
   const familyTotalMembers =
-    1 + familyMembers.length;
+    1 +
+    familyMembers.length;
 
 
   let html = `
@@ -1115,155 +1289,288 @@ function viewFamily(familyId) {
 
     <div class="details-grid">
 
-      <div class="detail-item">
-        <strong>Family ID</strong>
-        ${escapeHtml(family.id)}
-      </div>
 
       <div class="detail-item">
-        <strong>Family Head Name</strong>
+
+        <strong>
+          Family ID
+        </strong>
+
+        ${escapeHtml(
+          family.id
+        )}
+
+      </div>
+
+
+      <div class="detail-item">
+
+        <strong>
+          Family Head Name
+        </strong>
+
         ${escapeHtml(
           family.family_head_name
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Mobile Number</strong>
+
+        <strong>
+          Mobile Number
+        </strong>
+
         ${escapeHtml(
           family.mobile_number
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Date of Birth</strong>
+
+        <strong>
+          Date of Birth
+        </strong>
+
         ${escapeHtml(
           family.dob
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Age</strong>
+
+        <strong>
+          Age
+        </strong>
+
         ${escapeHtml(
           family.age
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Gender</strong>
+
+        <strong>
+          Gender
+        </strong>
+
         ${escapeHtml(
           family.gender
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Marital Status</strong>
+
+        <strong>
+          Marital Status
+        </strong>
+
         ${escapeHtml(
           family.marital_status
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Occupation</strong>
+
+        <strong>
+          Occupation
+        </strong>
+
         ${escapeHtml(
           family.occupation
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Employment Status</strong>
+
+        <strong>
+          Employment Status
+        </strong>
+
         ${escapeHtml(
           family.employment_status
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>State</strong>
+
+        <strong>
+          State
+        </strong>
+
         ${escapeHtml(
           family.state
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>District</strong>
+
+        <strong>
+          District
+        </strong>
+
         ${escapeHtml(
           family.district
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>City/Village</strong>
+
+        <strong>
+          City/Village
+        </strong>
+
         ${escapeHtml(
           family.city_village
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Total Members</strong>
+
+        <strong>
+          Total Members
+        </strong>
+
         ${familyTotalMembers}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Housing</strong>
+
+        <strong>
+          Housing
+        </strong>
+
         ${escapeHtml(
           family.housing
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>House Condition</strong>
+
+        <strong>
+          House Condition
+        </strong>
+
         ${escapeHtml(
           family.house_condition
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Health Insurance</strong>
+
+        <strong>
+          Health Insurance
+        </strong>
+
         ${escapeHtml(
           family.health_insurance
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Term Life Insurance</strong>
+
+        <strong>
+          Term Life Insurance
+        </strong>
+
         ${escapeHtml(
           family.term_life_insurance
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Other Insurance</strong>
+
+        <strong>
+          Other Insurance
+        </strong>
+
         ${escapeHtml(
           family.other_insurance
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Family Head Education</strong>
+
+        <strong>
+          Family Head Education
+        </strong>
+
         ${escapeHtml(
           family.education
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Education Status</strong>
+
+        <strong>
+          Education Status
+        </strong>
+
         ${escapeHtml(
           family.education_status
         )}
+
       </div>
 
+
       <div class="detail-item">
-        <strong>Address</strong>
+
+        <strong>
+          Address
+        </strong>
+
         ${escapeHtml(
           family.full_address
         )}
+
       </div>
+
 
     </div>
 
 
     <div class="section-title">
-      Family Members (${familyMembers.length})
+
+      Family Members
+      (${familyMembers.length})
+
     </div>
+
   `;
 
 
@@ -1274,15 +1581,22 @@ function viewFamily(familyId) {
     html += `
 
       <div class="empty">
+
         No family member rows found.
+
       </div>
 
     `;
 
   } else {
 
+
     familyMembers.forEach(
-      (member, index) => {
+      (
+        member,
+        index
+      ) => {
+
 
         const disability =
           getDisabilityValue(
@@ -1294,74 +1608,119 @@ function viewFamily(familyId) {
 
           <div class="member-card">
 
+
             <div class="member-title">
-              Family Member ${index + 1}
+
+              Family Member
+              ${index + 1}
+
             </div>
 
 
             <div class="member-grid">
 
+
               <div class="member-item">
-                <strong>Full Name</strong>
+
+                <strong>
+                  Full Name
+                </strong>
+
                 ${escapeHtml(
                   member.full_name
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Date of Birth</strong>
+
+                <strong>
+                  Date of Birth
+                </strong>
+
                 ${escapeHtml(
                   member.dob
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Age</strong>
+
+                <strong>
+                  Age
+                </strong>
+
                 ${escapeHtml(
                   member.age
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Gender</strong>
+
+                <strong>
+                  Gender
+                </strong>
+
                 ${escapeHtml(
                   member.gender
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Relationship to Family Head</strong>
+
+                <strong>
+                  Relationship to Family Head
+                </strong>
+
                 ${escapeHtml(
                   member.relationship_to_family_head
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Mobile Number</strong>
+
+                <strong>
+                  Mobile Number
+                </strong>
+
                 ${escapeHtml(
                   member.mobile_number
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Education</strong>
+
+                <strong>
+                  Education
+                </strong>
+
                 ${escapeHtml(
                   member.education
                 )}
+
               </div>
 
 
               <div class="member-item">
-                <strong>Education Status</strong>
+
+                <strong>
+                  Education Status
+                </strong>
+
                 ${escapeHtml(
                   member.education_status
                 )}
+
               </div>
 
 
@@ -1371,11 +1730,13 @@ function viewFamily(familyId) {
                   Disability
                 </strong>
 
-                <span class="${
-                  disability === "Yes"
-                    ? "disability-yes"
-                    : "disability-no"
-                }">
+                <span
+                  class="${
+                    disability === "Yes"
+                      ? "disability-yes"
+                      : "disability-no"
+                  }"
+                >
 
                   ${disability}
 
@@ -1385,17 +1746,24 @@ function viewFamily(familyId) {
 
 
               <div class="member-item">
-                <strong>Health Condition</strong>
+
+                <strong>
+                  Health Condition
+                </strong>
+
                 ${escapeHtml(
                   member.health_condition
                 )}
+
               </div>
+
 
             </div>
 
           </div>
 
         `;
+
       }
     );
 
@@ -1423,21 +1791,22 @@ function viewFamily(familyId) {
 }
 
 
-/* =========================
+/* =========================================================
    CLOSE DETAILS
-========================= */
+========================================================= */
 
 function closeDetails() {
 
   document.getElementById(
     "detailsContainer"
-  ).style.display = "none";
+  ).style.display =
+    "none";
 }
 
 
-/* =========================
+/* =========================================================
    CLEAR SEARCH
-========================= */
+========================================================= */
 
 function clearSearch() {
 
@@ -1450,9 +1819,9 @@ function clearSearch() {
 }
 
 
-/* =========================
+/* =========================================================
    LOGOUT
-========================= */
+========================================================= */
 
 async function logout() {
 
@@ -1474,9 +1843,9 @@ async function logout() {
 }
 
 
-/* =========================
-   START
-========================= */
+/* =========================================================
+   START DASHBOARD
+========================================================= */
 
 window.addEventListener(
   "DOMContentLoaded",
@@ -1496,23 +1865,24 @@ window.addEventListener(
       );
 
 
-      document.getElementById(
-        "statusMessage"
-      ).textContent =
+      const status =
+        document.getElementById(
+          "statusMessage"
+        );
+
+
+      status.textContent =
         error.message ||
         "Unable to initialize dashboard.";
 
 
-      document.getElementById(
-        "statusMessage"
-      ).style.background =
+      status.style.background =
         "#fef2f2";
 
 
-      document.getElementById(
-        "statusMessage"
-      ).style.color =
+      status.style.color =
         "#991b1b";
+
     }
 
   }
