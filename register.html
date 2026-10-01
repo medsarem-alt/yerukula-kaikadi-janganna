@@ -999,6 +999,11 @@ function addMember() {
     <input
       type="tel"
       name="member_${id}_mobile_number"
+      inputmode="numeric"
+      pattern="[0-9]{10}"
+      maxlength="10"
+      minlength="10"
+      placeholder="10-digit mobile number"
     >
 
 
@@ -1474,6 +1479,23 @@ familyForm.addEventListener("submit", async function (event) {
     return;
   }
 
+  // Family Member mobile number: if entered, it must be exactly 10 digits.
+  for (const member of members) {
+    const mobile = member.querySelector(
+      `[name="member_${member.dataset.id}_mobile_number"]`
+    );
+
+    if (mobile && mobile.value && !/^[0-9]{10}$/.test(mobile.value)) {
+      showStatus(
+        "Please enter a valid 10-digit mobile number for Family Member " +
+        member.dataset.id + ".",
+        "error"
+      );
+      mobile.focus();
+      return;
+    }
+  }
+
   submitBtn.disabled = true;
   addMemberBtn.disabled = true;
 
@@ -1500,7 +1522,8 @@ familyForm.addEventListener("submit", async function (event) {
       district: formData.get("district") || null,
       city_village: formData.get("city_village") || null,
       full_address: formData.get("full_address") || null,
-      own_house: formData.get("own_house") || null,
+      own_house: formData.get("own_house") === "Own House",
+      housing_type: formData.get("own_house") || null,
       house_condition: formData.get("house_condition") || null,
       total_members: totalFamilyMembers,
       family_head_education: formData.get("family_head_education") || null,
