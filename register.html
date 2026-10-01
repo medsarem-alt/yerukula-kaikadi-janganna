@@ -1504,7 +1504,17 @@ familyForm.addEventListener("submit", async function (event) {
   try {
     const formData = new FormData(familyForm);
 
+    const familyId =
+      (window.crypto && typeof window.crypto.randomUUID === "function")
+        ? window.crypto.randomUUID()
+        : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === "x" ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+          });
+
     const familyData = {
+      id: familyId,
       family_head_name: formData.get("family_head_name") || null,
       family_head_dob: formData.get("family_head_dob") || null,
       family_head_age: formData.get("family_head_age")
@@ -1558,21 +1568,18 @@ familyForm.addEventListener("submit", async function (event) {
       other_insurance: formData.get("other_insurance") || null
     };
 
-    // Insert family first so we can use its UUID for family_members.
-    const { data: family, error: familyError } =
+    // Insert family without SELECT/RETURNING.
+    // familyId was generated locally, so no SELECT permission is required.
+    const { error: familyError } =
       await supabaseClient
         .from("families")
-        .insert([familyData])
-        .select("id")
-        .single();
+        .insert([familyData]);
 
     if (familyError) {
       throw new Error(
         "Family registration failed:\n" + familyError.message
       );
     }
-
-    const familyId = family.id;
 
     const memberRows = members.map((member) => {
       const get = (name) => {
