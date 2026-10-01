@@ -1,408 +1,649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Yerukula Kaikadi Janganna - Admin Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
+<title>Yerukula Kaikadi Janganna - Admin Dashboard</title>
 
-  <style>
-    body { margin:0; font-family:Arial,sans-serif; background:#f5f7fb; color:#222; }
-    header { background:#1f2937; color:#fff; padding:18px; }
-    header h1 { margin:0; font-size:22px; }
-    header p { margin:6px 0 0; opacity:.8; font-size:14px; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 
-    .container { padding:20px; max-width:1200px; margin:auto; }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    .topbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:20px;
-      flex-wrap:wrap;
-    }
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  color: #222;
+}
 
-    button {
-      border:0;
-      border-radius:8px;
-      padding:10px 16px;
-      cursor:pointer;
-      font-weight:bold;
-    }
+.container {
+  max-width: 1400px;
+  margin: auto;
+}
 
-    #logoutBtn { background:#dc2626; color:#fff; }
-    #refreshBtn { background:#2563eb; color:#fff; }
+.header {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-    .cards {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:15px;
-      margin-bottom:25px;
-    }
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
 
-    .card {
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 2px 8px rgba(0,0,0,.08);
-    }
+.header h1 {
+  margin: 0;
+  font-size: 25px;
+}
 
-    .card-title { color:#666; font-size:14px; }
+.header p {
+  margin: 8px 0 0;
+  color: #666;
+}
 
-    .card-number {
-      font-size:32px;
-      font-weight:bold;
-      margin-top:8px;
-    }
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
-    .card-note {
-      margin-top:6px;
-      color:#777;
-      font-size:12px;
-      line-height:1.4;
-    }
+button {
+  border: none;
+  border-radius: 7px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
 
-    .section {
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 2px 8px rgba(0,0,0,.08);
-      margin-bottom:20px;
-    }
+.refresh-btn {
+  background: #2563eb;
+  color: white;
+}
 
-    .status {
-      padding:12px;
-      border-radius:8px;
-      background:#eef2ff;
-      margin-bottom:15px;
-    }
+.logout-btn {
+  background: #dc2626;
+  color: white;
+}
 
-    .error {
-      background:#fee2e2;
-      color:#991b1b;
-    }
+.view-btn {
+  background: #16a34a;
+  color: white;
+  padding: 7px 12px;
+}
 
-    .success {
-      background:#dcfce7;
-      color:#166534;
-    }
+.clear-btn {
+  background: #6b7280;
+  color: white;
+}
 
-    .info {
-      background:#eef2ff;
-      color:#3730a3;
-    }
+.status {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 7px;
+  background: #ecfdf5;
+  color: #166534;
+  font-size: 14px;
+}
 
-    .toolbar {
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:15px;
-    }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
 
-    .toolbar input {
-      flex:1;
-      min-width:250px;
-      padding:11px;
-      border:1px solid #ccc;
-      border-radius:8px;
-      font-size:15px;
-    }
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-    .table-wrap {
-      overflow-x:auto;
-    }
+.card-title {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
 
-    table {
-      width:100%;
-      border-collapse:collapse;
-      min-width:1050px;
-    }
+.card-number {
+  font-size: 32px;
+  font-weight: bold;
+}
 
-    th,td {
-      padding:10px 8px;
-      border-bottom:1px solid #eee;
-      text-align:left;
-      vertical-align:top;
-    }
+.card-note {
+  margin-top: 8px;
+  color: #777;
+  font-size: 12px;
+}
 
-    th {
-      background:#f8fafc;
-    }
+.search-box {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-    .view-btn {
-      background:#111827;
-      color:#fff;
-      padding:8px 12px;
-    }
+.search-row {
+  display: flex;
+  gap: 10px;
+}
 
-    .muted {
-      color:#6b7280;
-      font-size:13px;
-    }
+.search-row input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 15px;
+}
 
-    .details-box {
-      margin-top:15px;
-      padding:15px;
-      background:#f8fafc;
-      border-radius:10px;
-    }
+.table-card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  overflow-x: auto;
+}
 
-    .details-grid {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:8px 18px;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
 
-    .member-box {
-      background:#fff;
-      border:1px solid #e5e7eb;
-      border-radius:10px;
-      padding:12px;
-      margin-top:10px;
-    }
+th,
+td {
+  border-bottom: 1px solid #eee;
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: top;
+}
 
-    .disability-yes {
-      font-weight:bold;
-      color:#b91c1c;
-    }
+th {
+  background: #f8fafc;
+  font-size: 13px;
+  color: #444;
+}
 
-    .disability-no {
-      font-weight:bold;
-      color:#166534;
-    }
+td {
+  font-size: 14px;
+}
 
-    .family-id {
-      font-family:monospace;
-      font-size:12px;
-      word-break:break-all;
-    }
+.family-id {
+  font-size: 11px;
+  word-break: break-all;
+  max-width: 180px;
+}
 
-    @media(max-width:700px) {
-      .details-grid {
-        grid-template-columns:1fr;
-      }
-    }
-  </style>
+.disability-yes {
+  color: #dc2626;
+  font-weight: bold;
+}
+
+.disability-no {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: #777;
+}
+
+.details-card {
+  background: white;
+  margin-top: 20px;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.details-header h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.detail-item {
+  background: #f8fafc;
+  padding: 10px;
+  border-radius: 7px;
+}
+
+.detail-item strong {
+  display: block;
+  color: #555;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.section-title {
+  margin-top: 25px;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.member-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.member-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.member-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.member-item {
+  background: #f8fafc;
+  padding: 9px;
+  border-radius: 6px;
+}
+
+.member-item strong {
+  color: #555;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.error-box {
+  background: #fef2f2;
+  color: #991b1b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.success-box {
+  background: #ecfdf5;
+  color: #166534;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+}
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .details-grid,
+  .member-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .search-row {
+    flex-direction: column;
+  }
+}
+</style>
 </head>
 
 <body>
 
-<header>
-  <h1>Yerukula-Kaikadi Janganna</h1>
-  <p>Admin Dashboard</p>
-</header>
-
 <div class="container">
 
-  <div class="topbar">
-    <div>
-      <h2>Dashboard</h2>
-      <div id="adminEmail"></div>
+  <div class="header">
+    <div class="header-top">
+
+      <div>
+        <h1>Yerukula Kaikadi Janganna - Admin Dashboard</h1>
+        <p id="adminEmail">Checking admin access...</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="refresh-btn" onclick="loadDashboard()">
+          Refresh
+        </button>
+
+        <button class="logout-btn" onclick="logout()">
+          Logout
+        </button>
+      </div>
+
     </div>
 
-    <div style="display:flex;gap:10px;flex-wrap:wrap;">
-      <button id="refreshBtn">Refresh</button>
-      <button id="logoutBtn">Logout</button>
+    <div id="statusMessage" class="status">
+      Checking admin authorization...
     </div>
   </div>
 
-  <div id="status" class="status">
-    Checking admin access...
-  </div>
+
+  <!-- SUMMARY CARDS -->
 
   <div class="cards">
 
     <div class="card">
-      <div class="card-title">Total Families</div>
-      <div class="card-number" id="familyCount">0</div>
-    </div>
+      <div class="card-title">
+        Total Families
+      </div>
 
-    <div class="card">
-      <div class="card-title">Total Members</div>
-      <div class="card-number" id="memberCount">0</div>
+      <div class="card-number" id="familyCount">
+        0
+      </div>
+
       <div class="card-note">
-        Sum of total_members saved for all families.
+        Total registered families.
       </div>
     </div>
 
+
     <div class="card">
-      <div class="card-title">Own House</div>
-      <div class="card-number" id="houseCount">0</div>
+      <div class="card-title">
+        Total Members
+      </div>
+
+      <div class="card-number" id="memberCount">
+        0
+      </div>
+
+      <div class="card-note">
+        Family Heads + Family Members.
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="card-title">
+        Own House
+      </div>
+
+      <div class="card-number" id="ownHouseCount">
+        0
+      </div>
+
       <div class="card-note">
         Families where Housing = Own House.
       </div>
     </div>
 
+
     <div class="card">
-      <div class="card-title">Members with Disability</div>
-      <div class="card-number" id="disabilityCount">—</div>
-      <div class="card-note" id="disabilityNote">
-        Checking available disability field...
+      <div class="card-title">
+        Members with Disability
+      </div>
+
+      <div class="card-number" id="disabilityCount">
+        0
+      </div>
+
+      <div class="card-note">
+        Counted from family members.
       </div>
     </div>
 
   </div>
 
-  <div class="section">
 
-    <h3>Family Registration Data</h3>
+  <!-- SEARCH -->
 
-    <div class="toolbar">
+  <div class="search-box">
+
+    <div class="search-row">
+
       <input
+        type="text"
         id="searchInput"
-        type="search"
-        placeholder="Search Family ID / Family Head / Mobile / District / City / Village"
+        placeholder="Search Family ID, Family Head, Mobile, District, City/Village..."
+        oninput="renderFamilies()"
       >
 
-      <button id="clearSearchBtn">Clear</button>
-    </div>
-
-    <div class="table-wrap">
-
-      <table>
-
-        <thead>
-          <tr>
-            <th>Family ID</th>
-            <th>Family Head</th>
-            <th>Mobile</th>
-            <th>District</th>
-            <th>City / Village</th>
-            <th>Total Members</th>
-            <th>Housing</th>
-            <th>Health Insurance</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody id="familiesBody">
-          <tr>
-            <td colspan="9">Loading...</td>
-          </tr>
-        </tbody>
-
-      </table>
+      <button
+        class="clear-btn"
+        onclick="clearSearch()"
+      >
+        Clear
+      </button>
 
     </div>
 
   </div>
 
-  <div class="section">
 
-    <h3>Selected Family Details</h3>
+  <!-- FAMILY TABLE -->
 
-    <div id="familyDetails" class="muted">
-      Click View to open complete family and member details.
+  <div class="table-card">
+
+    <div id="tableContainer">
+      <div class="loading">
+        Loading family registration data...
+      </div>
     </div>
 
   </div>
+
+
+  <!-- SELECTED FAMILY DETAILS -->
+
+  <div
+    id="detailsContainer"
+    class="details-card"
+    style="display:none;"
+  ></div>
 
 </div>
 
+
 <script>
 
-  const supabaseClient = window.supabase.createClient(
-    window.SUPABASE_URL,
-    window.SUPABASE_PUBLISHABLE_KEY
+let supabaseClient;
+
+let familiesData = [];
+let membersData = [];
+
+
+/* =========================
+   INITIALIZE SUPABASE
+========================= */
+
+function initializeSupabase() {
+
+  if (
+    typeof SUPABASE_URL === "undefined" ||
+    typeof SUPABASE_PUBLISHABLE_KEY === "undefined"
+  ) {
+    throw new Error(
+      "Supabase configuration missing. Please check config.js."
+    );
+  }
+
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
   );
+}
 
-  const statusBox = document.getElementById("status");
-  const familiesBody = document.getElementById("familiesBody");
-  const familyDetails = document.getElementById("familyDetails");
-  const searchInput = document.getElementById("searchInput");
 
-  let familiesData = [];
-  let membersData = [];
+/* =========================
+   ESCAPE HTML
+========================= */
 
-  function setStatus(message, type = "info") {
-    statusBox.textContent = message;
-    statusBox.className = "status " + type;
-  }
+function escapeHtml(value) {
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function getMobile(family) {
-    return family.family_mobile ?? family.family_mobile_number ?? "";
-  }
-
-  function getHousing(family) {
-    if (family.housing_type) return family.housing_type;
-    if (family.own_house === true) return "Own House";
-    if (family.own_house === false) return "Rented / Other";
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "";
   }
 
-  function getDisabilityValue(member) {
-    const value = member.disability;
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-    if (
-      value === true ||
-      value === "true" ||
-      value === "True" ||
-      value === "Yes" ||
-      value === "yes" ||
-      value === 1 ||
-      value === "1"
-    ) {
-      return "Yes";
-    }
 
-    return "No";
+/* =========================
+   DISABILITY VALUE
+========================= */
+
+function getDisabilityValue(member) {
+
+  const value = member.disability;
+
+  if (
+    value === true ||
+    value === "true" ||
+    value === "True" ||
+    value === "Yes" ||
+    value === "yes" ||
+    value === 1 ||
+    value === "1"
+  ) {
+    return "Yes";
   }
 
-  async function checkAdminAndLoad() {
+  return "No";
+}
 
-    const {
-      data: { session }
-    } = await supabaseClient.auth.getSession();
 
-    if (!session) {
-      window.location.href = "index.html";
-      return;
-    }
+/* =========================
+   CHECK ADMIN
+========================= */
 
-    document.getElementById("adminEmail").textContent =
-      session.user.email || "";
+async function checkAdmin() {
 
-    const {
-      data: isAdmin,
-      error: adminError
-    } = await supabaseClient.rpc("is_admin");
+  const {
+    data: {
+      session
+    },
+    error: sessionError
+  } = await supabaseClient.auth.getSession();
 
-    if (adminError) {
-      setStatus(
-        "Admin verification failed: " + adminError.message,
-        "error"
-      );
-      return;
-    }
 
-    if (!isAdmin) {
-      setStatus(
-        "Access denied. This account is not authorized as an admin.",
-        "error"
-      );
-      return;
-    }
-
-    setStatus("Admin access verified.", "success");
-
-    await loadDashboard();
+  if (sessionError) {
+    throw sessionError;
   }
 
-  async function loadDashboard() {
 
-    setStatus("Loading dashboard data...", "info");
+  if (!session) {
+
+    window.location.href = "index.html";
+
+    return false;
+  }
+
+
+  document.getElementById("adminEmail").textContent =
+    session.user.email || "Admin";
+
+
+  const {
+    data: isAdmin,
+    error: adminError
+  } = await supabaseClient.rpc("is_admin");
+
+
+  if (adminError) {
+    throw adminError;
+  }
+
+
+  if (!isAdmin) {
+
+    document.getElementById("statusMessage").textContent =
+      "Admin authorization failed.";
+
+    document.getElementById("statusMessage").style.background =
+      "#fef2f2";
+
+    document.getElementById("statusMessage").style.color =
+      "#991b1b";
+
+    return false;
+  }
+
+
+  document.getElementById("statusMessage").textContent =
+    "Admin access verified. Dashboard data loaded successfully.";
+
+  return true;
+}
+
+
+/* =========================
+   LOAD DASHBOARD
+========================= */
+
+async function loadDashboard() {
+
+  try {
+
+    document.getElementById("statusMessage").textContent =
+      "Loading dashboard data...";
+
+
+    const adminOk = await checkAdmin();
+
+    if (!adminOk) {
+      return;
+    }
+
+
+    /* =========================
+       LOAD FAMILIES
+    ========================= */
 
     const {
       data: families,
@@ -415,13 +656,15 @@
         nullsFirst: false
       });
 
+
     if (familyError) {
-      setStatus(
-        "Family data error: " + familyError.message,
-        "error"
-      );
-      return;
+      throw familyError;
     }
+
+
+    /* =========================
+       LOAD FAMILY MEMBERS
+    ========================= */
 
     const {
       data: members,
@@ -430,530 +673,850 @@
       .from("family_members")
       .select("*");
 
+
     if (memberError) {
-      setStatus(
-        "Member data error: " + memberError.message,
-        "error"
-      );
-      return;
+      throw memberError;
     }
 
+
     familiesData = families || [];
+
     membersData = members || [];
 
-    /*
-      Total Members:
-      SUM(families.total_members)
-    */
 
-    const totalMembers = familiesData.length + membersData.length;
-    const ownHouseCount = familiesData.filter(
-      family =>
-        family.own_house === true ||
-        family.housing_type === "Own House"
-    ).length;
+    /* =========================
+       VALID MEMBER ROWS
+       
+       Only count members whose
+       family_id exists in families.
+    ========================= */
 
-    document.getElementById("familyCount").textContent =
-      familiesData.length;
-
-    document.getElementById("memberCount").textContent =
-      totalMembers;
-
-    document.getElementById("houseCount").textContent =
-      ownHouseCount;
-
-
-    /*
-      Disability Count
-      Uses the existing family_members.disability field.
-    */
-
-    const disabilityKey = "disability";
-
-    const disabilityFieldExists = membersData.some(member =>
-      Object.prototype.hasOwnProperty.call(
-        member,
-        disabilityKey
+    const familyIds = new Set(
+      familiesData.map(
+        family => family.id
       )
     );
 
-    if (disabilityFieldExists) {
 
-      const count = membersData.filter(member => {
+    const validMembers = membersData.filter(
+      member =>
+        member.family_id &&
+        familyIds.has(member.family_id)
+    );
 
-        const value = member[disabilityKey];
 
-        return (
-          value === true ||
-          value === "true" ||
-          value === "True" ||
-          value === "Yes" ||
-          value === "yes" ||
-          value === 1 ||
-          value === "1"
-        );
+    /* =========================
+       TOTAL COUNTS
+    ========================= */
+
+    const totalFamilies =
+      familiesData.length;
+
+
+    const totalFamilyHeads =
+      familiesData.length;
+
+
+    const totalAdditionalMembers =
+      validMembers.length;
+
+
+    /*
+      IMPORTANT:
+
+      Total Members =
+      Family Heads +
+      Additional Family Members
+
+      Example:
+
+      4 Family Heads
+      + 4 Family Members
+      = 8 Total Members
+    */
+
+    const totalMembers =
+      totalFamilyHeads +
+      totalAdditionalMembers;
+
+
+    /* =========================
+       OWN HOUSE COUNT
+    ========================= */
+
+    const ownHouseCount =
+      familiesData.filter(family => {
+
+        const housing =
+          String(
+            family.housing || ""
+          ).trim().toLowerCase();
+
+        return housing === "own house";
 
       }).length;
 
-      document.getElementById("disabilityCount").textContent =
-        count;
 
-      document.getElementById("disabilityNote").textContent =
-        "Counted from family_members.disability.";
+    /* =========================
+       DISABILITY COUNT
+    ========================= */
 
-    } else {
+    const disabilityCount =
+      validMembers.filter(member => {
 
-      document.getElementById("disabilityCount").textContent =
-        "—";
+        const value =
+          getDisabilityValue(member);
 
-      document.getElementById("disabilityNote").textContent =
-        "Disability field not found in family_members.";
+        return value === "Yes";
 
-    }
+      }).length;
+
+
+    /* =========================
+       UPDATE CARDS
+    ========================= */
+
+    document.getElementById(
+      "familyCount"
+    ).textContent =
+      totalFamilies;
+
+
+    document.getElementById(
+      "memberCount"
+    ).textContent =
+      totalMembers;
+
+
+    document.getElementById(
+      "ownHouseCount"
+    ).textContent =
+      ownHouseCount;
+
+
+    document.getElementById(
+      "disabilityCount"
+    ).textContent =
+      disabilityCount;
+
+
+    /* =========================
+       RENDER TABLE
+    ========================= */
 
     renderFamilies();
 
-    setStatus(
-      "Admin access verified. Dashboard data loaded successfully.",
-      "success"
-    );
-  }
+
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      "Admin access verified. Dashboard data loaded successfully.";
 
 
-  function renderFamilies() {
+  } catch (error) {
 
-    const q = searchInput.value.trim().toLowerCase();
-
-    const rows = familiesData.filter(family => {
-
-      if (!q) return true;
-
-      const text = [
-
-        family.id,
-        family.family_head_name,
-        getMobile(family),
-        family.district,
-        family.city_village,
-        family.state,
-        family.full_address
-
-      ]
-        .map(v => String(v ?? "").toLowerCase())
-        .join(" ");
-
-      return text.includes(q);
-
-    });
-
-
-    if (rows.length === 0) {
-
-      familiesBody.innerHTML =
-        '<tr><td colspan="9">No family records found.</td></tr>';
-
-      return;
-    }
-
-
-    familiesBody.innerHTML = rows.map(family => `
-
-      <tr>
-
-        <td class="family-id">
-          ${escapeHtml(family.id)}
-        </td>
-
-        <td>
-          ${escapeHtml(family.family_head_name)}
-        </td>
-
-        <td>
-          ${escapeHtml(getMobile(family))}
-        </td>
-
-        <td>
-          ${escapeHtml(family.district)}
-        </td>
-
-        <td>
-          ${escapeHtml(family.city_village)}
-        </td>
-
-        <td>
-          ${escapeHtml(family.total_members)}
-        </td>
-
-        <td>
-          ${escapeHtml(getHousing(family))}
-        </td>
-
-        <td>
-          ${escapeHtml(family.health_insurance)}
-        </td>
-
-        <td>
-          <button
-            class="view-btn"
-            onclick="viewFamily('${escapeHtml(family.id)}')"
-          >
-            View
-          </button>
-        </td>
-
-      </tr>
-
-    `).join("");
-
-  }
-
-
-  window.viewFamily = function(familyId) {
-
-    const family = familiesData.find(
-      item => item.id === familyId
-    );
-
-    if (!family) return;
-
-
-    const familyMembers = membersData.filter(
-      member => member.family_id === familyId
+    console.error(
+      "Dashboard error:",
+      error
     );
 
 
-    const memberHtml = familyMembers.length
-
-      ? familyMembers.map((member, index) => {
-
-          const disability =
-            getDisabilityValue(member);
-
-          return `
-
-            <div class="member-box">
-
-              <strong>
-                Family Member ${index + 1}:
-                ${escapeHtml(member.full_name)}
-              </strong>
-
-              <div
-                class="details-grid"
-                style="margin-top:10px;"
-              >
-
-                <div>
-                  <strong>DOB:</strong>
-                  ${escapeHtml(member.dob)}
-                </div>
-
-                <div>
-                  <strong>Age:</strong>
-                  ${escapeHtml(member.age)}
-                </div>
-
-                <div>
-                  <strong>Gender:</strong>
-                  ${escapeHtml(member.gender)}
-                </div>
-
-                <div>
-                  <strong>Relationship:</strong>
-                  ${escapeHtml(member.relationship_to_family_head)}
-                </div>
-
-                <div>
-                  <strong>Marital Status:</strong>
-                  ${escapeHtml(member.marital_status)}
-                </div>
-
-                <div>
-                  <strong>Mobile:</strong>
-                  ${escapeHtml(member.mobile_number)}
-                </div>
-
-                <div>
-                  <strong>Education:</strong>
-                  ${escapeHtml(member.education)}
-                </div>
-
-                <div>
-                  <strong>Education Status:</strong>
-                  ${escapeHtml(member.education_status)}
-                </div>
-
-                <div>
-                  <strong>Occupation:</strong>
-                  ${escapeHtml(member.occupation)}
-                </div>
-
-                <div>
-                  <strong>Employment Status:</strong>
-                  ${escapeHtml(member.employment_status)}
-                </div>
-
-                <div>
-                  <strong>Health:</strong>
-                  ${escapeHtml(member.health_condition)}
-                </div>
-
-                <div>
-                  <strong>Disability:</strong>
-                  <span class="${
-                    disability === "Yes"
-                      ? "disability-yes"
-                      : "disability-no"
-                  }">
-                    ${disability}
-                  </span>
-                </div>
-
-                <div>
-                  <strong>Disease Details:</strong>
-                  ${escapeHtml(member.disease_details)}
-                </div>
-
-              </div>
-
-            </div>
-
-          `;
-
-        }).join("")
-
-      : '<div class="muted">No family member rows found.</div>';
-
-
-    familyDetails.innerHTML = `
-
-      <div class="details-box">
-
-        <h3>
-          ${escapeHtml(family.family_head_name)}
-        </h3>
-
-        <div class="details-grid">
-
-          <div>
-            <strong>Family ID:</strong>
-            <span class="family-id">
-              ${escapeHtml(family.id)}
-            </span>
-          </div>
-
-          <div>
-            <strong>Mobile:</strong>
-            ${escapeHtml(getMobile(family))}
-          </div>
-
-          <div>
-            <strong>DOB:</strong>
-            ${escapeHtml(family.family_head_dob)}
-          </div>
-
-          <div>
-            <strong>Age:</strong>
-            ${escapeHtml(family.family_head_age)}
-          </div>
-
-          <div>
-            <strong>Gender:</strong>
-            ${escapeHtml(family.family_head_gender)}
-          </div>
-
-          <div>
-            <strong>Marital Status:</strong>
-            ${escapeHtml(family.family_head_marital_status)}
-          </div>
-
-          <div>
-            <strong>Occupation:</strong>
-            ${escapeHtml(family.family_head_occupation)}
-          </div>
-
-          <div>
-            <strong>Employment Status:</strong>
-            ${escapeHtml(family.family_head_employment_status)}
-          </div>
-
-          <div>
-            <strong>State:</strong>
-            ${escapeHtml(family.state)}
-          </div>
-
-          <div>
-            <strong>District:</strong>
-            ${escapeHtml(family.district)}
-          </div>
-
-          <div>
-            <strong>City/Village:</strong>
-            ${escapeHtml(family.city_village)}
-          </div>
-
-          <div>
-            <strong>Total Members:</strong>
-            ${escapeHtml(family.total_members)}
-          </div>
-
-          <div>
-            <strong>Housing:</strong>
-            ${escapeHtml(getHousing(family))}
-          </div>
-
-          <div>
-            <strong>House Condition:</strong>
-            ${escapeHtml(family.house_condition)}
-          </div>
-
-          <div>
-            <strong>Health Insurance:</strong>
-            ${escapeHtml(family.health_insurance)}
-          </div>
-
-          <div>
-            <strong>Term Life Insurance:</strong>
-            ${escapeHtml(family.term_life_insurance)}
-          </div>
-
-          <div>
-            <strong>Other Insurance:</strong>
-            ${escapeHtml(family.other_insurance)}
-          </div>
-
-          <div style="grid-column:1/-1;">
-
-            <strong>Full Address:</strong>
-            ${escapeHtml(family.full_address)}
-
-          </div>
-
-        </div>
-
-
-        <h3 style="margin-top:20px;">
-          Family Head Education
-        </h3>
-
-        <div class="details-grid">
-
-          <div>
-            <strong>Education:</strong>
-            ${escapeHtml(family.family_head_education)}
-          </div>
-
-          <div>
-            <strong>Status:</strong>
-            ${escapeHtml(family.family_head_education_status)}
-          </div>
-
-        </div>
-
-
-        <h3 style="margin-top:20px;">
-          Health Condition
-        </h3>
-
-        <div class="details-grid">
-
-          <div>
-            <strong>Any Health Problem:</strong>
-            ${escapeHtml(family.healthcare_access_problem)}
-          </div>
-
-          <div>
-            <strong>Long-term:</strong>
-            ${escapeHtml(family.family_head_long_term_condition)}
-          </div>
-
-          <div>
-            <strong>Regular Treatment:</strong>
-            ${escapeHtml(family.family_head_treatment_status)}
-          </div>
-
-          <div>
-            <strong>Help Required:</strong>
-            ${escapeHtml(family.healthcare_help_required)}
-          </div>
-
-          <div style="grid-column:1/-1;">
-
-            <strong>Health Details:</strong>
-            ${escapeHtml(family.healthcare_access_details)}
-
-          </div>
-
-          <div style="grid-column:1/-1;">
-
-            <strong>Help Details:</strong>
-            ${escapeHtml(family.healthcare_help_details)}
-
-          </div>
-
-        </div>
-
-
-        <h3 style="margin-top:20px;">
-          Family Members
-        </h3>
-
-        ${memberHtml}
-
+    document.getElementById(
+      "statusMessage"
+    ).textContent =
+      "Dashboard error: " +
+      (error.message || error);
+
+
+    document.getElementById(
+      "statusMessage"
+    ).style.background =
+      "#fef2f2";
+
+
+    document.getElementById(
+      "statusMessage"
+    ).style.color =
+      "#991b1b";
+
+
+    document.getElementById(
+      "tableContainer"
+    ).innerHTML = `
+      <div class="error-box">
+        ${escapeHtml(
+          error.message || error
+        )}
       </div>
-
     `;
-
-  };
-
-
-  document
-    .getElementById("searchInput")
-    .addEventListener("input", renderFamilies);
+  }
+}
 
 
-  document
-    .getElementById("clearSearchBtn")
-    .addEventListener("click", () => {
+/* =========================
+   RENDER FAMILIES
+========================= */
 
-      searchInput.value = "";
-      renderFamilies();
+function renderFamilies() {
 
-    });
-
-
-  document
-    .getElementById("refreshBtn")
-    .addEventListener("click", () => {
-
-      loadDashboard();
-
-    });
+  const searchValue =
+    document.getElementById(
+      "searchInput"
+    ).value
+      .trim()
+      .toLowerCase();
 
 
-  document
-    .getElementById("logoutBtn")
-    .addEventListener("click", async () => {
+  const filteredFamilies =
+    familiesData.filter(family => {
 
-      await supabaseClient.auth.signOut();
-
-      window.location.href = "index.html";
-
-    });
-
-
-  supabaseClient.auth.onAuthStateChange(
-    (_event, session) => {
-
-      if (!session) {
-        window.location.href = "index.html";
+      if (!searchValue) {
+        return true;
       }
 
+
+      const searchableText = [
+
+        family.id,
+
+        family.family_head_name,
+
+        family.mobile_number,
+
+        family.district,
+
+        family.city_village,
+
+        family.state,
+
+        family.housing
+
+      ]
+        .filter(value =>
+          value !== null &&
+          value !== undefined
+        )
+        .join(" ")
+        .toLowerCase();
+
+
+      return searchableText.includes(
+        searchValue
+      );
+
+    });
+
+
+  if (
+    filteredFamilies.length === 0
+  ) {
+
+    document.getElementById(
+      "tableContainer"
+    ).innerHTML = `
+      <div class="empty">
+        No family records found.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  let html = `
+
+    <table>
+
+      <thead>
+
+        <tr>
+
+          <th>Family ID</th>
+
+          <th>Family Head</th>
+
+          <th>Mobile</th>
+
+          <th>District</th>
+
+          <th>City/Village</th>
+
+          <th>Total Members</th>
+
+          <th>Housing</th>
+
+          <th>Health Insurance</th>
+
+          <th>Action</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+  `;
+
+
+  filteredFamilies.forEach(
+    family => {
+
+      /*
+        FAMILY-SPECIFIC TOTAL:
+
+        1 Family Head
+        +
+        linked family_members rows
+      */
+
+      const familyMembers =
+        membersData.filter(
+          member =>
+            member.family_id === family.id
+        );
+
+
+      const familyTotalMembers =
+        1 + familyMembers.length;
+
+
+      html += `
+
+        <tr>
+
+          <td class="family-id">
+            ${escapeHtml(family.id)}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.family_head_name
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.mobile_number
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.district
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.city_village
+            )}
+          </td>
+
+          <td>
+            ${familyTotalMembers}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.housing
+            )}
+          </td>
+
+          <td>
+            ${escapeHtml(
+              family.health_insurance
+            )}
+          </td>
+
+          <td>
+
+            <button
+              class="view-btn"
+              onclick="viewFamily('${escapeHtml(
+                family.id
+              )}')"
+            >
+              View
+            </button>
+
+          </td>
+
+        </tr>
+      `;
     }
   );
 
 
-  checkAdminAndLoad();
+  html += `
+
+      </tbody>
+
+    </table>
+  `;
+
+
+  document.getElementById(
+    "tableContainer"
+  ).innerHTML = html;
+}
+
+
+/* =========================
+   VIEW FAMILY
+========================= */
+
+function viewFamily(familyId) {
+
+  const family =
+    familiesData.find(
+      item =>
+        item.id === familyId
+    );
+
+
+  if (!family) {
+    return;
+  }
+
+
+  const familyMembers =
+    membersData.filter(
+      member =>
+        member.family_id === familyId
+    );
+
+
+  /*
+    Selected family total:
+
+    1 Head + Additional Members
+  */
+
+  const familyTotalMembers =
+    1 + familyMembers.length;
+
+
+  let html = `
+
+    <div class="details-header">
+
+      <h2>
+        Selected Family Details
+      </h2>
+
+      <button
+        class="clear-btn"
+        onclick="closeDetails()"
+      >
+        Close
+      </button>
+
+    </div>
+
+
+    <div class="details-grid">
+
+      <div class="detail-item">
+        <strong>Family ID</strong>
+        ${escapeHtml(family.id)}
+      </div>
+
+      <div class="detail-item">
+        <strong>Family Head Name</strong>
+        ${escapeHtml(
+          family.family_head_name
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Mobile Number</strong>
+        ${escapeHtml(
+          family.mobile_number
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Date of Birth</strong>
+        ${escapeHtml(
+          family.dob
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Age</strong>
+        ${escapeHtml(
+          family.age
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Gender</strong>
+        ${escapeHtml(
+          family.gender
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Marital Status</strong>
+        ${escapeHtml(
+          family.marital_status
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Occupation</strong>
+        ${escapeHtml(
+          family.occupation
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Employment Status</strong>
+        ${escapeHtml(
+          family.employment_status
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>State</strong>
+        ${escapeHtml(
+          family.state
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>District</strong>
+        ${escapeHtml(
+          family.district
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>City/Village</strong>
+        ${escapeHtml(
+          family.city_village
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Total Members</strong>
+        ${familyTotalMembers}
+      </div>
+
+      <div class="detail-item">
+        <strong>Housing</strong>
+        ${escapeHtml(
+          family.housing
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>House Condition</strong>
+        ${escapeHtml(
+          family.house_condition
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Health Insurance</strong>
+        ${escapeHtml(
+          family.health_insurance
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Term Life Insurance</strong>
+        ${escapeHtml(
+          family.term_life_insurance
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Other Insurance</strong>
+        ${escapeHtml(
+          family.other_insurance
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Family Head Education</strong>
+        ${escapeHtml(
+          family.education
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Education Status</strong>
+        ${escapeHtml(
+          family.education_status
+        )}
+      </div>
+
+      <div class="detail-item">
+        <strong>Address</strong>
+        ${escapeHtml(
+          family.full_address
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="section-title">
+      Family Members (${familyMembers.length})
+    </div>
+  `;
+
+
+  if (
+    familyMembers.length === 0
+  ) {
+
+    html += `
+
+      <div class="empty">
+        No family member rows found.
+      </div>
+
+    `;
+
+  } else {
+
+    familyMembers.forEach(
+      (member, index) => {
+
+        const disability =
+          getDisabilityValue(
+            member
+          );
+
+
+        html += `
+
+          <div class="member-card">
+
+            <div class="member-title">
+              Family Member ${index + 1}
+            </div>
+
+
+            <div class="member-grid">
+
+              <div class="member-item">
+                <strong>Full Name</strong>
+                ${escapeHtml(
+                  member.full_name
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Date of Birth</strong>
+                ${escapeHtml(
+                  member.dob
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Age</strong>
+                ${escapeHtml(
+                  member.age
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Gender</strong>
+                ${escapeHtml(
+                  member.gender
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Relationship to Family Head</strong>
+                ${escapeHtml(
+                  member.relationship_to_family_head
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Mobile Number</strong>
+                ${escapeHtml(
+                  member.mobile_number
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Education</strong>
+                ${escapeHtml(
+                  member.education
+                )}
+              </div>
+
+
+              <div class="member-item">
+                <strong>Education Status</strong>
+                ${escapeHtml(
+                  member.education_status
+                )}
+              </div>
+
+
+              <div class="member-item">
+
+                <strong>
+                  Disability
+                </strong>
+
+                <span class="${
+                  disability === "Yes"
+                    ? "disability-yes"
+                    : "disability-no"
+                }">
+
+                  ${disability}
+
+                </span>
+
+              </div>
+
+
+              <div class="member-item">
+                <strong>Health Condition</strong>
+                ${escapeHtml(
+                  member.health_condition
+                )}
+              </div>
+
+            </div>
+
+          </div>
+
+        `;
+      }
+    );
+
+  }
+
+
+  const detailsContainer =
+    document.getElementById(
+      "detailsContainer"
+    );
+
+
+  detailsContainer.innerHTML =
+    html;
+
+
+  detailsContainer.style.display =
+    "block";
+
+
+  detailsContainer.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+
+/* =========================
+   CLOSE DETAILS
+========================= */
+
+function closeDetails() {
+
+  document.getElementById(
+    "detailsContainer"
+  ).style.display = "none";
+}
+
+
+/* =========================
+   CLEAR SEARCH
+========================= */
+
+function clearSearch() {
+
+  document.getElementById(
+    "searchInput"
+  ).value = "";
+
+
+  renderFamilies();
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout() {
+
+  try {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href =
+      "index.html";
+
+  } catch (error) {
+
+    console.error(
+      "Logout error:",
+      error
+    );
+
+  }
+}
+
+
+/* =========================
+   START
+========================= */
+
+window.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    try {
+
+      initializeSupabase();
+
+      await loadDashboard();
+
+    } catch (error) {
+
+      console.error(
+        "Initialization error:",
+        error
+      );
+
+
+      document.getElementById(
+        "statusMessage"
+      ).textContent =
+        error.message ||
+        "Unable to initialize dashboard.";
+
+
+      document.getElementById(
+        "statusMessage"
+      ).style.background =
+        "#fef2f2";
+
+
+      document.getElementById(
+        "statusMessage"
+      ).style.color =
+        "#991b1b";
+    }
+
+  }
+);
 
 </script>
 
