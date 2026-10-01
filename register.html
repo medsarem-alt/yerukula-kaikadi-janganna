@@ -191,11 +191,45 @@ Family Census / Registration Form
   required
 >
 
+<label>Family Head Date of Birth *</label>
+<input
+  type="date"
+  id="familyHeadDob"
+  name="family_head_dob"
+  required
+>
+
+<label>Family Head Age *</label>
+<input
+  type="number"
+  id="familyHeadAge"
+  name="family_head_age"
+  min="0"
+  max="120"
+  required
+>
+
+<label>Family Head Gender *</label>
+<select
+  id="familyHeadGender"
+  name="family_head_gender"
+  required
+>
+  <option value="">Select</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
+
 <label>Family Head Mobile Number *</label>
 <input
   type="tel"
   id="familyMobile"
   name="family_mobile_number"
+  inputmode="numeric"
+  pattern="[0-9]{10}"
+  maxlength="10"
+  placeholder="10-digit mobile number"
   required
 >
 
@@ -463,13 +497,47 @@ Family Census / Registration Form
 
 <label>Health Insurance</label>
 
-<select name="health_insurance">
-
+<select
+  id="healthInsurance"
+  name="health_insurance"
+>
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
-
 </select>
+
+<div
+  id="healthInsuranceHelpSection"
+  class="hidden section-box"
+>
+  <label>
+    Would you like Health Insurance?
+  </label>
+
+  <select
+    id="healthInsuranceNeeded"
+    name="health_insurance_needed"
+  >
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <div
+    id="healthInsuranceHelpDetailsSection"
+    class="hidden"
+  >
+    <label>
+      What help / support do you need for Health Insurance?
+    </label>
+
+    <textarea
+      id="healthInsuranceHelpDetails"
+      name="health_insurance_help_details"
+      placeholder="Please describe the help or support required"
+    ></textarea>
+  </div>
+</div>
 
 <label>Term Life Insurance</label>
 
@@ -520,8 +588,7 @@ Family Census / Registration Form
 const SUPABASE_URL =
   "https://dncpytissribxjsbrfxp.supabase.co";
 
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkwNzUxMzA4LCJleHAiOjIxMDYzMjczMDh9.CeKPnDQn4-ADL7D_ZLf7XhBgK9Gys_IkWUXstkG6Amo";
+const SUPABASE_ANON_KEY = "PASTE_YOUR_REAL_SUPABASE_ANON_OR_PUBLISHABLE_KEY_HERE";
 
 const supabaseClient =
   supabase.createClient(
@@ -994,49 +1061,53 @@ function addMember() {
 
     <!-- ================= EMPLOYMENT ================= -->
 
-    <h3>Employment</h3>
+    <div class="memberEmploymentSection">
 
-    <label>Occupation</label>
+      <h3>Employment</h3>
 
-    <input
-      type="text"
-      name="member_${id}_occupation"
-    >
+      <label>Occupation</label>
 
+      <input
+        type="text"
+        name="member_${id}_occupation"
+      >
 
-    <label>Employment Status</label>
+      <label>Employment Status</label>
 
-    <select
-      name="member_${id}_employment_status"
-    >
+      <select
+        class="memberEmploymentStatus"
+        name="member_${id}_employment_status"
+      >
 
-      <option value="">Select</option>
+        <option value="">Select</option>
 
-      <option value="Employed">
-        Employed
-      </option>
+        <option value="Employed">
+          Employed
+        </option>
 
-      <option value="Self Employed">
-        Self Employed
-      </option>
+        <option value="Self Employed">
+          Self Employed
+        </option>
 
-      <option value="Unemployed">
-        Unemployed
-      </option>
+        <option value="Unemployed">
+          Unemployed
+        </option>
 
-      <option value="Currently Studying">
-        Currently Studying
-      </option>
+        <option value="Currently Studying">
+          Currently Studying
+        </option>
 
-      <option value="Retired">
-        Retired
-      </option>
+        <option value="Retired">
+          Retired
+        </option>
 
-      <option value="Other">
-        Other
-      </option>
+        <option value="Other">
+          Other
+        </option>
 
-    </select>
+      </select>
+
+    </div>
 
 
     <!-- ================= HEALTH ================= -->
@@ -1231,6 +1302,36 @@ function addMember() {
       healthHelpDetails.classList.add("hidden");
     }
   });
+
+  // Students do not need Occupation / Employment Status.
+  const employmentSection =
+    member.querySelector(".memberEmploymentSection");
+  const employmentStatus =
+    member.querySelector(".memberEmploymentStatus");
+
+  function updateEmploymentVisibility() {
+    const educationStatus = educationStatusElement.value;
+    const employmentValue = employmentStatus.value;
+
+    const isStudent =
+      educationStatus === "Currently Studying" ||
+      employmentValue === "Currently Studying";
+
+    if (isStudent) {
+      employmentSection.classList.add("hidden");
+      employmentStatus.value = "";
+      const occupation = member.querySelector(
+        `[name="member_${member.dataset.id}_occupation"]`
+      );
+      if (occupation) occupation.value = "";
+    } else {
+      employmentSection.classList.remove("hidden");
+    }
+  }
+
+  const educationStatusElement = educationStatus;
+  educationStatusElement.addEventListener("change", updateEmploymentVisibility);
+  employmentStatus.addEventListener("change", updateEmploymentVisibility);
 }
 
 
@@ -1242,31 +1343,58 @@ addMemberBtn.addEventListener("click", addMember);
 
 
 /* =====================================================
-   HEALTHCARE ACCESS DETAILS
+   HEALTHCARE ACCESS + INSURANCE FLOWS
 ===================================================== */
 
-// Clear the optional healthcare fields when the main answer is No.
 document.getElementById("healthcareAccess").addEventListener("change", function () {
-  const details = document.getElementById("healthcareAccessDetails");
+  const detailsSection = document.getElementById("healthcareDetailsSection");
   const help = document.getElementById("healthcareHelpRequired");
+  const details = document.getElementById("healthcareAccessDetails");
   const helpDetails = document.getElementById("healthcareHelpDetails");
-  const section = document.getElementById("healthcareDetailsSection");
-  const helpSection = document.getElementById("healthcareHelpDetailsSection");
+  const helpDetailsSection = document.getElementById("healthcareHelpDetailsSection");
 
   if (this.value === "Yes") {
-    section.classList.remove("hidden");
+    detailsSection.classList.remove("hidden");
   } else {
-    section.classList.add("hidden");
+    detailsSection.classList.add("hidden");
     help.value = "";
     details.value = "";
     helpDetails.value = "";
-    helpSection.classList.add("hidden");
+    helpDetailsSection.classList.add("hidden");
   }
 });
 
 document.getElementById("healthcareHelpRequired").addEventListener("change", function () {
   const section = document.getElementById("healthcareHelpDetailsSection");
   const details = document.getElementById("healthcareHelpDetails");
+
+  if (this.value === "Yes") {
+    section.classList.remove("hidden");
+  } else {
+    section.classList.add("hidden");
+    details.value = "";
+  }
+});
+
+document.getElementById("healthInsurance").addEventListener("change", function () {
+  const section = document.getElementById("healthInsuranceHelpSection");
+  const needed = document.getElementById("healthInsuranceNeeded");
+  const detailsSection = document.getElementById("healthInsuranceHelpDetailsSection");
+  const details = document.getElementById("healthInsuranceHelpDetails");
+
+  if (this.value === "No") {
+    section.classList.remove("hidden");
+  } else {
+    section.classList.add("hidden");
+    needed.value = "";
+    details.value = "";
+    detailsSection.classList.add("hidden");
+  }
+});
+
+document.getElementById("healthInsuranceNeeded").addEventListener("change", function () {
+  const section = document.getElementById("healthInsuranceHelpDetailsSection");
+  const details = document.getElementById("healthInsuranceHelpDetails");
 
   if (this.value === "Yes") {
     section.classList.remove("hidden");
@@ -1320,6 +1448,11 @@ familyForm.addEventListener("submit", async function (event) {
 
     const familyData = {
       family_head_name: formData.get("family_head_name") || null,
+      family_head_dob: formData.get("family_head_dob") || null,
+      family_head_age: formData.get("family_head_age")
+        ? Number(formData.get("family_head_age"))
+        : null,
+      family_head_gender: formData.get("family_head_gender") || null,
       family_mobile_number: formData.get("family_mobile_number") || null,
       state: formData.get("state") || null,
       district: formData.get("district") || null,
@@ -1348,6 +1481,10 @@ familyForm.addEventListener("submit", async function (event) {
       healthcare_help_details:
         document.getElementById("healthcareHelpDetails").value || null,
       health_insurance: formData.get("health_insurance") || null,
+      health_insurance_needed:
+        formData.get("health_insurance_needed") || null,
+      health_insurance_help_details:
+        formData.get("health_insurance_help_details") || null,
       term_life_insurance: formData.get("term_life_insurance") || null,
       other_insurance: formData.get("other_insurance") || null
     };
@@ -1443,12 +1580,18 @@ familyForm.addEventListener("submit", async function (event) {
   } catch (error) {
     console.error(error);
 
-    showStatus(
-      error && error.message
-        ? error.message
-        : "Something went wrong while submitting the registration.",
-      "error"
-    );
+    const message = error && error.message
+      ? error.message
+      : "Something went wrong while submitting the registration.";
+
+    if (message.toLowerCase().includes("invalid api key")) {
+      showStatus(
+        "Supabase API key is invalid. Please put your real Supabase anon/publishable key in SUPABASE_ANON_KEY. Do NOT use the service_role key.",
+        "error"
+      );
+    } else {
+      showStatus(message, "error");
+    }
 
     submitBtn.disabled = false;
     addMemberBtn.disabled = false;
