@@ -847,26 +847,9 @@ async function loadDashboard() {
        OWN HOUSE
     ===================================================== */
 
-    const ownHouseCount =
-      familiesData.filter(
-        family => {
-
-          const housing =
-            String(
-              family.housing || ""
-            )
-              .trim()
-              .toLowerCase();
-
-
-          return (
-            housing === "own house" ||
-            housing === "own"
-          );
-
-        }
-      ).length;
-
+    const ownHouseCount = familiesData.filter(
+  family => family.own_house === true
+).length;
 
     /* =====================================================
        DISABILITY
