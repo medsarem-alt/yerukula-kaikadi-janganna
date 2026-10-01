@@ -415,83 +415,109 @@ Family Census / Registration Form
 </div>
 
 
+
+<!-- =====================================================
+     3. FAMILY HEAD EMPLOYMENT
+===================================================== -->
+
+<h2>3. Family Head Employment</h2>
+
+<label>Occupation</label>
+<input
+  type="text"
+  name="family_head_occupation"
+  placeholder="Example: Driver, Labourer, Business, Housewife"
+>
+
+<label>Employment Status</label>
+<select
+  name="family_head_employment_status"
+>
+  <option value="">Select</option>
+  <option value="Employed">Employed</option>
+  <option value="Self Employed">Self Employed</option>
+  <option value="Unemployed">Unemployed</option>
+  <option value="Retired">Retired</option>
+  <option value="Not Applicable">Not Applicable</option>
+  <option value="Other">Other</option>
+</select>
+
 <!-- =====================================================
      4. HEALTHCARE ACCESS
 ===================================================== -->
 
-<h2>3. Healthcare Access</h2>
+<h2>4. Health Condition</h2>
 
-<label>
-  Difficulty Accessing Healthcare?
-</label>
+<label>Any Health Problem?</label>
 
 <select
   id="healthcareAccess"
   name="healthcare_access_problem"
 >
-
   <option value="">Select</option>
   <option value="Yes">Yes</option>
   <option value="No">No</option>
-
 </select>
 
 <div
   id="healthcareDetailsSection"
   class="hidden section-box"
 >
-
-  <label>
-    What is the Healthcare Access Problem?
-  </label>
-
+  <label>Health Problem / Disease Details</label>
   <textarea
     id="healthcareAccessDetails"
-    placeholder="Example: hospital is far, treatment is expensive, difficulty getting medicines, no nearby doctor, etc."
+    name="healthcare_access_details"
+    placeholder="Please describe the health problem or disease"
   ></textarea>
 
-  <label>
-    Healthcare Help / Support Required?
-  </label>
+  <label>Long-term Health Problem?</label>
+  <select
+    id="familyHeadLongTermCondition"
+    name="family_head_long_term_condition"
+  >
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
 
+  <label>Regular Treatment Required?</label>
+  <select
+    id="familyHeadTreatmentStatus"
+    name="family_head_treatment_status"
+  >
+    <option value="">Select</option>
+    <option value="Yes">Yes</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>Healthcare Help / Support Required?</label>
   <select
     id="healthcareHelpRequired"
     name="healthcare_help_required"
   >
-
     <option value="">Select</option>
     <option value="Yes">Yes</option>
     <option value="No">No</option>
-
   </select>
 
   <div
     id="healthcareHelpDetailsSection"
     class="hidden"
   >
-
-    <label>
-      What Healthcare Help / Support is Required?
-    </label>
-
+    <label>What Healthcare Help / Support is Required?</label>
     <textarea
       id="healthcareHelpDetails"
       name="healthcare_help_details"
       placeholder="Please describe the help or support required"
     ></textarea>
-
   </div>
-
 </div>
-
-
-
 
 <!-- =====================================================
      3. FAMILY MEMBERS
 ===================================================== -->
 
-<h2>4. Family Members</h2>
+<h2>5. Family Members</h2>
 
 <div id="membersContainer"></div>
 
@@ -512,7 +538,7 @@ Family Census / Registration Form
      5. INSURANCE
 ===================================================== -->
 
-<h2>5. Family Insurance</h2>
+<h2>6. Family Insurance</h2>
 
 <label>Health Insurance</label>
 
@@ -752,56 +778,45 @@ document
 
 
 /* =====================================================
-   HEALTHCARE ACCESS
+   FAMILY HEAD HEALTH CONDITION
 ===================================================== */
 
 document
   .getElementById("healthcareAccess")
-  .addEventListener("change", function() {
-
-    const section =
-      document.getElementById(
-        "healthcareDetailsSection"
-      );
+  .addEventListener("change", function () {
+    const section = document.getElementById("healthcareDetailsSection");
+    const details = document.getElementById("healthcareAccessDetails");
+    const longTerm = document.getElementById("familyHeadLongTermCondition");
+    const treatment = document.getElementById("familyHeadTreatmentStatus");
+    const help = document.getElementById("healthcareHelpRequired");
+    const helpDetails = document.getElementById("healthcareHelpDetails");
+    const helpSection = document.getElementById("healthcareHelpDetailsSection");
 
     if (this.value === "Yes") {
-
       section.classList.remove("hidden");
-
     } else {
-
       section.classList.add("hidden");
-
-      document
-        .getElementById(
-          "healthcareHelpDetailsSection"
-        )
-        .classList.add("hidden");
-
+      details.value = "";
+      longTerm.value = "";
+      treatment.value = "";
+      help.value = "";
+      helpDetails.value = "";
+      helpSection.classList.add("hidden");
     }
-
   });
-
 
 document
   .getElementById("healthcareHelpRequired")
-  .addEventListener("change", function() {
-
-    const section =
-      document.getElementById(
-        "healthcareHelpDetailsSection"
-      );
+  .addEventListener("change", function () {
+    const section = document.getElementById("healthcareHelpDetailsSection");
+    const details = document.getElementById("healthcareHelpDetails");
 
     if (this.value === "Yes") {
-
       section.classList.remove("hidden");
-
     } else {
-
       section.classList.add("hidden");
-
+      details.value = "";
     }
-
   });
 
 
@@ -1361,40 +1376,6 @@ function addMember() {
 addMemberBtn.addEventListener("click", addMember);
 
 
-/* =====================================================
-   HEALTHCARE ACCESS + INSURANCE FLOWS
-===================================================== */
-
-document.getElementById("healthcareAccess").addEventListener("change", function () {
-  const detailsSection = document.getElementById("healthcareDetailsSection");
-  const help = document.getElementById("healthcareHelpRequired");
-  const details = document.getElementById("healthcareAccessDetails");
-  const helpDetails = document.getElementById("healthcareHelpDetails");
-  const helpDetailsSection = document.getElementById("healthcareHelpDetailsSection");
-
-  if (this.value === "Yes") {
-    detailsSection.classList.remove("hidden");
-  } else {
-    detailsSection.classList.add("hidden");
-    help.value = "";
-    details.value = "";
-    helpDetails.value = "";
-    helpDetailsSection.classList.add("hidden");
-  }
-});
-
-document.getElementById("healthcareHelpRequired").addEventListener("change", function () {
-  const section = document.getElementById("healthcareHelpDetailsSection");
-  const details = document.getElementById("healthcareHelpDetails");
-
-  if (this.value === "Yes") {
-    section.classList.remove("hidden");
-  } else {
-    section.classList.add("hidden");
-    details.value = "";
-  }
-});
-
 document.getElementById("healthInsurance").addEventListener("change", function () {
   const section = document.getElementById("healthInsuranceHelpSection");
   const needed = document.getElementById("healthInsuranceNeeded");
@@ -1474,6 +1455,10 @@ familyForm.addEventListener("submit", async function (event) {
       family_head_gender: formData.get("family_head_gender") || null,
       family_head_marital_status:
         formData.get("family_head_marital_status") || null,
+      family_head_occupation:
+        formData.get("family_head_occupation") || null,
+      family_head_employment_status:
+        formData.get("family_head_employment_status") || null,
       family_mobile_number: formData.get("family_mobile_number") || null,
       state: formData.get("state") || null,
       district: formData.get("district") || null,
@@ -1497,6 +1482,10 @@ familyForm.addEventListener("submit", async function (event) {
         formData.get("healthcare_access_problem") || null,
       healthcare_access_details:
         document.getElementById("healthcareAccessDetails").value || null,
+      family_head_long_term_condition:
+        document.getElementById("familyHeadLongTermCondition").value || null,
+      family_head_treatment_status:
+        document.getElementById("familyHeadTreatmentStatus").value || null,
       healthcare_help_required:
         document.getElementById("healthcareHelpRequired").value || null,
       healthcare_help_details:
@@ -1608,6 +1597,13 @@ familyForm.addEventListener("submit", async function (event) {
     if (message.toLowerCase().includes("invalid api key")) {
       showStatus(
         "Supabase API key is invalid. Please put your real Supabase anon/publishable key in SUPABASE_ANON_KEY. Do NOT use the service_role key.",
+        "error"
+      );
+    } else if (message.toLowerCase().includes("schema cache") ||
+               message.toLowerCase().includes("could not find the")) {
+      showStatus(
+        message +
+        "\n\nPlease add the missing column(s) in Supabase SQL Editor using the SQL provided with this version.",
         "error"
       );
     } else {
