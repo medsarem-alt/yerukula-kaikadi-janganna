@@ -2053,10 +2053,9 @@ familyForm.addEventListener(
 
 
     if (
-      members.length !==
-      totalFamilyMembers
-    ) {
-
+  members.length !==
+  (totalFamilyMembers - 1)
+) {
       showStatus(
         "Please add exactly " +
         totalFamilyMembers +
