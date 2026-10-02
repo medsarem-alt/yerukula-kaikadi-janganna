@@ -1274,11 +1274,9 @@ function viewFamily(
         String(familyId)
     );
 
-
   if (!family) {
     return;
   }
-
 
   const familyMembers =
     membersData.filter(
@@ -1289,20 +1287,48 @@ function viewFamily(
         String(familyId)
     );
 
-
   const familyTotalMembers =
     1 +
     familyMembers.length;
 
-
   const housingValue =
     family.housing_type ||
     (
-      family.own_house === true
+      family.own_house === true ||
+      family.own_house === "true" ||
+      family.own_house === "True" ||
+      family.own_house === "TRUE" ||
+      family.own_house === 1 ||
+      family.own_house === "1"
         ? "Own House"
         : ""
     );
 
+  function detail(label, value) {
+    return `
+      <div class="detail-item">
+        <strong>${escapeHtml(label)}</strong>
+        ${escapeHtml(
+          value === null || value === undefined || value === ""
+            ? "—"
+            : value
+        )}
+      </div>
+    `;
+  }
+
+  function memberDetail(label, value) {
+    return `
+      <div class="member-item">
+        <strong>${escapeHtml(label)}</strong>
+        ${escapeHtml(
+          value === null || value === undefined || value === ""
+            ? "—"
+            : value
+        )}
+      </div>
+    `;
+  }
 
   let html = `
 
@@ -1321,315 +1347,151 @@ function viewFamily(
 
     </div>
 
+    <div class="section-title">
+      Family Details
+    </div>
 
     <div class="details-grid">
 
-
-      <div class="detail-item">
-
-        <strong>
-          Family ID
-        </strong>
-
-        ${escapeHtml(
-          family.id
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Family Head Name
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_name
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Mobile Number
-        </strong>
-
-        ${escapeHtml(
-          family.family_mobile ||
-          family.mobile_number
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Date of Birth
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_dob ||
-          family.dob
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Age
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_age ||
-          family.age
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Gender
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_gender ||
-          family.gender
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Marital Status
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_marital_status ||
-          family.marital_status
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Occupation
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_occupation ||
-          family.occupation
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Employment Status
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_employment_status ||
-          family.employment_status
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          State
-        </strong>
-
-        ${escapeHtml(
-          family.state
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          District
-        </strong>
-
-        ${escapeHtml(
-          family.district
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          City/Village
-        </strong>
-
-        ${escapeHtml(
-          family.city_village
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Total Members
-        </strong>
-
-        ${familyTotalMembers}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Housing
-        </strong>
-
-        ${escapeHtml(
-          housingValue
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          House Condition
-        </strong>
-
-        ${escapeHtml(
-          family.house_condition
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Health Insurance
-        </strong>
-
-        ${escapeHtml(
-          family.health_insurance
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Term Life Insurance
-        </strong>
-
-        ${escapeHtml(
-          family.term_life_insurance
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Other Insurance
-        </strong>
-
-        ${escapeHtml(
-          family.other_insurance
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Family Head Education
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_education ||
-          family.education
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Education Status
-        </strong>
-
-        ${escapeHtml(
-          family.family_head_education_status ||
-          family.education_status
-        )}
-
-      </div>
-
-
-      <div class="detail-item">
-
-        <strong>
-          Address
-        </strong>
-
-        ${escapeHtml(
-          family.full_address
-        )}
-
-      </div>
-
+      ${detail("Family ID", family.id)}
+      ${detail("Family Head Name", family.family_head_name)}
+      ${detail(
+        "Mobile Number",
+        family.family_mobile || family.mobile_number
+      )}
+      ${detail(
+        "Date of Birth",
+        family.family_head_dob || family.dob
+      )}
+      ${detail(
+        "Age",
+        family.family_head_age || family.age
+      )}
+      ${detail(
+        "Gender",
+        family.family_head_gender || family.gender
+      )}
+      ${detail(
+        "Marital Status",
+        family.family_head_marital_status || family.marital_status
+      )}
+      ${detail(
+        "Occupation",
+        family.family_head_occupation || family.occupation
+      )}
+      ${detail(
+        "Employment Status",
+        family.family_head_employment_status || family.employment_status
+      )}
+      ${detail("State", family.state)}
+      ${detail("District", family.district)}
+      ${detail("City/Village", family.city_village)}
+      ${detail("Total Members", familyTotalMembers)}
+      ${detail("Housing", housingValue)}
+      ${detail("House Condition", family.house_condition)}
+      ${detail("Address", family.full_address)}
 
     </div>
 
+    <div class="section-title">
+      Family Head Education
+    </div>
+
+    <div class="details-grid">
+
+      ${detail(
+        "Education",
+        family.family_head_education || family.education
+      )}
+      ${detail(
+        "Education Status",
+        family.family_head_education_status || family.education_status
+      )}
+      ${detail(
+        "Education Discontinue Reason",
+        family.family_head_education_discontinue_reason
+      )}
+      ${detail(
+        "Future Education",
+        family.family_head_future_education
+      )}
+      ${detail(
+        "Education Help / Support Required",
+        family.family_head_education_help
+      )}
+      ${detail(
+        "Education Help / Support Details",
+        family.family_head_education_help_details
+      )}
+
+    </div>
 
     <div class="section-title">
+      Family Head Health
+    </div>
 
-      Family Members
-      (${familyMembers.length})
+    <div class="details-grid">
 
+      ${detail(
+        "Any Health Problem",
+        family.healthcare_access_problem
+      )}
+      ${detail(
+        "Disease / Health Details",
+        family.healthcare_access_details
+      )}
+      ${detail(
+        "Healthcare Help / Support Required",
+        family.healthcare_help_required
+      )}
+      ${detail(
+        "Healthcare Help / Support Details",
+        family.healthcare_help_details
+      )}
+
+    </div>
+
+    <div class="section-title">
+      Insurance
+    </div>
+
+    <div class="details-grid">
+
+      ${detail(
+        "Health Insurance",
+        family.health_insurance
+      )}
+      ${detail(
+        "Would You Like Health Insurance?",
+        family.health_insurance_needed
+      )}
+      ${detail(
+        "Health Insurance Help Details",
+        family.health_insurance_help_details
+      )}
+      ${detail(
+        "Term Life Insurance",
+        family.term_life_insurance
+      )}
+      ${detail(
+        "Other Insurance",
+        family.other_insurance
+      )}
+
+    </div>
+
+    <div class="section-title">
+      Family Members (${familyMembers.length})
     </div>
 
   `;
 
-
-  if (
-    familyMembers.length === 0
-  ) {
+  if (familyMembers.length === 0) {
 
     html += `
-
       <div class="empty">
-
         No family member rows found.
-
       </div>
-
     `;
 
   } else {
@@ -1641,164 +1503,161 @@ function viewFamily(
       ) => {
 
         const disability =
-          getDisabilityValue(
-            member
-          );
-
+          getDisabilityValue(member);
 
         html += `
 
           <div class="member-card">
 
-
             <div class="member-title">
-
-              Family Member
-              ${index + 1}
-
+              Family Member ${index + 1}
             </div>
 
+            <div class="section-title">
+              Basic Details
+            </div>
 
             <div class="member-grid">
 
+              ${memberDetail(
+                "Full Name",
+                member.full_name
+              )}
+
+              ${memberDetail(
+                "Date of Birth",
+                member.dob
+              )}
+
+              ${memberDetail(
+                "Age",
+                member.age
+              )}
+
+              ${memberDetail(
+                "Gender",
+                member.gender
+              )}
+
+              ${memberDetail(
+                "Relationship to Family Head",
+                member.relationship_to_family_head
+              )}
+
+              ${memberDetail(
+                "Mobile Number",
+                member.mobile_number
+              )}
+
+              ${memberDetail(
+                "Marital Status",
+                member.marital_status
+              )}
 
               <div class="member-item">
-
-                <strong>
-                  Full Name
-                </strong>
-
-                ${escapeHtml(
-                  member.full_name
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Date of Birth
-                </strong>
-
-                ${escapeHtml(
-                  member.dob
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Age
-                </strong>
-
-                ${escapeHtml(
-                  member.age
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Gender
-                </strong>
-
-                ${escapeHtml(
-                  member.gender
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Relationship to Family Head
-                </strong>
-
-                ${escapeHtml(
-                  member.relationship_to_family_head
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Mobile Number
-                </strong>
-
-                ${escapeHtml(
-                  member.mobile_number
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Education
-                </strong>
-
-                ${escapeHtml(
-                  member.education
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Education Status
-                </strong>
-
-                ${escapeHtml(
-                  member.education_status
-                )}
-
-              </div>
-
-
-              <div class="member-item">
-
-                <strong>
-                  Disability
-                </strong>
-
-                <span
-                  class="${
-                    disability === "Yes"
-                      ? "disability-yes"
-                      : "disability-no"
-                  }"
-                >
-
-                  ${disability}
-
+                <strong>Disability</strong>
+                <span class="${
+                  disability === "Yes"
+                    ? "disability-yes"
+                    : "disability-no"
+                }">
+                  ${escapeHtml(disability)}
                 </span>
-
               </div>
 
+            </div>
 
-              <div class="member-item">
+            <div class="section-title">
+              Education
+            </div>
 
-                <strong>
-                  Health Condition
-                </strong>
+            <div class="member-grid">
 
-                ${escapeHtml(
-                  member.health_condition
-                )}
+              ${memberDetail(
+                "Education",
+                member.education
+              )}
 
-              </div>
+              ${memberDetail(
+                "Education Status",
+                member.education_status
+              )}
 
+              ${memberDetail(
+                "Education Discontinue Reason",
+                member.education_discontinue_reason
+              )}
+
+              ${memberDetail(
+                "Future Education",
+                member.future_education
+              )}
+
+              ${memberDetail(
+                "Education Help / Support Required",
+                member.education_help
+              )}
+
+              ${memberDetail(
+                "Education Help / Support Details",
+                member.education_help_details
+              )}
+
+            </div>
+
+            <div class="section-title">
+              Occupation & Employment
+            </div>
+
+            <div class="member-grid">
+
+              ${memberDetail(
+                "Occupation",
+                member.occupation
+              )}
+
+              ${memberDetail(
+                "Employment Status",
+                member.employment_status
+              )}
+
+            </div>
+
+            <div class="section-title">
+              Health
+            </div>
+
+            <div class="member-grid">
+
+              ${memberDetail(
+                "Health Condition",
+                member.health_condition
+              )}
+
+              ${memberDetail(
+                "Disease Details",
+                member.disease_details
+              )}
+
+              ${memberDetail(
+                "Long-term Health Problem",
+                member.long_term_condition
+              )}
+
+              ${memberDetail(
+                "Regular Treatment Required",
+                member.treatment_status
+              )}
+
+              ${memberDetail(
+                "Health Help / Support Required",
+                member.health_help_required
+              )}
+
+              ${memberDetail(
+                "Health Help / Support Details",
+                member.health_help_details
+              )}
 
             </div>
 
@@ -1811,20 +1670,16 @@ function viewFamily(
 
   }
 
-
   const detailsContainer =
     document.getElementById(
       "detailsContainer"
     );
 
-
   detailsContainer.innerHTML =
     html;
 
-
   detailsContainer.style.display =
     "block";
-
 
   detailsContainer.scrollIntoView({
     behavior: "smooth",
@@ -1832,10 +1687,6 @@ function viewFamily(
   });
 }
 
-
-/* =========================================================
-   CLOSE DETAILS
-========================================================= */
 
 function closeDetails() {
 
