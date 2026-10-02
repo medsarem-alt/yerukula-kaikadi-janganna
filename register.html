@@ -2353,6 +2353,33 @@ familyForm.addEventListener(
       ================================================= */
 
       const memberRows =
+  members.map(
+    (member) => {
+
+      const get =
+        (name) => {
+
+          const element =
+            member.querySelector(
+              `[name="${name}"]`
+            );
+
+          return element
+            ? element.value || null
+            : null;
+
+        };
+
+      const getIf =
+        (name, condition) => {
+
+          if (!condition) {
+            return null;
+          }
+
+          return get(name);
+
+        }; =
         members.map(
           (member) => {
 
@@ -2446,25 +2473,28 @@ familyForm.addEventListener(
                 ),
 
               education_discontinue_reason:
-                get(
-                  `member_${member.dataset.id}_education_discontinue_reason`
-                ),
+  getIf(
+    `member_${member.dataset.id}_education_discontinue_reason`,
+    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
+  ),
 
-              future_education:
-                get(
-                  `member_${member.dataset.id}_future_education`
-                ),
+future_education:
+  getIf(
+    `member_${member.dataset.id}_future_education`,
+    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
+  ),
 
-              education_help:
-                get(
-                  `member_${member.dataset.id}_education_help`
-                ),
+education_help:
+  getIf(
+    `member_${member.dataset.id}_education_help`,
+    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
+  ),
 
-              education_help_details:
-                get(
-                  `member_${member.dataset.id}_education_help_details`
-                ),
-
+education_help_details:
+  getIf(
+    `member_${member.dataset.id}_education_help_details`,
+    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
+  ),
               occupation:
                 get(
                   `member_${member.dataset.id}_occupation`
