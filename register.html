@@ -2176,15 +2176,13 @@ familyForm.addEventListener(
             )
           : null;
 
-      const familyHeadEducationHelpValue =
-        familyHeadEducationFutureYes =
-        familyHeadFutureEducationValue ===
-        "Yes"
-          ? formData.get(
-              "family_head_education_help"
-            )
-          : null;
+      const familyHeadEducationFutureYes =
+  familyHeadFutureEducationValue === "Yes";
 
+const familyHeadEducationHelpValue =
+  familyHeadEducationFutureYes
+    ? formData.get("family_head_education_help")
+    : null;
       const familyHeadHealthValue =
         formData.get(
           "healthcare_access_problem"
