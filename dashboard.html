@@ -1376,6 +1376,14 @@ function viewFamily(
         family.family_head_marital_status || family.marital_status
       )}
       ${detail(
+        "Family Head Disability",
+        family.family_head_disability === true || family.family_head_disability === "true" || family.family_head_disability === "Yes" || family.family_head_disability === 1 || family.family_head_disability === "1"
+          ? "Yes"
+          : family.family_head_disability === false || family.family_head_disability === "false" || family.family_head_disability === "No" || family.family_head_disability === 0 || family.family_head_disability === "0"
+            ? "No"
+            : "—"
+      )}
+      ${detail(
         "Occupation",
         family.family_head_occupation || family.occupation
       )}
