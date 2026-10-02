@@ -243,6 +243,16 @@ Family Census / Registration Form
   <option value="Other">Other</option>
 </select>
 
+<label>Family Head Disability?</label>
+<select
+  id="familyHeadDisability"
+  name="family_head_disability"
+>
+  <option value="">Select</option>
+  <option value="Yes">Yes</option>
+  <option value="No">No</option>
+</select>
+
 <label>Family Head Mobile Number *</label>
 <input
   type="tel"
@@ -2136,6 +2146,17 @@ familyForm.addEventListener(
           formData.get(
             "family_head_marital_status"
           ) || null,
+
+        family_head_disability:
+          formData.get(
+            "family_head_disability"
+          ) === "Yes"
+            ? true
+            : formData.get(
+                "family_head_disability"
+              ) === "No"
+              ? false
+              : null,
 
         family_head_occupation:
           formData.get(
