@@ -2379,10 +2379,19 @@ familyForm.addEventListener(
 
           return get(name);
 
-        }; =
-        members.map(
-          (member) => {
+        };
 
+      /* ================================
+         DISABILITY
+      ================================= */
+
+      const disabilityValue =
+        get(
+          `member_${member.dataset.id}_disability`
+        );
+
+
+      return {
             const get =
               (name) => {
 
@@ -2581,19 +2590,27 @@ health_help_details:
 
       showStatus(
 
-        "Registration submitted successfully!\n\n" +
-        "Family ID: " +
-        familyId,
+  "Registration submitted successfully!\n\n" +
+  "Family ID: " +
+  familyId,
 
-        "success"
+  "success"
 
-      );
+);
 
 
-      submitBtn.disabled = false;
+/* =========================================
+   REFRESH COMPLETE FORM AFTER SUCCESS
+========================================= */
 
-      addMemberBtn.disabled = false;
+setTimeout(
+  function () {
 
+    window.location.reload();
+
+  },
+  1500
+);
 
     } catch (error) {
 
