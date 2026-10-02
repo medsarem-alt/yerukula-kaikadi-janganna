@@ -636,6 +636,10 @@ function getDisabilityValue(member) {
 
 async function checkAdmin() {
 
+  if (!supabaseClient) {
+    initializeSupabase();
+  }
+
   const {
     data: {
       session
@@ -1271,142 +1275,6 @@ function renderFamilies() {
    VIEW FAMILY
 ========================================================= */
 
-function exportExcel() {
-
-  if (!Array.isArray(familiesData) || familiesData.length === 0) {
-    alert("No family data available to export.");
-    return;
-  }
-
-  if (typeof XLSX === "undefined") {
-    alert("Excel export library could not be loaded. Please refresh the dashboard and try again.");
-    return;
-  }
-
-  const familyFields = [
-    ["Family ID", "id"],
-    ["Family Head Name", "family_head_name"],
-    ["Family Head Mobile", "family_mobile"],
-    ["Family Head DOB", "family_head_dob"],
-    ["Family Head Age", "family_head_age"],
-    ["Family Head Gender", "family_head_gender"],
-    ["Family Head Marital Status", "family_head_marital_status"],
-    ["Family Head Disability", "family_head_disability"],
-    ["Family Head Occupation", "family_head_occupation"],
-    ["Family Head Employment Status", "family_head_employment_status"],
-    ["State", "state"],
-    ["District", "district"],
-    ["City/Village", "city_village"],
-    ["Full Address", "full_address"],
-    ["Total Members", "total_members"],
-    ["Housing", "housing_type"],
-    ["Own House", "own_house"],
-    ["House Condition", "house_condition"],
-    ["Family Head Education", "family_head_education"],
-    ["Family Head Education Status", "family_head_education_status"],
-    ["Education Discontinue Reason", "family_head_education_discontinue_reason"],
-    ["Future Education", "family_head_future_education"],
-    ["Education Help/Support Required", "family_head_education_help"],
-    ["Education Help/Support Details", "family_head_education_help_details"],
-    ["Any Health Problem", "healthcare_access_problem"],
-    ["Disease/Health Details", "healthcare_access_details"],
-    ["Healthcare Help/Support Required", "healthcare_help_required"],
-    ["Healthcare Help/Support Details", "healthcare_help_details"],
-    ["Health Insurance", "health_insurance"],
-    ["Would You Like Health Insurance?", "health_insurance_needed"],
-    ["Health Insurance Help Details", "health_insurance_help_details"],
-    ["Term Life Insurance", "term_life_insurance"],
-    ["Other Insurance", "other_insurance"]
-  ];
-
-  const memberFields = [
-    ["Full Name", "full_name"],
-    ["DOB", "dob"],
-    ["Age", "age"],
-    ["Gender", "gender"],
-    ["Relationship", "relationship_to_family_head"],
-    ["Mobile Number", "mobile_number"],
-    ["Marital Status", "marital_status"],
-    ["Disability", "disability"],
-    ["Education", "education"],
-    ["Education Status", "education_status"],
-    ["Education Discontinue Reason", "education_discontinue_reason"],
-    ["Future Education", "future_education"],
-    ["Education Help/Support Required", "education_help"],
-    ["Education Help/Support Details", "education_help_details"],
-    ["Occupation", "occupation"],
-    ["Employment Status", "employment_status"],
-    ["Health Condition", "health_condition"],
-    ["Disease Details", "disease_details"],
-    ["Long-term Health Problem", "long_term_condition"],
-    ["Regular Treatment Required", "treatment_status"],
-    ["Health Help/Support Required", "health_help_required"],
-    ["Health Help/Support Details", "health_help_details"]
-  ];
-
-  const maxMembers = familiesData.reduce((max, family) => {
-    const count = membersData.filter(member =>
-      member &&
-      member.family_id &&
-      String(member.family_id) === String(family.id)
-    ).length;
-    return Math.max(max, count);
-  }, 0);
-
-  function excelValue(value, key) {
-    if (value === null || value === undefined || value === "") return "";
-
-    if (key === "family_head_disability" || key === "disability") {
-      if (value === true || value === "true" || value === "True" || value === "TRUE" || value === 1 || value === "1") return "Yes";
-      if (value === false || value === "false" || value === "False" || value === "FALSE" || value === 0 || value === "0") return "No";
-    }
-
-    if (key === "own_house") {
-      if (value === true || value === "true" || value === "True" || value === "TRUE" || value === 1 || value === "1") return "Yes";
-      if (value === false || value === "false" || value === "False" || value === "FALSE" || value === 0 || value === "0") return "No";
-    }
-
-    return value;
-  }
-
-  const rows = familiesData.map(family => {
-    const row = {};
-
-    familyFields.forEach(([label, key]) => {
-      row[label] = excelValue(family[key], key);
-    });
-
-    const familyMembers = membersData.filter(member =>
-      member &&
-      member.family_id &&
-      String(member.family_id) === String(family.id)
-    );
-
-    for (let i = 0; i < maxMembers; i++) {
-      const member = familyMembers[i] || {};
-
-      memberFields.forEach(([label, key]) => {
-        row[`Member ${i + 1} - ${label}`] = excelValue(member[key], key);
-      });
-    }
-
-    return row;
-  });
-
-  const worksheet = XLSX.utils.json_to_sheet(rows);
-
-  worksheet["!cols"] = Object.keys(rows[0]).map(header => ({
-    wch: Math.min(Math.max(String(header).length + 2, 14), 32)
-  }));
-
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Janganna Data");
-
-  const date = new Date().toISOString().slice(0, 10);
-  XLSX.writeFile(workbook, `Yerukula-Kaikadi-Janganna-${date}.xlsx`);
-}
-
-
 function viewFamily(
   familyId
 ) {
@@ -1859,6 +1727,150 @@ function clearSearch() {
 /* =========================================================
    LOGOUT
 ========================================================= */
+
+function exportExcel() {
+
+  try {
+
+    if (!Array.isArray(familiesData) || familiesData.length === 0) {
+      alert("No family data available to export.");
+      return;
+    }
+
+    if (typeof XLSX === "undefined") {
+      alert("Excel export library is not loaded. Please refresh the page and try again.");
+      return;
+    }
+
+    const memberGroups = {};
+
+    membersData.forEach(member => {
+      const familyId = String(member.family_id || "");
+      if (!familyId) return;
+      if (!memberGroups[familyId]) memberGroups[familyId] = [];
+      memberGroups[familyId].push(member);
+    });
+
+    const baseColumns = [
+      ["Family ID", "id"],
+      ["Family Head Name", "family_head_name"],
+      ["Family Head Mobile", "family_mobile"],
+      ["Family Head DOB", "family_head_dob"],
+      ["Family Head Age", "family_head_age"],
+      ["Family Head Gender", "family_head_gender"],
+      ["Family Head Marital Status", "family_head_marital_status"],
+      ["Family Head Disability", "family_head_disability"],
+      ["Family Head Occupation", "family_head_occupation"],
+      ["Family Head Employment Status", "family_head_employment_status"],
+      ["State", "state"],
+      ["District", "district"],
+      ["City / Village", "city_village"],
+      ["Full Address", "full_address"],
+      ["Total Members", "total_members"],
+      ["Housing", "housing_type"],
+      ["Own House", "own_house"],
+      ["House Condition", "house_condition"],
+      ["Family Head Education", "family_head_education"],
+      ["Family Head Education Status", "family_head_education_status"],
+      ["Family Head Education Discontinue Reason", "family_head_education_discontinue_reason"],
+      ["Family Head Future Education", "family_head_future_education"],
+      ["Family Head Education Help / Support", "family_head_education_help"],
+      ["Family Head Education Help Details", "family_head_education_help_details"],
+      ["Family Head Health Condition", "healthcare_access_problem"],
+      ["Family Head Health Details", "healthcare_access_details"],
+      ["Family Head Healthcare Help Required", "healthcare_help_required"],
+      ["Family Head Healthcare Help Details", "healthcare_help_details"],
+      ["Health Insurance", "health_insurance"],
+      ["Would Like Health Insurance", "health_insurance_needed"],
+      ["Health Insurance Help Details", "health_insurance_help_details"],
+      ["Term Life Insurance", "term_life_insurance"],
+      ["Other Insurance", "other_insurance"]
+    ];
+
+    const memberFields = [
+      ["Full Name", "full_name"],
+      ["DOB", "dob"],
+      ["Age", "age"],
+      ["Gender", "gender"],
+      ["Relationship", "relationship_to_family_head"],
+      ["Mobile", "mobile_number"],
+      ["Marital Status", "marital_status"],
+      ["Disability", "disability"],
+      ["Education", "education"],
+      ["Education Status", "education_status"],
+      ["Education Discontinue Reason", "education_discontinue_reason"],
+      ["Future Education", "future_education"],
+      ["Education Help / Support", "education_help"],
+      ["Education Help Details", "education_help_details"],
+      ["Occupation", "occupation"],
+      ["Employment Status", "employment_status"],
+      ["Health Condition", "health_condition"],
+      ["Disease Details", "disease_details"],
+      ["Long-term Health Problem", "long_term_condition"],
+      ["Regular Treatment Required", "treatment_status"],
+      ["Health Help / Support Required", "health_help_required"],
+      ["Health Help / Support Details", "health_help_details"]
+    ];
+
+    const maxMembers = Math.max(
+      0,
+      ...familiesData.map(family =>
+        (memberGroups[String(family.id)] || []).length
+      )
+    );
+
+    const headers = baseColumns.map(item => item[0]);
+
+    for (let i = 1; i <= maxMembers; i++) {
+      memberFields.forEach(field => {
+        headers.push(`Member ${i} ${field[0]}`);
+      });
+    }
+
+    const valueForExcel = value => {
+      if (value === true) return "Yes";
+      if (value === false) return "No";
+      if (value === null || value === undefined || value === "") return "";
+      return value;
+    };
+
+    const rows = familiesData.map(family => {
+      const row = {};
+
+      baseColumns.forEach(([label, key]) => {
+        row[label] = valueForExcel(family[key]);
+      });
+
+      const familyMembers = memberGroups[String(family.id)] || [];
+
+      for (let i = 1; i <= maxMembers; i++) {
+        const member = familyMembers[i - 1];
+        memberFields.forEach(([label, key]) => {
+          row[`Member ${i} ${label}`] = member
+            ? valueForExcel(member[key])
+            : "";
+        });
+      }
+
+      return row;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+    worksheet["!cols"] = headers.map(() => ({ wch: 22 }));
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Janganna Data");
+
+    const date = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(workbook, `Yerukula-Kaikadi-Janganna-${date}.xlsx`);
+
+  } catch (error) {
+    console.error("Excel export error:", error);
+    alert("Excel export failed: " + (error.message || error));
+  }
+
+}
+
 
 async function logout() {
 
