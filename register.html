@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -531,7 +532,6 @@ Family Census / Registration Form
     placeholder="Please describe the health problem or disease"
   ></textarea>
 
-
   <label>
     Long-term Health Problem?
   </label>
@@ -542,13 +542,10 @@ Family Census / Registration Form
   >
 
     <option value="">Select</option>
-
     <option value="Yes">Yes</option>
-
     <option value="No">No</option>
 
   </select>
-
 
   <label>
     Regular Treatment Required?
@@ -560,13 +557,10 @@ Family Census / Registration Form
   >
 
     <option value="">Select</option>
-
     <option value="Yes">Yes</option>
-
     <option value="No">No</option>
 
   </select>
-
 
   <label>
     Healthcare Help / Support Required?
@@ -578,13 +572,10 @@ Family Census / Registration Form
   >
 
     <option value="">Select</option>
-
     <option value="Yes">Yes</option>
-
     <option value="No">No</option>
 
   </select>
-
 
   <div
     id="healthcareHelpDetailsSection"
@@ -641,13 +632,10 @@ Family Census / Registration Form
 >
 
   <option value="">Select</option>
-
   <option value="Yes">Yes</option>
-
   <option value="No">No</option>
 
 </select>
-
 
 <div
   id="healthInsuranceHelpSection"
@@ -664,13 +652,10 @@ Family Census / Registration Form
   >
 
     <option value="">Select</option>
-
     <option value="Yes">Yes</option>
-
     <option value="No">No</option>
 
   </select>
-
 
   <div
     id="healthInsuranceHelpDetailsSection"
@@ -691,28 +676,22 @@ Family Census / Registration Form
 
 </div>
 
-
 <label>Term Life Insurance</label>
 
 <select name="term_life_insurance">
 
   <option value="">Select</option>
-
   <option value="Yes">Yes</option>
-
   <option value="No">No</option>
 
 </select>
-
 
 <label>Other Insurance</label>
 
 <select name="other_insurance">
 
   <option value="">Select</option>
-
   <option value="Yes">Yes</option>
-
   <option value="No">No</option>
 
 </select>
@@ -807,246 +786,298 @@ function showStatus(message, type) {
    FAMILY HEAD EDUCATION
 ===================================================== */
 
-document
-  .getElementById("familyHeadEducationStatus")
-  .addEventListener("change", function() {
+const familyHeadEducationStatus =
+  document.getElementById(
+    "familyHeadEducationStatus"
+  );
 
-    const section =
-      document.getElementById(
-        "familyHeadDiscontinuedSection"
-      );
+const familyHeadDiscontinuedSection =
+  document.getElementById(
+    "familyHeadDiscontinuedSection"
+  );
 
-    const employmentSection =
-      document.getElementById(
-        "familyHeadEmploymentSection"
-      );
+const familyHeadFutureEducation =
+  document.getElementById(
+    "familyHeadFutureEducation"
+  );
 
-    const employmentStatus =
-      document.getElementById(
-        "familyHeadEmploymentStatus"
-      );
+const familyHeadEducationHelpSection =
+  document.getElementById(
+    "familyHeadEducationHelpSection"
+  );
 
-    const occupation =
-      document.getElementById(
-        "familyHeadOccupation"
-      );
+const familyHeadEducationHelp =
+  document.getElementById(
+    "familyHeadEducationHelp"
+  );
+
+const familyHeadEducationHelpDetailsSection =
+  document.getElementById(
+    "familyHeadEducationHelpDetailsSection"
+  );
+
+const familyHeadEducationDiscontinueReason =
+  document.querySelector(
+    '[name="family_head_education_discontinue_reason"]'
+  );
+
+const familyHeadEducationHelpDetails =
+  document.querySelector(
+    '[name="family_head_education_help_details"]'
+  );
+
+const familyHeadEmploymentSection =
+  document.getElementById(
+    "familyHeadEmploymentSection"
+  );
+
+const familyHeadEmploymentStatus =
+  document.getElementById(
+    "familyHeadEmploymentStatus"
+  );
+
+const familyHeadOccupation =
+  document.getElementById(
+    "familyHeadOccupation"
+  );
 
 
-    if (this.value === "Currently Studying") {
+familyHeadEducationStatus.addEventListener(
+  "change",
+  function() {
 
-      employmentSection.classList.add("hidden");
+    if (
+      this.value ===
+      "Currently Studying"
+    ) {
 
-      employmentStatus.value = "";
+      familyHeadEmploymentSection
+        .classList
+        .add("hidden");
 
-      occupation.value = "";
+      familyHeadEmploymentStatus.value = "";
+
+      familyHeadOccupation.value = "";
 
     } else {
 
-      employmentSection.classList.remove("hidden");
+      familyHeadEmploymentSection
+        .classList
+        .remove("hidden");
 
     }
 
 
-    if (this.value === "Education Discontinued") {
+    if (
+      this.value ===
+      "Education Discontinued"
+    ) {
 
-      section.classList.remove("hidden");
+      familyHeadDiscontinuedSection
+        .classList
+        .remove("hidden");
 
     } else {
 
-      section.classList.add("hidden");
+      familyHeadDiscontinuedSection
+        .classList
+        .add("hidden");
 
-      document
-        .getElementById(
-          "familyHeadEducationHelpSection"
-        )
-        .classList.add("hidden");
+      familyHeadEducationDiscontinueReason.value = "";
 
-      document
-        .getElementById(
-          "familyHeadEducationHelpDetailsSection"
-        )
-        .classList.add("hidden");
+      familyHeadFutureEducation.value = "";
+
+      familyHeadEducationHelp.value = "";
+
+      familyHeadEducationHelpDetails.value = "";
+
+      familyHeadEducationHelpSection
+        .classList
+        .add("hidden");
+
+      familyHeadEducationHelpDetailsSection
+        .classList
+        .add("hidden");
 
     }
 
-  });
+  }
+);
 
 
-document
-  .getElementById("familyHeadFutureEducation")
-  .addEventListener("change", function() {
-
-    const section =
-      document.getElementById(
-        "familyHeadEducationHelpSection"
-      );
+familyHeadFutureEducation.addEventListener(
+  "change",
+  function() {
 
     if (this.value === "Yes") {
 
-      section.classList.remove("hidden");
+      familyHeadEducationHelpSection
+        .classList
+        .remove("hidden");
 
     } else {
 
-      section.classList.add("hidden");
+      familyHeadEducationHelpSection
+        .classList
+        .add("hidden");
 
-      document
-        .getElementById(
-          "familyHeadEducationHelpDetailsSection"
-        )
-        .classList.add("hidden");
+      familyHeadEducationHelp.value = "";
+
+      familyHeadEducationHelpDetails.value = "";
+
+      familyHeadEducationHelpDetailsSection
+        .classList
+        .add("hidden");
 
     }
 
-  });
+  }
+);
 
 
-document
-  .getElementById("familyHeadEducationHelp")
-  .addEventListener("change", function() {
-
-    const section =
-      document.getElementById(
-        "familyHeadEducationHelpDetailsSection"
-      );
+familyHeadEducationHelp.addEventListener(
+  "change",
+  function() {
 
     if (this.value === "Yes") {
 
-      section.classList.remove("hidden");
+      familyHeadEducationHelpDetailsSection
+        .classList
+        .remove("hidden");
 
     } else {
 
-      section.classList.add("hidden");
+      familyHeadEducationHelpDetailsSection
+        .classList
+        .add("hidden");
+
+      familyHeadEducationHelpDetails.value = "";
 
     }
 
-  });
+  }
+);
 
 
 /* =====================================================
    INITIAL FAMILY HEAD EMPLOYMENT STATE
 ===================================================== */
 
-(function () {
+if (
+  familyHeadEducationStatus.value ===
+  "Currently Studying"
+) {
 
-  const educationStatus =
-    document.getElementById(
-      "familyHeadEducationStatus"
-    );
+  familyHeadEmploymentSection
+    .classList
+    .add("hidden");
 
-  const employmentSection =
-    document.getElementById(
-      "familyHeadEmploymentSection"
-    );
-
-  if (
-    educationStatus.value ===
-    "Currently Studying"
-  ) {
-
-    employmentSection.classList.add("hidden");
-
-  }
-
-})();
+}
 
 
 /* =====================================================
    FAMILY HEAD HEALTH
 ===================================================== */
 
-document
-  .getElementById("healthcareAccess")
-  .addEventListener("change", function () {
+const healthcareAccess =
+  document.getElementById(
+    "healthcareAccess"
+  );
 
-    const section =
-      document.getElementById(
-        "healthcareDetailsSection"
-      );
+const healthcareDetailsSection =
+  document.getElementById(
+    "healthcareDetailsSection"
+  );
 
-    const details =
-      document.getElementById(
-        "healthcareAccessDetails"
-      );
+const healthcareAccessDetails =
+  document.getElementById(
+    "healthcareAccessDetails"
+  );
 
-    const longTerm =
-      document.getElementById(
-        "familyHeadLongTermCondition"
-      );
+const familyHeadLongTermCondition =
+  document.getElementById(
+    "familyHeadLongTermCondition"
+  );
 
-    const treatment =
-      document.getElementById(
-        "familyHeadTreatmentStatus"
-      );
+const familyHeadTreatmentStatus =
+  document.getElementById(
+    "familyHeadTreatmentStatus"
+  );
 
-    const help =
-      document.getElementById(
-        "healthcareHelpRequired"
-      );
+const healthcareHelpRequired =
+  document.getElementById(
+    "healthcareHelpRequired"
+  );
 
-    const helpDetails =
-      document.getElementById(
-        "healthcareHelpDetails"
-      );
+const healthcareHelpDetailsSection =
+  document.getElementById(
+    "healthcareHelpDetailsSection"
+  );
 
-    const helpSection =
-      document.getElementById(
-        "healthcareHelpDetailsSection"
-      );
-
-
-    if (this.value === "Yes") {
-
-      section.classList.remove("hidden");
-
-    } else {
-
-      section.classList.add("hidden");
-
-      details.value = "";
-
-      longTerm.value = "";
-
-      treatment.value = "";
-
-      help.value = "";
-
-      helpDetails.value = "";
-
-      helpSection.classList.add("hidden");
-
-    }
-
-  });
+const healthcareHelpDetails =
+  document.getElementById(
+    "healthcareHelpDetails"
+  );
 
 
-document
-  .getElementById("healthcareHelpRequired")
-  .addEventListener("change", function () {
-
-    const section =
-      document.getElementById(
-        "healthcareHelpDetailsSection"
-      );
-
-    const details =
-      document.getElementById(
-        "healthcareHelpDetails"
-      );
-
+healthcareAccess.addEventListener(
+  "change",
+  function() {
 
     if (this.value === "Yes") {
 
-      section.classList.remove("hidden");
+      healthcareDetailsSection
+        .classList
+        .remove("hidden");
 
     } else {
 
-      section.classList.add("hidden");
+      healthcareDetailsSection
+        .classList
+        .add("hidden");
 
-      details.value = "";
+      healthcareAccessDetails.value = "";
+
+      familyHeadLongTermCondition.value = "";
+
+      familyHeadTreatmentStatus.value = "";
+
+      healthcareHelpRequired.value = "";
+
+      healthcareHelpDetails.value = "";
+
+      healthcareHelpDetailsSection
+        .classList
+        .add("hidden");
 
     }
 
-  });
+  }
+);
+
+
+healthcareHelpRequired.addEventListener(
+  "change",
+  function() {
+
+    if (this.value === "Yes") {
+
+      healthcareHelpDetailsSection
+        .classList
+        .remove("hidden");
+
+    } else {
+
+      healthcareHelpDetailsSection
+        .classList
+        .add("hidden");
+
+      healthcareHelpDetails.value = "";
+
+    }
+
+  }
+);
 
 
 /* =====================================================
@@ -1107,7 +1138,6 @@ function addMember() {
       <h3>Family Member ${id}</h3>
     </div>
 
-
     <label>Full Name *</label>
 
     <input
@@ -1116,14 +1146,12 @@ function addMember() {
       required
     >
 
-
     <label>Date of Birth</label>
 
     <input
       type="date"
       name="member_${id}_dob"
     >
-
 
     <label>Age</label>
 
@@ -1132,7 +1160,6 @@ function addMember() {
       name="member_${id}_age"
       min="0"
     >
-
 
     <label>Gender</label>
 
@@ -1158,7 +1185,6 @@ function addMember() {
 
     </select>
 
-
     <label>
       Relationship to Family Head
     </label>
@@ -1168,7 +1194,6 @@ function addMember() {
       name="member_${id}_relationship_to_family_head"
       placeholder="Example: Wife, Son, Daughter"
     >
-
 
     <label>Marital Status</label>
 
@@ -1202,7 +1227,6 @@ function addMember() {
 
     </select>
 
-
     <label>Mobile Number</label>
 
     <input
@@ -1214,7 +1238,6 @@ function addMember() {
       minlength="10"
       placeholder="10-digit mobile number"
     >
-
 
     <!-- ================= DISABILITY ================= -->
 
@@ -1240,11 +1263,9 @@ function addMember() {
 
     </select>
 
-
     <!-- ================= EDUCATION ================= -->
 
     <h3>Education</h3>
-
 
     <label>Education</label>
 
@@ -1253,7 +1274,6 @@ function addMember() {
       name="member_${id}_education"
       placeholder="Example: 10th, 12th, Graduate"
     >
-
 
     <label>Education Status</label>
 
@@ -1288,7 +1308,6 @@ function addMember() {
 
     </select>
 
-
     <div
       class="memberEducationSection hidden section-box"
     >
@@ -1301,7 +1320,6 @@ function addMember() {
         name="member_${id}_education_discontinue_reason"
         placeholder="Why was education discontinued?"
       ></textarea>
-
 
       <label>
         Would you like to continue education in future?
@@ -1325,7 +1343,6 @@ function addMember() {
         </option>
 
       </select>
-
 
       <div
         class="memberEducationHelpSection hidden"
@@ -1354,7 +1371,6 @@ function addMember() {
 
         </select>
 
-
         <div
           class="memberEducationHelpDetailsSection hidden"
         >
@@ -1374,13 +1390,11 @@ function addMember() {
 
     </div>
 
-
     <!-- ================= EMPLOYMENT ================= -->
 
     <div class="memberEmploymentSection">
 
       <h3>Employment</h3>
-
 
       <label>Occupation</label>
 
@@ -1388,7 +1402,6 @@ function addMember() {
         type="text"
         name="member_${id}_occupation"
       >
-
 
       <label>Employment Status</label>
 
@@ -1429,11 +1442,9 @@ function addMember() {
 
     </div>
 
-
     <!-- ================= HEALTH ================= -->
 
     <h3>Health Condition</h3>
-
 
     <label>
       Any Health Problem?
@@ -1458,7 +1469,6 @@ function addMember() {
 
     </select>
 
-
     <div
       class="memberHealthSection hidden section-box"
     >
@@ -1471,7 +1481,6 @@ function addMember() {
         name="member_${id}_disease_details"
         placeholder="Please describe the health problem or disease"
       ></textarea>
-
 
       <label>
         Long-term Health Problem?
@@ -1495,7 +1504,6 @@ function addMember() {
 
       </select>
 
-
       <label>
         Regular Treatment Required?
       </label>
@@ -1517,7 +1525,6 @@ function addMember() {
         </option>
 
       </select>
-
 
       <label>
         Help / Support Required?
@@ -1542,7 +1549,6 @@ function addMember() {
 
       </select>
 
-
       <div
         class="memberHealthHelpDetailsSection hidden"
       >
@@ -1559,7 +1565,6 @@ function addMember() {
       </div>
 
     </div>
-
 
     <button
       type="button"
@@ -1585,7 +1590,7 @@ function addMember() {
 
   removeBtn.addEventListener(
     "click",
-    function () {
+    function() {
 
       member.remove();
 
@@ -1629,10 +1634,20 @@ function addMember() {
       ".memberEducationHelpDetailsSection"
     );
 
+  const educationReason =
+    member.querySelector(
+      `[name="member_${id}_education_discontinue_reason"]`
+    );
+
+  const educationHelpDetailsInput =
+    member.querySelector(
+      `[name="member_${id}_education_help_details"]`
+    );
+
 
   educationStatus.addEventListener(
     "change",
-    function () {
+    function() {
 
       if (
         this.value ===
@@ -1645,37 +1660,35 @@ function addMember() {
 
       } else {
 
-  educationSection
-    .classList
-    .add("hidden");
+        educationSection
+          .classList
+          .add("hidden");
 
-  educationHelpSection
-    .classList
-    .add("hidden");
+        educationHelpSection
+          .classList
+          .add("hidden");
 
-  educationHelpDetails
-    .classList
-    .add("hidden");
+        educationHelpDetails
+          .classList
+          .add("hidden");
 
-  member.querySelector(
-    `[name="member_${id}_education_discontinue_reason"]`
-  ).value = "";
+        educationReason.value = "";
 
-  futureEducation.value = "";
+        futureEducation.value = "";
 
-  educationHelp.value = "";
+        educationHelp.value = "";
 
-  member.querySelector(
-    `[name="member_${id}_education_help_details"]`
-  ).value = "";
+        educationHelpDetailsInput.value = "";
 
-}
+      }
+
+    }
   );
 
 
   futureEducation.addEventListener(
     "change",
-    function () {
+    function() {
 
       if (this.value === "Yes") {
 
@@ -1692,6 +1705,10 @@ function addMember() {
         educationHelpDetails
           .classList
           .add("hidden");
+
+        educationHelp.value = "";
+
+        educationHelpDetailsInput.value = "";
 
       }
 
@@ -1701,7 +1718,7 @@ function addMember() {
 
   educationHelp.addEventListener(
     "change",
-    function () {
+    function() {
 
       if (this.value === "Yes") {
 
@@ -1714,6 +1731,8 @@ function addMember() {
         educationHelpDetails
           .classList
           .add("hidden");
+
+        educationHelpDetailsInput.value = "";
 
       }
 
@@ -1745,10 +1764,30 @@ function addMember() {
       ".memberHealthHelpDetailsSection"
     );
 
+  const diseaseDetails =
+    member.querySelector(
+      `[name="member_${id}_disease_details"]`
+    );
+
+  const longTermCondition =
+    member.querySelector(
+      `[name="member_${id}_long_term_condition"]`
+    );
+
+  const treatmentStatus =
+    member.querySelector(
+      `[name="member_${id}_treatment_status"]`
+    );
+
+  const healthHelpDetailsInput =
+    member.querySelector(
+      `[name="member_${id}_health_help_details"]`
+    );
+
 
   healthStatus.addEventListener(
     "change",
-    function () {
+    function() {
 
       if (this.value === "Yes") {
 
@@ -1758,40 +1797,33 @@ function addMember() {
 
       } else {
 
-  healthSection
-    .classList
-    .add("hidden");
+        healthSection
+          .classList
+          .add("hidden");
 
-  healthHelpDetails
-    .classList
-    .add("hidden");
+        healthHelpDetails
+          .classList
+          .add("hidden");
 
-  member.querySelector(
-    `[name="member_${id}_disease_details"]`
-  ).value = "";
+        diseaseDetails.value = "";
 
-  member.querySelector(
-    `[name="member_${id}_long_term_condition"]`
-  ).value = "";
+        longTermCondition.value = "";
 
-  member.querySelector(
-    `[name="member_${id}_treatment_status"]`
-  ).value = "";
+        treatmentStatus.value = "";
 
-  healthHelp.value = "";
+        healthHelp.value = "";
 
-  member.querySelector(
-    `[name="member_${id}_health_help_details"]`
-  ).value = "";
+        healthHelpDetailsInput.value = "";
 
-}
+      }
+
     }
   );
 
 
   healthHelp.addEventListener(
     "change",
-    function () {
+    function() {
 
       if (this.value === "Yes") {
 
@@ -1804,6 +1836,8 @@ function addMember() {
         healthHelpDetails
           .classList
           .add("hidden");
+
+        healthHelpDetailsInput.value = "";
 
       }
 
@@ -1838,7 +1872,6 @@ function addMember() {
 
     const employmentValue =
       employmentStatus.value;
-
 
     const isStudent =
       educationValue ===
@@ -1895,94 +1928,84 @@ addMemberBtn.addEventListener(
    HEALTH INSURANCE
 ===================================================== */
 
-document
-  .getElementById("healthInsurance")
-  .addEventListener(
-    "change",
-    function () {
+const healthInsurance =
+  document.getElementById(
+    "healthInsurance"
+  );
 
-      const section =
-        document.getElementById(
-          "healthInsuranceHelpSection"
-        );
+const healthInsuranceHelpSection =
+  document.getElementById(
+    "healthInsuranceHelpSection"
+  );
 
-      const needed =
-        document.getElementById(
-          "healthInsuranceNeeded"
-        );
+const healthInsuranceNeeded =
+  document.getElementById(
+    "healthInsuranceNeeded"
+  );
 
-      const detailsSection =
-        document.getElementById(
-          "healthInsuranceHelpDetailsSection"
-        );
+const healthInsuranceHelpDetailsSection =
+  document.getElementById(
+    "healthInsuranceHelpDetailsSection"
+  );
 
-      const details =
-        document.getElementById(
-          "healthInsuranceHelpDetails"
-        );
-
-
-      if (this.value === "No") {
-
-        section
-          .classList
-          .remove("hidden");
-
-      } else {
-
-        section
-          .classList
-          .add("hidden");
-
-        needed.value = "";
-
-        details.value = "";
-
-        detailsSection
-          .classList
-          .add("hidden");
-
-      }
-
-    }
+const healthInsuranceHelpDetails =
+  document.getElementById(
+    "healthInsuranceHelpDetails"
   );
 
 
-document
-  .getElementById("healthInsuranceNeeded")
-  .addEventListener(
-    "change",
-    function () {
+healthInsurance.addEventListener(
+  "change",
+  function() {
 
-      const section =
-        document.getElementById(
-          "healthInsuranceHelpDetailsSection"
-        );
+    if (this.value === "No") {
 
-      const details =
-        document.getElementById(
-          "healthInsuranceHelpDetails"
-        );
+      healthInsuranceHelpSection
+        .classList
+        .remove("hidden");
 
+    } else {
 
-      if (this.value === "Yes") {
+      healthInsuranceHelpSection
+        .classList
+        .add("hidden");
 
-        section
-          .classList
-          .remove("hidden");
+      healthInsuranceNeeded.value = "";
 
-      } else {
+      healthInsuranceHelpDetails.value = "";
 
-        section
-          .classList
-          .add("hidden");
-
-        details.value = "";
-
-      }
+      healthInsuranceHelpDetailsSection
+        .classList
+        .add("hidden");
 
     }
-  );
+
+  }
+);
+
+
+healthInsuranceNeeded.addEventListener(
+  "change",
+  function() {
+
+    if (this.value === "Yes") {
+
+      healthInsuranceHelpDetailsSection
+        .classList
+        .remove("hidden");
+
+    } else {
+
+      healthInsuranceHelpDetailsSection
+        .classList
+        .add("hidden");
+
+      healthInsuranceHelpDetails.value = "";
+
+    }
+
+  }
+);
 
 
 /* =====================================================
@@ -1991,7 +2014,7 @@ document
 
 familyForm.addEventListener(
   "submit",
-  async function (event) {
+  async function(event) {
 
     event.preventDefault();
 
@@ -2134,6 +2157,44 @@ familyForm.addEventListener(
 
 
       /* =================================================
+         FAMILY HEAD CONDITIONS
+      ================================================= */
+
+      const familyHeadEducationStatusValue =
+        formData.get(
+          "family_head_education_status"
+        );
+
+      const familyHeadEducationDiscontinued =
+        familyHeadEducationStatusValue ===
+        "Education Discontinued";
+
+      const familyHeadFutureEducationValue =
+        familyHeadEducationDiscontinued
+          ? formData.get(
+              "family_head_future_education"
+            )
+          : null;
+
+      const familyHeadEducationHelpValue =
+        familyHeadEducationFutureYes =
+        familyHeadFutureEducationValue ===
+        "Yes"
+          ? formData.get(
+              "family_head_education_help"
+            )
+          : null;
+
+      const familyHeadHealthValue =
+        formData.get(
+          "healthcare_access_problem"
+        );
+
+      const familyHeadHasHealthProblem =
+        familyHeadHealthValue === "Yes";
+
+
+      /* =================================================
          FAMILY DATA
       ================================================= */
 
@@ -2242,59 +2303,88 @@ familyForm.addEventListener(
           ) || null,
 
         family_head_education_status:
-          formData.get(
-            "family_head_education_status"
-          ) || null,
+          familyHeadEducationStatusValue ||
+          null,
 
         family_head_education_discontinue_reason:
-          formData.get(
-            "family_head_education_discontinue_reason"
-          ) || null,
+          familyHeadEducationDiscontinued
+            ? (
+                formData.get(
+                  "family_head_education_discontinue_reason"
+                ) || null
+              )
+            : null,
 
         family_head_future_education:
-          formData.get(
-            "family_head_future_education"
-          ) || null,
+          familyHeadEducationDiscontinued
+            ? (
+                formData.get(
+                  "family_head_future_education"
+                ) || null
+              )
+            : null,
 
         family_head_education_help:
-          formData.get(
-            "family_head_education_help"
-          ) || null,
+          familyHeadEducationFutureYes
+            ? (
+                familyHeadEducationHelpValue ||
+                null
+              )
+            : null,
 
         family_head_education_help_details:
-          formData.get(
-            "family_head_education_help_details"
-          ) || null,
+          familyHeadEducationFutureYes &&
+          familyHeadEducationHelpValue === "Yes"
+            ? (
+                formData.get(
+                  "family_head_education_help_details"
+                ) || null
+              )
+            : null,
 
         healthcare_access_problem:
-          formData.get(
-            "healthcare_access_problem"
-          ) || null,
+          familyHeadHealthValue || null,
 
         healthcare_access_details:
-          document.getElementById(
-            "healthcareAccessDetails"
-          ).value || null,
+          familyHeadHasHealthProblem
+            ? (
+                healthcareAccessDetails.value ||
+                null
+              )
+            : null,
 
         family_head_long_term_condition:
-          document.getElementById(
-            "familyHeadLongTermCondition"
-          ).value || null,
+          familyHeadHasHealthProblem
+            ? (
+                familyHeadLongTermCondition.value ||
+                null
+              )
+            : null,
 
         family_head_treatment_status:
-          document.getElementById(
-            "familyHeadTreatmentStatus"
-          ).value || null,
+          familyHeadHasHealthProblem
+            ? (
+                familyHeadTreatmentStatus.value ||
+                null
+              )
+            : null,
 
         healthcare_help_required:
-          document.getElementById(
-            "healthcareHelpRequired"
-          ).value || null,
+          familyHeadHasHealthProblem
+            ? (
+                healthcareHelpRequired.value ||
+                null
+              )
+            : null,
 
         healthcare_help_details:
-          document.getElementById(
-            "healthcareHelpDetails"
-          ).value || null,
+          familyHeadHasHealthProblem &&
+          healthcareHelpRequired.value === "Yes"
+            ? (
+                healthcareHelpDetails.value ||
+                null
+              )
+            : null,
 
         health_insurance:
           formData.get(
@@ -2303,13 +2393,28 @@ familyForm.addEventListener(
 
         health_insurance_needed:
           formData.get(
-            "health_insurance_needed"
-          ) || null,
+            "health_insurance"
+          ) === "No"
+            ? (
+                formData.get(
+                  "health_insurance_needed"
+                ) || null
+              )
+            : null,
 
         health_insurance_help_details:
           formData.get(
-            "health_insurance_help_details"
-          ) || null,
+            "health_insurance"
+          ) === "No" &&
+          formData.get(
+            "health_insurance_needed"
+          ) === "Yes"
+            ? (
+                formData.get(
+                  "health_insurance_help_details"
+                ) || null
+              )
+            : null,
 
         term_life_insurance:
           formData.get(
@@ -2353,45 +2458,9 @@ familyForm.addEventListener(
       ================================================= */
 
       const memberRows =
-  members.map(
-    (member) => {
+        members.map(
+          (member) => {
 
-      const get =
-        (name) => {
-
-          const element =
-            member.querySelector(
-              `[name="${name}"]`
-            );
-
-          return element
-            ? element.value || null
-            : null;
-
-        };
-
-      const getIf =
-        (name, condition) => {
-
-          if (!condition) {
-            return null;
-          }
-
-          return get(name);
-
-        };
-
-      /* ================================
-         DISABILITY
-      ================================= */
-
-      const disabilityValue =
-        get(
-          `member_${member.dataset.id}_disability`
-        );
-
-
-      return {
             const get =
               (name) => {
 
@@ -2405,6 +2474,55 @@ familyForm.addEventListener(
                   : null;
 
               };
+
+
+            const getIf =
+              (name, condition) => {
+
+                if (!condition) {
+                  return null;
+                }
+
+                return get(name);
+
+              };
+
+
+            /* ================================
+               MEMBER CONDITIONS
+            ================================= */
+
+            const educationStatusValue =
+              get(
+                `member_${member.dataset.id}_education_status`
+              );
+
+            const isEducationDiscontinued =
+              educationStatusValue ===
+              "Education Discontinued";
+
+            const futureEducationValue =
+              isEducationDiscontinued
+                ? get(
+                    `member_${member.dataset.id}_future_education`
+                  )
+                : null;
+
+            const educationHelpValue =
+              isEducationDiscontinued &&
+              futureEducationValue === "Yes"
+                ? get(
+                    `member_${member.dataset.id}_education_help`
+                  )
+                : null;
+
+            const healthConditionValue =
+              get(
+                `member_${member.dataset.id}_health_condition`
+              );
+
+            const hasHealthProblem =
+              healthConditionValue === "Yes";
 
 
             /* ================================
@@ -2463,11 +2581,6 @@ familyForm.addEventListener(
                   `member_${member.dataset.id}_mobile_number`
                 ),
 
-              /* IMPORTANT:
-                 Disability Yes = true
-                 Disability No = false
-              */
-
               disability:
                 disabilityValue === "Yes",
 
@@ -2477,33 +2590,35 @@ familyForm.addEventListener(
                 ),
 
               education_status:
-                get(
-                  `member_${member.dataset.id}_education_status`
-                ),
+                educationStatusValue,
 
               education_discontinue_reason:
-  getIf(
-    `member_${member.dataset.id}_education_discontinue_reason`,
-    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
-  ),
+                getIf(
+                  `member_${member.dataset.id}_education_discontinue_reason`,
+                  isEducationDiscontinued
+                ),
 
-future_education:
-  getIf(
-    `member_${member.dataset.id}_future_education`,
-    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
-  ),
+              future_education:
+                getIf(
+                  `member_${member.dataset.id}_future_education`,
+                  isEducationDiscontinued
+                ),
 
-education_help:
-  getIf(
-    `member_${member.dataset.id}_education_help`,
-    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
-  ),
+              education_help:
+                getIf(
+                  `member_${member.dataset.id}_education_help`,
+                  isEducationDiscontinued &&
+                  futureEducationValue === "Yes"
+                ),
 
-education_help_details:
-  getIf(
-    `member_${member.dataset.id}_education_help_details`,
-    get(`member_${member.dataset.id}_education_status`) === "Education Discontinued"
-  ),
+              education_help_details:
+                getIf(
+                  `member_${member.dataset.id}_education_help_details`,
+                  isEducationDiscontinued &&
+                  futureEducationValue === "Yes" &&
+                  educationHelpValue === "Yes"
+                ),
+
               occupation:
                 get(
                   `member_${member.dataset.id}_occupation`
@@ -2515,37 +2630,41 @@ education_help_details:
                 ),
 
               health_condition:
-  get(`member_${member.dataset.id}_health_condition`),
+                healthConditionValue,
 
-disease_details:
-  getIf(
-    `member_${member.dataset.id}_disease_details`,
-    get(`member_${member.dataset.id}_health_condition`) === "Yes"
-  ),
+              disease_details:
+                getIf(
+                  `member_${member.dataset.id}_disease_details`,
+                  hasHealthProblem
+                ),
 
-long_term_condition:
-  getIf(
-    `member_${member.dataset.id}_long_term_condition`,
-    get(`member_${member.dataset.id}_health_condition`) === "Yes"
-  ),
+              long_term_condition:
+                getIf(
+                  `member_${member.dataset.id}_long_term_condition`,
+                  hasHealthProblem
+                ),
 
-treatment_status:
-  getIf(
-    `member_${member.dataset.id}_treatment_status`,
-    get(`member_${member.dataset.id}_health_condition`) === "Yes"
-  ),
+              treatment_status:
+                getIf(
+                  `member_${member.dataset.id}_treatment_status`,
+                  hasHealthProblem
+                ),
 
-health_help_required:
-  getIf(
-    `member_${member.dataset.id}_health_help_required`,
-    get(`member_${member.dataset.id}_health_condition`) === "Yes"
-  ),
+              health_help_required:
+                getIf(
+                  `member_${member.dataset.id}_health_help_required`,
+                  hasHealthProblem
+                ),
 
-health_help_details:
-  getIf(
-    `member_${member.dataset.id}_health_help_details`,
-    get(`member_${member.dataset.id}_health_condition`) === "Yes"
-  )
+              health_help_details:
+                getIf(
+                  `member_${member.dataset.id}_health_help_details`,
+                  hasHealthProblem &&
+                  get(
+                    `member_${member.dataset.id}_health_help_required`
+                  ) === "Yes"
+                )
+
             };
 
           }
@@ -2589,28 +2708,26 @@ health_help_details:
       ================================================= */
 
       showStatus(
-
-  "Registration submitted successfully!\n\n" +
-  "Family ID: " +
-  familyId,
-
-  "success"
-
-);
+        "Registration submitted successfully!\n\n" +
+        "Family ID: " +
+        familyId,
+        "success"
+      );
 
 
-/* =========================================
-   REFRESH COMPLETE FORM AFTER SUCCESS
-========================================= */
+      /* =========================================
+         REFRESH COMPLETE FORM AFTER SUCCESS
+      ========================================= */
 
-setTimeout(
-  function () {
+      setTimeout(
+        function() {
 
-    window.location.reload();
+          window.location.reload();
 
-  },
-  1500
-);
+        },
+        1500
+      );
+
 
     } catch (error) {
 
@@ -2632,11 +2749,8 @@ setTimeout(
       ) {
 
         showStatus(
-
           "Supabase API key is invalid. Please put your real Supabase anon/publishable key in SUPABASE_ANON_KEY. Do NOT use the service_role key.",
-
           "error"
-
         );
 
       } else if (
@@ -2658,12 +2772,9 @@ setTimeout(
       ) {
 
         showStatus(
-
           message +
           "\n\nPlease check that the required Supabase columns exist in the database.",
-
           "error"
-
         );
 
       } else {
@@ -2696,3 +2807,4 @@ updateMemberCount();
 
 </body>
 </html>
+```
