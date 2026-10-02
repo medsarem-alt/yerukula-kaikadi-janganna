@@ -2506,35 +2506,37 @@ education_help_details:
                 ),
 
               health_condition:
-                get(
-                  `member_${member.dataset.id}_health_condition`
-                ),
+  get(`member_${member.dataset.id}_health_condition`),
 
-              disease_details:
-                get(
-                  `member_${member.dataset.id}_disease_details`
-                ),
+disease_details:
+  getIf(
+    `member_${member.dataset.id}_disease_details`,
+    get(`member_${member.dataset.id}_health_condition`) === "Yes"
+  ),
 
-              long_term_condition:
-                get(
-                  `member_${member.dataset.id}_long_term_condition`
-                ),
+long_term_condition:
+  getIf(
+    `member_${member.dataset.id}_long_term_condition`,
+    get(`member_${member.dataset.id}_health_condition`) === "Yes"
+  ),
 
-              treatment_status:
-                get(
-                  `member_${member.dataset.id}_treatment_status`
-                ),
+treatment_status:
+  getIf(
+    `member_${member.dataset.id}_treatment_status`,
+    get(`member_${member.dataset.id}_health_condition`) === "Yes"
+  ),
 
-              health_help_required:
-                get(
-                  `member_${member.dataset.id}_health_help_required`
-                ),
+health_help_required:
+  getIf(
+    `member_${member.dataset.id}_health_help_required`,
+    get(`member_${member.dataset.id}_health_condition`) === "Yes"
+  ),
 
-              health_help_details:
-                get(
-                  `member_${member.dataset.id}_health_help_details`
-                )
-
+health_help_details:
+  getIf(
+    `member_${member.dataset.id}_health_help_details`,
+    get(`member_${member.dataset.id}_health_condition`) === "Yes"
+  )
             };
 
           }
