@@ -1645,23 +1645,31 @@ function addMember() {
 
       } else {
 
-        educationSection
-          .classList
-          .add("hidden");
+  educationSection
+    .classList
+    .add("hidden");
 
-        educationHelpSection
-          .classList
-          .add("hidden");
+  educationHelpSection
+    .classList
+    .add("hidden");
 
-        educationHelpDetails
-          .classList
-          .add("hidden");
+  educationHelpDetails
+    .classList
+    .add("hidden");
 
-      }
+  member.querySelector(
+    `[name="member_${id}_education_discontinue_reason"]`
+  ).value = "";
 
-      updateEmploymentVisibility();
+  futureEducation.value = "";
 
-    }
+  educationHelp.value = "";
+
+  member.querySelector(
+    `[name="member_${id}_education_help_details"]`
+  ).value = "";
+
+}
   );
 
 
@@ -1750,16 +1758,33 @@ function addMember() {
 
       } else {
 
-        healthSection
-          .classList
-          .add("hidden");
+  healthSection
+    .classList
+    .add("hidden");
 
-        healthHelpDetails
-          .classList
-          .add("hidden");
+  healthHelpDetails
+    .classList
+    .add("hidden");
 
-      }
+  member.querySelector(
+    `[name="member_${id}_disease_details"]`
+  ).value = "";
 
+  member.querySelector(
+    `[name="member_${id}_long_term_condition"]`
+  ).value = "";
+
+  member.querySelector(
+    `[name="member_${id}_treatment_status"]`
+  ).value = "";
+
+  healthHelp.value = "";
+
+  member.querySelector(
+    `[name="member_${id}_health_help_details"]`
+  ).value = "";
+
+}
     }
   );
 
