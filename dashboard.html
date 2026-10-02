@@ -343,6 +343,104 @@ td {
     flex-direction: column;
   }
 }
+
+<style>
+/* EDIT FAMILY MODAL */
+.edit-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+  z-index: 9999;
+}
+.edit-modal-box {
+  background: white;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 94vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  position: sticky;
+  top: 0;
+  background: white;
+  padding-bottom: 10px;
+  z-index: 2;
+}
+.edit-modal-header h2 { margin: 0; font-size: 21px; }
+.edit-section-title {
+  margin: 20px 0 10px;
+  font-size: 17px;
+  font-weight: 700;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 7px;
+}
+.edit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.edit-field label {
+  display: block;
+  font-size: 12px;
+  color: #555;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.edit-field input,
+.edit-field select,
+.edit-field textarea {
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.edit-field textarea { min-height: 70px; resize: vertical; }
+.edit-member-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 20px;
+  position: sticky;
+  bottom: 0;
+  background: white;
+  padding-top: 10px;
+}
+.edit-save-btn { background: #16a34a; color: white; }
+.edit-cancel-btn { background: #6b7280; color: white; }
+.edit-status {
+  margin-top: 10px;
+  padding: 9px 10px;
+  border-radius: 7px;
+  display: none;
+  font-size: 14px;
+}
+.edit-btn { background: #f59e0b; color: white; padding: 7px 12px; margin-left: 5px; }
+@media (max-width: 700px) {
+  .edit-grid { grid-template-columns: 1fr; }
+  .edit-modal-box { padding: 14px; }
+}
+</style>
 </style>
 </head>
 
@@ -536,11 +634,21 @@ td {
 
   <!-- SELECTED FAMILY DETAILS -->
 
-  <div
-    id="detailsContainer"
-    class="details-card"
-    style="display:none;"
-  ></div>
+
+  <div id="editModal" class="edit-modal">
+    <div class="edit-modal-box">
+      <div class="edit-modal-header">
+        <h2>Edit Family</h2>
+        <button type="button" class="clear-btn" onclick="closeEditFamily()">Close</button>
+      </div>
+      <div id="editFormContainer"></div>
+      <div id="editStatus" class="edit-status"></div>
+      <div class="edit-actions">
+        <button type="button" class="edit-cancel-btn" onclick="closeEditFamily()">Cancel</button>
+        <button type="button" class="edit-save-btn" onclick="saveEditedFamily()">Save Changes</button>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -1244,6 +1352,12 @@ function renderFamilies() {
             >
               View
             </button>
+            <button
+              class="edit-btn"
+              onclick="editFamily('${family.id}')"
+            >
+              Edit
+            </button>
 
           </td>
 
@@ -1745,6 +1859,338 @@ function clearSearch() {
 /* =========================================================
    LOGOUT
 ========================================================= */
+
+
+/* =========================================================
+   EDIT FAMILY
+========================================================= */
+
+let editingFamilyId = null;
+
+function editValue(value) {
+  return value === null || value === undefined ? "" : String(value);
+}
+
+function editBool(value) {
+  if (
+    value === true || value === "true" || value === "True" ||
+    value === "TRUE" || value === "Yes" || value === "yes" ||
+    value === "YES" || value === 1 || value === "1"
+  ) return "Yes";
+
+  if (
+    value === false || value === "false" || value === "False" ||
+    value === "FALSE" || value === "No" || value === "no" ||
+    value === "NO" || value === 0 || value === "0"
+  ) return "No";
+
+  return "";
+}
+
+function editField(label, id, value, type="text") {
+  const safeValue = escapeHtml(editValue(value));
+  return `
+    <div class="edit-field">
+      <label for="${id}">${escapeHtml(label)}</label>
+      <input id="${id}" type="${type}" value="${safeValue}">
+    </div>
+  `;
+}
+
+function editSelect(label, id, value, options) {
+  const current = editValue(value);
+  let html = `
+    <div class="edit-field">
+      <label for="${id}">${escapeHtml(label)}</label>
+      <select id="${id}">
+        <option value="">Select</option>
+  `;
+  options.forEach(option => {
+    const selected = current === option ? "selected" : "";
+    html += `<option value="${escapeHtml(option)}" ${selected}>${escapeHtml(option)}</option>`;
+  });
+  html += `</select></div>`;
+  return html;
+}
+
+function editTextarea(label, id, value) {
+  return `
+    <div class="edit-field">
+      <label for="${id}">${escapeHtml(label)}</label>
+      <textarea id="${id}">${escapeHtml(editValue(value))}</textarea>
+    </div>
+  `;
+}
+
+function editMemberField(label, id, value, type="text") {
+  return editField(label, id, value, type);
+}
+
+async function editFamily(familyId) {
+  const family = familiesData.find(
+    item => String(item.id) === String(familyId)
+  );
+
+  if (!family) {
+    alert("Family record not found.");
+    return;
+  }
+
+  editingFamilyId = familyId;
+
+  const familyMembers = membersData.filter(
+    member =>
+      member &&
+      member.family_id &&
+      String(member.family_id) === String(familyId)
+  );
+
+  let html = `
+    <div class="edit-section-title">Family Head Details</div>
+    <div class="edit-grid">
+      ${editField("Family Head Name", "edit_family_head_name", family.family_head_name)}
+      ${editField("Mobile Number", "edit_family_mobile", family.family_mobile, "tel")}
+      ${editField("Date of Birth", "edit_family_head_dob", family.family_head_dob, "date")}
+      ${editField("Age", "edit_family_head_age", family.family_head_age, "number")}
+      ${editSelect("Gender", "edit_family_head_gender", family.family_head_gender, ["Male","Female","Other"])}
+      ${editSelect("Marital Status", "edit_family_head_marital_status", family.family_head_marital_status, ["Married","Unmarried","Widowed","Divorced","Other"])}
+      ${editSelect("Family Head Disability", "edit_family_head_disability", editBool(family.family_head_disability), ["Yes","No"])}
+      ${editField("Occupation", "edit_family_head_occupation", family.family_head_occupation)}
+      ${editField("Employment Status", "edit_family_head_employment_status", family.family_head_employment_status)}
+      ${editField("State", "edit_state", family.state)}
+      ${editField("District", "edit_district", family.district)}
+      ${editField("City/Village", "edit_city_village", family.city_village)}
+      ${editField("Total Members", "edit_total_members", family.total_members, "number")}
+      ${editSelect("Housing", "edit_housing_type", family.housing_type, ["Own House","Rented","Other"])}
+      ${editField("House Condition", "edit_house_condition", family.house_condition)}
+    </div>
+    <div class="edit-section-title">Address</div>
+    <div class="edit-grid">
+      ${editTextarea("Full Address", "edit_full_address", family.full_address)}
+    </div>
+
+    <div class="edit-section-title">Family Head Education</div>
+    <div class="edit-grid">
+      ${editField("Education", "edit_family_head_education", family.family_head_education)}
+      ${editField("Education Status", "edit_family_head_education_status", family.family_head_education_status)}
+      ${editTextarea("Education Discontinue Reason", "edit_family_head_education_discontinue_reason", family.family_head_education_discontinue_reason)}
+      ${editField("Future Education", "edit_family_head_future_education", family.family_head_future_education)}
+      ${editField("Education Help / Support Required", "edit_family_head_education_help", family.family_head_education_help)}
+      ${editTextarea("Education Help / Support Details", "edit_family_head_education_help_details", family.family_head_education_help_details)}
+    </div>
+
+    <div class="edit-section-title">Family Head Health</div>
+    <div class="edit-grid">
+      ${editField("Any Health Problem", "edit_healthcare_access_problem", family.healthcare_access_problem)}
+      ${editTextarea("Disease / Health Details", "edit_healthcare_access_details", family.healthcare_access_details)}
+      ${editField("Healthcare Help / Support Required", "edit_healthcare_help_required", family.healthcare_help_required)}
+      ${editTextarea("Healthcare Help / Support Details", "edit_healthcare_help_details", family.healthcare_help_details)}
+    </div>
+
+    <div class="edit-section-title">Insurance</div>
+    <div class="edit-grid">
+      ${editField("Health Insurance", "edit_health_insurance", family.health_insurance)}
+      ${editField("Would You Like Health Insurance?", "edit_health_insurance_needed", family.health_insurance_needed)}
+      ${editTextarea("Health Insurance Help Details", "edit_health_insurance_help_details", family.health_insurance_help_details)}
+      ${editField("Term Life Insurance", "edit_term_life_insurance", family.term_life_insurance)}
+      ${editField("Other Insurance", "edit_other_insurance", family.other_insurance)}
+    </div>
+
+    <div class="edit-section-title">Family Members (${familyMembers.length})</div>
+  `;
+
+  familyMembers.forEach((member, index) => {
+    const p = `edit_member_${index}_`;
+    html += `
+      <div class="edit-member-card">
+        <div class="member-title">Family Member ${index + 1}</div>
+
+        <div class="edit-section-title">Basic Details</div>
+        <div class="edit-grid">
+          ${editMemberField("Full Name", p+"full_name", member.full_name)}
+          ${editMemberField("Date of Birth", p+"dob", member.dob, "date")}
+          ${editMemberField("Age", p+"age", member.age, "number")}
+          ${editMemberField("Gender", p+"gender", member.gender)}
+          ${editMemberField("Relationship to Family Head", p+"relationship", member.relationship_to_family_head)}
+          ${editMemberField("Mobile Number", p+"mobile", member.mobile_number, "tel")}
+          ${editMemberField("Marital Status", p+"marital_status", member.marital_status)}
+          ${editSelect("Disability", p+"disability", editBool(member.disability), ["Yes","No"])}
+        </div>
+
+        <div class="edit-section-title">Education</div>
+        <div class="edit-grid">
+          ${editMemberField("Education", p+"education", member.education)}
+          ${editMemberField("Education Status", p+"education_status", member.education_status)}
+          ${editTextarea("Education Discontinue Reason", p+"education_discontinue_reason", member.education_discontinue_reason)}
+          ${editMemberField("Future Education", p+"future_education", member.future_education)}
+          ${editMemberField("Education Help / Support Required", p+"education_help", member.education_help)}
+          ${editTextarea("Education Help / Support Details", p+"education_help_details", member.education_help_details)}
+        </div>
+
+        <div class="edit-section-title">Occupation & Employment</div>
+        <div class="edit-grid">
+          ${editMemberField("Occupation", p+"occupation", member.occupation)}
+          ${editMemberField("Employment Status", p+"employment_status", member.employment_status)}
+        </div>
+
+        <div class="edit-section-title">Health</div>
+        <div class="edit-grid">
+          ${editMemberField("Health Condition", p+"health_condition", member.health_condition)}
+          ${editTextarea("Disease Details", p+"disease_details", member.disease_details)}
+          ${editMemberField("Long-term Health Problem", p+"long_term_condition", member.long_term_condition)}
+          ${editMemberField("Regular Treatment Required", p+"treatment_status", member.treatment_status)}
+          ${editMemberField("Health Help / Support Required", p+"health_help_required", member.health_help_required)}
+          ${editTextarea("Health Help / Support Details", p+"health_help_details", member.health_help_details)}
+        </div>
+      </div>
+    `;
+  });
+
+  document.getElementById("editFormContainer").innerHTML = html;
+  document.getElementById("editStatus").style.display = "none";
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function editGet(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : null;
+}
+
+function editBoolToDb(value) {
+  if (value === "Yes") return true;
+  if (value === "No") return false;
+  return null;
+}
+
+async function saveEditedFamily() {
+  if (!editingFamilyId) return;
+
+  const status = document.getElementById("editStatus");
+  const saveButton = document.querySelector(".edit-save-btn");
+
+  try {
+    saveButton.disabled = true;
+    saveButton.textContent = "Saving...";
+    status.style.display = "block";
+    status.style.background = "#eff6ff";
+    status.style.color = "#1d4ed8";
+    status.textContent = "Saving family details...";
+
+    const familyUpdate = {
+      family_head_name: editGet("edit_family_head_name"),
+      family_mobile: editGet("edit_family_mobile"),
+      family_head_dob: editGet("edit_family_head_dob") || null,
+      family_head_age: editGet("edit_family_head_age") ? Number(editGet("edit_family_head_age")) : null,
+      family_head_gender: editGet("edit_family_head_gender"),
+      family_head_marital_status: editGet("edit_family_head_marital_status"),
+      family_head_disability: editBoolToDb(editGet("edit_family_head_disability")),
+      family_head_occupation: editGet("edit_family_head_occupation"),
+      family_head_employment_status: editGet("edit_family_head_employment_status"),
+      state: editGet("edit_state"),
+      district: editGet("edit_district"),
+      city_village: editGet("edit_city_village"),
+      total_members: editGet("edit_total_members") ? Number(editGet("edit_total_members")) : null,
+      housing_type: editGet("edit_housing_type"),
+      own_house: editGet("edit_housing_type") === "Own House",
+      house_condition: editGet("edit_house_condition"),
+      full_address: editGet("edit_full_address"),
+      family_head_education: editGet("edit_family_head_education"),
+      family_head_education_status: editGet("edit_family_head_education_status"),
+      family_head_education_discontinue_reason: editGet("edit_family_head_education_discontinue_reason"),
+      family_head_future_education: editGet("edit_family_head_future_education"),
+      family_head_education_help: editGet("edit_family_head_education_help"),
+      family_head_education_help_details: editGet("edit_family_head_education_help_details"),
+      healthcare_access_problem: editGet("edit_healthcare_access_problem"),
+      healthcare_access_details: editGet("edit_healthcare_access_details"),
+      healthcare_help_required: editGet("edit_healthcare_help_required"),
+      healthcare_help_details: editGet("edit_healthcare_help_details"),
+      health_insurance: editGet("edit_health_insurance"),
+      health_insurance_needed: editGet("edit_health_insurance_needed"),
+      health_insurance_help_details: editGet("edit_health_insurance_help_details"),
+      term_life_insurance: editGet("edit_term_life_insurance"),
+      other_insurance: editGet("edit_other_insurance"),
+      updated_at: new Date().toISOString()
+    };
+
+    const { error: familyError } = await supabaseClient
+      .from("families")
+      .update(familyUpdate)
+      .eq("id", editingFamilyId);
+
+    if (familyError) throw familyError;
+
+    const familyMembers = membersData.filter(
+      member =>
+        member &&
+        member.family_id &&
+        String(member.family_id) === String(editingFamilyId)
+    );
+
+    for (let index = 0; index < familyMembers.length; index++) {
+      const member = familyMembers[index];
+      const p = `edit_member_${index}_`;
+
+      const memberUpdate = {
+        full_name: editGet(p+"full_name"),
+        dob: editGet(p+"dob") || null,
+        age: editGet(p+"age") ? Number(editGet(p+"age")) : null,
+        gender: editGet(p+"gender"),
+        relationship_to_family_head: editGet(p+"relationship"),
+        mobile_number: editGet(p+"mobile"),
+        marital_status: editGet(p+"marital_status"),
+        disability: editBoolToDb(editGet(p+"disability")),
+        education: editGet(p+"education"),
+        education_status: editGet(p+"education_status"),
+        education_discontinue_reason: editGet(p+"education_discontinue_reason"),
+        future_education: editGet(p+"future_education"),
+        education_help: editGet(p+"education_help"),
+        education_help_details: editGet(p+"education_help_details"),
+        occupation: editGet(p+"occupation"),
+        employment_status: editGet(p+"employment_status"),
+        health_condition: editGet(p+"health_condition"),
+        disease_details: editGet(p+"disease_details"),
+        long_term_condition: editGet(p+"long_term_condition"),
+        treatment_status: editGet(p+"treatment_status"),
+        health_help_required: editGet(p+"health_help_required"),
+        health_help_details: editGet(p+"health_help_details")
+      };
+
+      const { error: memberError } = await supabaseClient
+        .from("family_members")
+        .update(memberUpdate)
+        .eq("family_id", editingFamilyId)
+        .eq("id", member.id);
+
+      if (memberError) throw memberError;
+    }
+
+    status.style.background = "#ecfdf5";
+    status.style.color = "#166534";
+    status.textContent = "Family details updated successfully.";
+
+    await loadDashboard();
+
+    setTimeout(() => {
+      closeEditFamily();
+    }, 700);
+
+  } catch (error) {
+    console.error("Edit family error:", error);
+    status.style.background = "#fef2f2";
+    status.style.color = "#991b1b";
+    status.textContent = "Update failed: " + (error.message || error);
+  } finally {
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Changes";
+  }
+}
+
+function closeEditFamily() {
+  editingFamilyId = null;
+  document.getElementById("editModal").style.display = "none";
+  document.getElementById("editFormContainer").innerHTML = "";
+  document.getElementById("editStatus").style.display = "none";
+}
 
 function exportExcel() {
 
