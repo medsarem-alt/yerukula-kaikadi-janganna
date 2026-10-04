@@ -2704,38 +2704,63 @@ function setupEditConditionalFields() {
 
   function setupInsurance() {
 
-    const insuranceNeeded =
-      document.getElementById(
-        "edit_health_insurance_needed"
-      );
-
-    if (!insuranceNeeded) return;
-
-    function updateInsurance() {
-
-      show(
-        "edit_health_insurance_help_details_wrap",
-        insuranceNeeded.value === "Yes"
-      );
-    }
-
-    insuranceNeeded.addEventListener(
-      "change",
-      updateInsurance
+  const healthInsurance =
+    document.getElementById(
+      "edit_health_insurance"
     );
 
-    updateInsurance();
+  const insuranceNeeded =
+    document.getElementById(
+      "edit_health_insurance_needed"
+    );
+
+  if (!healthInsurance || !insuranceNeeded) {
+    return;
   }
 
+  function updateInsurance() {
 
-  // Family Head
-  setupEducation(
-    "edit_family_head_"
+    const hasHealthInsurance =
+      healthInsurance.value === "Yes";
+
+    const neededWrap =
+      insuranceNeeded.closest(".edit-field");
+
+    if (neededWrap) {
+      neededWrap.style.display =
+        hasHealthInsurance ? "none" : "";
+    }
+
+    const showHelp =
+      !hasHealthInsurance &&
+      insuranceNeeded.value === "Yes";
+
+    const helpWrap =
+      document.getElementById(
+        "edit_health_insurance_help_details_wrap"
+      );
+
+    if (helpWrap) {
+      helpWrap.style.display =
+        showHelp ? "" : "none";
+    }
+  }
+
+  healthInsurance.addEventListener(
+    "change",
+    updateInsurance
   );
 
-  setupFamilyHeadHealth();
+  insuranceNeeded.addEventListener(
+    "change",
+    updateInsurance
+  );
 
-  setupInsurance();
+  updateInsurance();
+}
+setupFamilyHeadHealth();
+
+setupInsurance();
 
 
   // All Family Members
