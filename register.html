@@ -2535,7 +2535,9 @@ const familyHeadEducationHelpValue =
 
               family_id:
                 familyId,
-
+member_order:
+  members.indexOf(member) + 1,
+              
               full_name:
                 get(
                   `member_${member.dataset.id}_full_name`
