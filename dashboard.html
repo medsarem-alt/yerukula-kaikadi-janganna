@@ -436,6 +436,7 @@ td {
   font-size: 14px;
 }
 .edit-btn { background: #f59e0b; color: white; padding: 7px 12px; margin-left: 5px; }
+.delete-btn { background: #dc2626; color: white; padding: 7px 12px; margin-left: 5px; }
 @media (max-width: 700px) {
   .edit-grid { grid-template-columns: 1fr; }
   .edit-modal-box { padding: 14px; }
@@ -1350,19 +1351,9 @@ function renderFamilies() {
 
           <td>
 
-            <button
-              class="view-btn"
-              onclick="viewFamily('${family.id}')"
-            >
-              View
-            </button>
-            <button
-              class="edit-btn"
-              onclick="editFamily('${family.id}')"
-            >
-              Edit
-            </button>
-
+<button class="view-btn" onclick="viewFamily('${family.id}')">View</button>
+<button class="edit-btn" onclick="editFamily('${family.id}')">Edit</button>
+<button class="delete-btn" onclick="deleteFamily('${family.id}')">Delete</button>
           </td>
 
         </tr>
