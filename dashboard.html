@@ -2203,8 +2203,30 @@ function closeEditFamily() {
   document.getElementById("editStatus").style.display = "none";
 }
 
-function exportExcel() {
+async function deleteFamily(familyId) {
+  const confirmDelete = confirm(
+    "Are you sure you want to delete this family and all its members?"
+  );
 
+  if (!confirmDelete) return;
+
+  const { error } = await supabaseClient
+    .from("families")
+    .delete()
+    .eq("id", familyId);
+
+  if (error) {
+    console.error("Delete family error:", error);
+    alert("Delete failed: " + error.message);
+    return;
+  }
+
+  alert("Family deleted successfully.");
+
+  await loadDashboard();
+}
+
+function exportExcel() {
   try {
 
     if (!Array.isArray(familiesData) || familiesData.length === 0) {
