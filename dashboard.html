@@ -3176,7 +3176,7 @@ async function generateFamilyPDF(familyId) {
       .from("family_members")
       .select("*")
       .eq("family_id", familyId)
-      .order("id");
+      .order("member_order", { ascending: true });
 
     if (membersError) {
       console.error("Members PDF error:", membersError);
