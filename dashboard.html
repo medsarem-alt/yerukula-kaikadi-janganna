@@ -1951,126 +1951,810 @@ async function editFamily(familyId) {
 
   let html = `
     <div class="edit-section-title">Family Head Details</div>
+
     <div class="edit-grid">
-      ${editField("Family Head Name", "edit_family_head_name", family.family_head_name)}
-      ${editField("Mobile Number", "edit_family_mobile", family.family_mobile, "tel")}
-      ${editField("Date of Birth", "edit_family_head_dob", family.family_head_dob, "date")}
-      ${editField("Age", "edit_family_head_age", family.family_head_age, "number")}
-      ${editSelect("Gender", "edit_family_head_gender", family.family_head_gender, ["Male","Female","Other"])}
-      ${editSelect("Marital Status", "edit_family_head_marital_status", family.family_head_marital_status, ["Married","Unmarried","Widowed","Divorced","Other"])}
-      ${editSelect("Family Head Disability", "edit_family_head_disability", editBool(family.family_head_disability), ["Yes","No"])}
-      ${editField("Occupation", "edit_family_head_occupation", family.family_head_occupation)}
-      ${editField("Employment Status", "edit_family_head_employment_status", family.family_head_employment_status)}
+      ${editField(
+        "Family Head Name",
+        "edit_family_head_name",
+        family.family_head_name
+      )}
+
+      ${editField(
+        "Mobile Number",
+        "edit_family_mobile",
+        family.family_mobile,
+        "tel"
+      )}
+
+      ${editField(
+        "Date of Birth",
+        "edit_family_head_dob",
+        family.family_head_dob,
+        "date"
+      )}
+
+      ${editField(
+        "Age",
+        "edit_family_head_age",
+        family.family_head_age,
+        "number"
+      )}
+
+      ${editSelect(
+        "Gender",
+        "edit_family_head_gender",
+        family.family_head_gender,
+        ["Male", "Female"]
+      )}
+
+      ${editSelect(
+        "Marital Status",
+        "edit_family_head_marital_status",
+        family.family_head_marital_status,
+        ["Married", "Unmarried", "Widowed", "Divorced", "Other"]
+      )}
+
+      ${editSelect(
+        "Family Head Disability",
+        "edit_family_head_disability",
+        editBool(family.family_head_disability),
+        ["Yes", "No"]
+      )}
+
+      ${editSelect(
+        "Occupation",
+        "edit_family_head_occupation",
+        family.family_head_occupation,
+        [
+          "Government Job",
+          "Private Job",
+          "Business",
+          "Self Employed",
+          "Farmer",
+          "Driver",
+          "House Wife",
+          "Student",
+          "Retired",
+          "Unemployed",
+          "Other"
+        ]
+      )}
+
+      ${editSelect(
+        "Employment Status",
+        "edit_family_head_employment_status",
+        family.family_head_employment_status,
+        [
+          "Employed",
+          "Self Employed",
+          "Business",
+          "Unemployed",
+          "Student",
+          "Currently Studying",
+          "Homemaker",
+          "Retired",
+          "Other"
+        ]
+      )}
+
       ${editField("State", "edit_state", family.state)}
+
       ${editField("District", "edit_district", family.district)}
-      ${editField("City/Village", "edit_city_village", family.city_village)}
-      ${editField("Total Members", "edit_total_members", family.total_members, "number")}
-      ${editSelect("Housing", "edit_housing_type", family.housing_type, ["Own House","Rented","Other"])}
-      ${editField("House Condition", "edit_house_condition", family.house_condition)}
+
+      ${editField(
+        "City/Village",
+        "edit_city_village",
+        family.city_village
+      )}
+
+      ${editField(
+        "Total Members",
+        "edit_total_members",
+        family.total_members,
+        "number"
+      )}
+
+      ${editSelect(
+        "Housing",
+        "edit_housing_type",
+        family.housing_type,
+        ["Own House", "Rented", "Other"]
+      )}
+
+      ${editSelect(
+        "House Condition",
+        "edit_house_condition",
+        family.house_condition,
+        ["Good", "Average", "Poor"]
+      )}
     </div>
+
     <div class="edit-section-title">Address</div>
+
     <div class="edit-grid">
-      ${editTextarea("Full Address", "edit_full_address", family.full_address)}
+      ${editTextarea(
+        "Full Address",
+        "edit_full_address",
+        family.full_address
+      )}
     </div>
+
 
     <div class="edit-section-title">Family Head Education</div>
+
     <div class="edit-grid">
-      ${editField("Education", "edit_family_head_education", family.family_head_education)}
-      ${editField("Education Status", "edit_family_head_education_status", family.family_head_education_status)}
-      ${editTextarea("Education Discontinue Reason", "edit_family_head_education_discontinue_reason", family.family_head_education_discontinue_reason)}
-      ${editField("Future Education", "edit_family_head_future_education", family.family_head_future_education)}
-      ${editField("Education Help / Support Required", "edit_family_head_education_help", family.family_head_education_help)}
-      ${editTextarea("Education Help / Support Details", "edit_family_head_education_help_details", family.family_head_education_help_details)}
+
+      ${editField(
+        "Education",
+        "edit_family_head_education",
+        family.family_head_education
+      )}
+
+      ${editSelect(
+        "Education Status",
+        "edit_family_head_education_status",
+        family.family_head_education_status,
+        [
+          "Currently Studying",
+          "Completed",
+          "Education Discontinued",
+          "Never Studied",
+          "Not Applicable"
+        ]
+      )}
+
+      <div id="edit_family_head_education_discontinue_reason_wrap">
+        ${editTextarea(
+          "Education Discontinue Reason",
+          "edit_family_head_education_discontinue_reason",
+          family.family_head_education_discontinue_reason
+        )}
+      </div>
+
+      <div id="edit_family_head_future_education_wrap">
+        ${editSelect(
+          "Future Education",
+          "edit_family_head_future_education",
+          family.family_head_future_education,
+          ["Yes", "No"]
+        )}
+      </div>
+
+      <div id="edit_family_head_education_help_wrap">
+        ${editSelect(
+          "Education Help / Support Required",
+          "edit_family_head_education_help",
+          family.family_head_education_help,
+          ["Yes", "No"]
+        )}
+      </div>
+
+      <div id="edit_family_head_education_help_details_wrap">
+        ${editTextarea(
+          "Education Help / Support Details",
+          "edit_family_head_education_help_details",
+          family.family_head_education_help_details
+        )}
+      </div>
+
     </div>
+
 
     <div class="edit-section-title">Family Head Health</div>
+
     <div class="edit-grid">
-      ${editField("Any Health Problem", "edit_healthcare_access_problem", family.healthcare_access_problem)}
-      ${editTextarea("Disease / Health Details", "edit_healthcare_access_details", family.healthcare_access_details)}
-      ${editField("Healthcare Help / Support Required", "edit_healthcare_help_required", family.healthcare_help_required)}
-      ${editTextarea("Healthcare Help / Support Details", "edit_healthcare_help_details", family.healthcare_help_details)}
+
+      ${editSelect(
+        "Any Health Problem",
+        "edit_healthcare_access_problem",
+        family.healthcare_access_problem,
+        ["Yes", "No"]
+      )}
+
+      <div id="edit_healthcare_access_details_wrap">
+        ${editTextarea(
+          "Disease / Health Details",
+          "edit_healthcare_access_details",
+          family.healthcare_access_details
+        )}
+      </div>
+
+      <div id="edit_healthcare_help_required_wrap">
+        ${editSelect(
+          "Healthcare Help / Support Required",
+          "edit_healthcare_help_required",
+          family.healthcare_help_required,
+          ["Yes", "No"]
+        )}
+      </div>
+
+      <div id="edit_healthcare_help_details_wrap">
+        ${editTextarea(
+          "Healthcare Help / Support Details",
+          "edit_healthcare_help_details",
+          family.healthcare_help_details
+        )}
+      </div>
+
     </div>
+
 
     <div class="edit-section-title">Insurance</div>
+
     <div class="edit-grid">
-      ${editField("Health Insurance", "edit_health_insurance", family.health_insurance)}
-      ${editField("Would You Like Health Insurance?", "edit_health_insurance_needed", family.health_insurance_needed)}
-      ${editTextarea("Health Insurance Help Details", "edit_health_insurance_help_details", family.health_insurance_help_details)}
-      ${editField("Term Life Insurance", "edit_term_life_insurance", family.term_life_insurance)}
-      ${editField("Other Insurance", "edit_other_insurance", family.other_insurance)}
+
+      ${editSelect(
+        "Health Insurance",
+        "edit_health_insurance",
+        family.health_insurance,
+        ["Yes", "No"]
+      )}
+
+      ${editSelect(
+        "Would You Like Health Insurance?",
+        "edit_health_insurance_needed",
+        family.health_insurance_needed,
+        ["Yes", "No"]
+      )}
+
+      <div id="edit_health_insurance_help_details_wrap">
+        ${editTextarea(
+          "Health Insurance Help Details",
+          "edit_health_insurance_help_details",
+          family.health_insurance_help_details
+        )}
+      </div>
+
+      ${editSelect(
+        "Term Life Insurance",
+        "edit_term_life_insurance",
+        family.term_life_insurance,
+        ["Yes", "No"]
+      )}
+
+      ${editSelect(
+        "Other Insurance",
+        "edit_other_insurance",
+        family.other_insurance,
+        ["Yes", "No"]
+      )}
+
     </div>
 
-    <div class="edit-section-title">Family Members (${familyMembers.length})</div>
+
+    <div class="edit-section-title">
+      Family Members (${familyMembers.length})
+    </div>
   `;
 
+
   familyMembers.forEach((member, index) => {
+
     const p = `edit_member_${index}_`;
+
     html += `
       <div class="edit-member-card">
-        <div class="member-title">Family Member ${index + 1}</div>
 
-        <div class="edit-section-title">Basic Details</div>
-        <div class="edit-grid">
-          ${editMemberField("Full Name", p+"full_name", member.full_name)}
-          ${editMemberField("Date of Birth", p+"dob", member.dob, "date")}
-          ${editMemberField("Age", p+"age", member.age, "number")}
-          ${editMemberField("Gender", p+"gender", member.gender)}
-          ${editMemberField("Relationship to Family Head", p+"relationship", member.relationship_to_family_head)}
-          ${editMemberField("Mobile Number", p+"mobile", member.mobile_number, "tel")}
-          ${editMemberField("Marital Status", p+"marital_status", member.marital_status)}
-          ${editSelect("Disability", p+"disability", editBool(member.disability), ["Yes","No"])}
+        <div class="member-title">
+          Family Member ${index + 1}
         </div>
 
-        <div class="edit-section-title">Education</div>
-        <div class="edit-grid">
-          ${editMemberField("Education", p+"education", member.education)}
-          ${editMemberField("Education Status", p+"education_status", member.education_status)}
-          ${editTextarea("Education Discontinue Reason", p+"education_discontinue_reason", member.education_discontinue_reason)}
-          ${editMemberField("Future Education", p+"future_education", member.future_education)}
-          ${editMemberField("Education Help / Support Required", p+"education_help", member.education_help)}
-          ${editTextarea("Education Help / Support Details", p+"education_help_details", member.education_help_details)}
+
+        <div class="edit-section-title">
+          Basic Details
         </div>
 
-        <div class="edit-section-title">Occupation & Employment</div>
         <div class="edit-grid">
-          ${editMemberField("Occupation", p+"occupation", member.occupation)}
+
+          ${editMemberField(
+            "Full Name",
+            p + "full_name",
+            member.full_name
+          )}
+
+          ${editMemberField(
+            "Date of Birth",
+            p + "dob",
+            member.dob,
+            "date"
+          )}
+
+          ${editMemberField(
+            "Age",
+            p + "age",
+            member.age,
+            "number"
+          )}
+
           ${editSelect(
-  "Employment Status",
-  p+"employment_status",
-  member.employment_status,
-  [
-    "Employed",
-    "Self-employed",
-    "Self Employed",
-    "Business",
-    "Unemployed",
-    "Student",
-    "Currently Studying",
-    "Homemaker",
-    "Retired",
-    "Other"
-  ]
-)}
+            "Gender",
+            p + "gender",
+            member.gender,
+            ["Male", "Female"]
+          )}
+
+          ${editMemberField(
+            "Relationship to Family Head",
+            p + "relationship",
+            member.relationship_to_family_head
+          )}
+
+          ${editMemberField(
+            "Mobile Number",
+            p + "mobile",
+            member.mobile_number,
+            "tel"
+          )}
+
+          ${editSelect(
+            "Marital Status",
+            p + "marital_status",
+            member.marital_status,
+            ["Married", "Unmarried", "Widowed", "Divorced", "Other"]
+          )}
+
+          ${editSelect(
+            "Disability",
+            p + "disability",
+            editBool(member.disability),
+            ["Yes", "No"]
+          )}
+
         </div>
 
-        <div class="edit-section-title">Health</div>
-        <div class="edit-grid">
-          ${editMemberField("Health Condition", p+"health_condition", member.health_condition)}
-          ${editTextarea("Disease Details", p+"disease_details", member.disease_details)}
-          ${editMemberField("Long-term Health Problem", p+"long_term_condition", member.long_term_condition)}
-          ${editMemberField("Regular Treatment Required", p+"treatment_status", member.treatment_status)}
-          ${editMemberField("Health Help / Support Required", p+"health_help_required", member.health_help_required)}
-          ${editTextarea("Health Help / Support Details", p+"health_help_details", member.health_help_details)}
+
+        <div class="edit-section-title">
+          Education
         </div>
+
+        <div class="edit-grid">
+
+          ${editMemberField(
+            "Education",
+            p + "education",
+            member.education
+          )}
+
+          ${editSelect(
+            "Education Status",
+            p + "education_status",
+            member.education_status,
+            [
+              "Currently Studying",
+              "Completed",
+              "Education Discontinued",
+              "Never Studied",
+              "Not Applicable"
+            ]
+          )}
+
+          <div id="${p}education_discontinue_reason_wrap">
+            ${editTextarea(
+              "Education Discontinue Reason",
+              p + "education_discontinue_reason",
+              member.education_discontinue_reason
+            )}
+          </div>
+
+          <div id="${p}future_education_wrap">
+            ${editSelect(
+              "Future Education",
+              p + "future_education",
+              member.future_education,
+              ["Yes", "No"]
+            )}
+          </div>
+
+          <div id="${p}education_help_wrap">
+            ${editSelect(
+              "Education Help / Support Required",
+              p + "education_help",
+              member.education_help,
+              ["Yes", "No"]
+            )}
+          </div>
+
+          <div id="${p}education_help_details_wrap">
+            ${editTextarea(
+              "Education Help / Support Details",
+              p + "education_help_details",
+              member.education_help_details
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="edit-section-title">
+          Occupation & Employment
+        </div>
+
+        <div class="edit-grid">
+
+          ${editSelect(
+            "Occupation",
+            p + "occupation",
+            member.occupation,
+            [
+              "Government Job",
+              "Private Job",
+              "Business",
+              "Self Employed",
+              "Farmer",
+              "Driver",
+              "House Wife",
+              "Student",
+              "Retired",
+              "Unemployed",
+              "Other"
+            ]
+          )}
+
+          ${editSelect(
+            "Employment Status",
+            p + "employment_status",
+            member.employment_status,
+            [
+              "Employed",
+              "Self-employed",
+              "Self Employed",
+              "Business",
+              "Unemployed",
+              "Student",
+              "Currently Studying",
+              "Homemaker",
+              "Retired",
+              "Other"
+            ]
+          )}
+
+        </div>
+
+
+        <div class="edit-section-title">
+          Health
+        </div>
+
+        <div class="edit-grid">
+
+          ${editSelect(
+            "Health Condition",
+            p + "health_condition",
+            member.health_condition,
+            ["Yes", "No"]
+          )}
+
+          <div id="${p}disease_details_wrap">
+            ${editTextarea(
+              "Disease Details",
+              p + "disease_details",
+              member.disease_details
+            )}
+          </div>
+
+          <div id="${p}long_term_condition_wrap">
+            ${editSelect(
+              "Long-term Health Problem",
+              p + "long_term_condition",
+              member.long_term_condition,
+              ["Yes", "No"]
+            )}
+          </div>
+
+          <div id="${p}treatment_status_wrap">
+            ${editSelect(
+              "Regular Treatment Required",
+              p + "treatment_status",
+              member.treatment_status,
+              ["Yes", "No"]
+            )}
+          </div>
+
+          <div id="${p}health_help_required_wrap">
+            ${editSelect(
+              "Health Help / Support Required",
+              p + "health_help_required",
+              member.health_help_required,
+              ["Yes", "No"]
+            )}
+          </div>
+
+          <div id="${p}health_help_details_wrap">
+            ${editTextarea(
+              "Health Help / Support Details",
+              p + "health_help_details",
+              member.health_help_details
+            )}
+          </div>
+
+        </div>
+
       </div>
     `;
   });
 
-  document.getElementById("editFormContainer").innerHTML = html;
-  document.getElementById("editStatus").style.display = "none";
-  document.getElementById("editModal").style.display = "flex";
-}
 
+  document.getElementById("editFormContainer").innerHTML = html;
+
+  document.getElementById("editStatus").style.display = "none";
+
+  document.getElementById("editModal").style.display = "flex";
+
+
+  setupEditConditionalFields();
+}
+function setupEditConditionalFields() {
+
+  function show(id, visible) {
+    const el = document.getElementById(id);
+
+    if (el) {
+      el.style.display = visible ? "" : "none";
+    }
+  }
+
+  function setupEducation(prefix) {
+
+    const status = document.getElementById(
+      prefix + "education_status"
+    );
+
+    if (!status) return;
+
+    function updateEducation() {
+
+      const discontinued =
+        status.value === "Education Discontinued";
+
+      show(
+        prefix + "education_discontinue_reason_wrap",
+        discontinued
+      );
+
+      show(
+        prefix + "future_education_wrap",
+        discontinued
+      );
+
+      const future = document.getElementById(
+        prefix + "future_education"
+      );
+
+      const futureYes =
+        discontinued &&
+        future &&
+        future.value === "Yes";
+
+      show(
+        prefix + "education_help_wrap",
+        futureYes
+      );
+
+      const help = document.getElementById(
+        prefix + "education_help"
+      );
+
+      const helpYes =
+        futureYes &&
+        help &&
+        help.value === "Yes";
+
+      show(
+        prefix + "education_help_details_wrap",
+        helpYes
+      );
+    }
+
+    status.addEventListener(
+      "change",
+      updateEducation
+    );
+
+    const future = document.getElementById(
+      prefix + "future_education"
+    );
+
+    if (future) {
+      future.addEventListener(
+        "change",
+        updateEducation
+      );
+    }
+
+    const help = document.getElementById(
+      prefix + "education_help"
+    );
+
+    if (help) {
+      help.addEventListener(
+        "change",
+        updateEducation
+      );
+    }
+
+    updateEducation();
+  }
+
+
+  function setupHealth(prefix) {
+
+    const health = document.getElementById(
+      prefix + "health_condition"
+    );
+
+    if (!health) return;
+
+    function updateHealth() {
+
+      const hasHealthProblem =
+        health.value === "Yes";
+
+      show(
+        prefix + "disease_details_wrap",
+        hasHealthProblem
+      );
+
+      show(
+        prefix + "long_term_condition_wrap",
+        hasHealthProblem
+      );
+
+      show(
+        prefix + "treatment_status_wrap",
+        hasHealthProblem
+      );
+
+      show(
+        prefix + "health_help_required_wrap",
+        hasHealthProblem
+      );
+
+      const healthHelp = document.getElementById(
+        prefix + "health_help_required"
+      );
+
+      const helpYes =
+        hasHealthProblem &&
+        healthHelp &&
+        healthHelp.value === "Yes";
+
+      show(
+        prefix + "health_help_details_wrap",
+        helpYes
+      );
+    }
+
+    health.addEventListener(
+      "change",
+      updateHealth
+    );
+
+    const healthHelp = document.getElementById(
+      prefix + "health_help_required"
+    );
+
+    if (healthHelp) {
+      healthHelp.addEventListener(
+        "change",
+        updateHealth
+      );
+    }
+
+    updateHealth();
+  }
+
+
+  function setupFamilyHeadHealth() {
+
+    const health = document.getElementById(
+      "edit_healthcare_access_problem"
+    );
+
+    if (!health) return;
+
+    function updateHealth() {
+
+      const hasProblem =
+        health.value === "Yes";
+
+      show(
+        "edit_healthcare_access_details_wrap",
+        hasProblem
+      );
+
+      show(
+        "edit_healthcare_help_required_wrap",
+        hasProblem
+      );
+
+      const help = document.getElementById(
+        "edit_healthcare_help_required"
+      );
+
+      const helpYes =
+        hasProblem &&
+        help &&
+        help.value === "Yes";
+
+      show(
+        "edit_healthcare_help_details_wrap",
+        helpYes
+      );
+    }
+
+    health.addEventListener(
+      "change",
+      updateHealth
+    );
+
+    const help = document.getElementById(
+      "edit_healthcare_help_required"
+    );
+
+    if (help) {
+      help.addEventListener(
+        "change",
+        updateHealth
+      );
+    }
+
+    updateHealth();
+  }
+
+
+  function setupInsurance() {
+
+    const insuranceNeeded =
+      document.getElementById(
+        "edit_health_insurance_needed"
+      );
+
+    if (!insuranceNeeded) return;
+
+    function updateInsurance() {
+
+      show(
+        "edit_health_insurance_help_details_wrap",
+        insuranceNeeded.value === "Yes"
+      );
+    }
+
+    insuranceNeeded.addEventListener(
+      "change",
+      updateInsurance
+    );
+
+    updateInsurance();
+  }
+
+
+  // Family Head
+  setupEducation(
+    "edit_family_head_"
+  );
+
+  setupFamilyHeadHealth();
+
+  setupInsurance();
+
+
+  // All Family Members
+  const familyMembers =
+    document.querySelectorAll(
+      ".edit-member-card"
+    );
+
+  familyMembers.forEach((card, index) => {
+
+    const prefix =
+      `edit_member_${index}_`;
+
+    setupEducation(prefix);
+
+    setupHealth(prefix);
+
+  });
+}
 function editGet(id) {
   const el = document.getElementById(id);
   return el ? el.value : null;
