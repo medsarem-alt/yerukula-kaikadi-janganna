@@ -2443,6 +2443,634 @@ window.addEventListener(
   }
 );
 async function generateFamilyPDF(familyId) {
+  try {
+
+    // ==============================
+    // GET FAMILY DETAILS
+    // ==============================
+    const { data: family, error: familyError } = await supabaseClient
+      .from("families")
+      .select("*")
+      .eq("id", familyId)
+      .single();
+
+    if (familyError) {
+      console.error("Family PDF error:", familyError);
+      alert("Family details load failed: " + familyError.message);
+      return;
+    }
+
+    // ==============================
+    // GET ALL FAMILY MEMBERS
+    // ==============================
+    const { data: members, error: membersError } = await supabaseClient
+      .from("family_members")
+      .select("*")
+      .eq("family_id", familyId)
+      .order("id");
+
+    if (membersError) {
+      console.error("Members PDF error:", membersError);
+      alert("Family members load failed: " + membersError.message);
+      return;
+    }
+
+    // ==============================
+    // CREATE PDF
+    // ==============================
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    const margin = 15;
+    const contentWidth = pageWidth - (margin * 2);
+
+    let y = 15;
+
+    // ==============================
+    // HELPER FUNCTIONS
+    // ==============================
+
+    function addPageIfNeeded(requiredHeight = 10) {
+      if (y + requiredHeight > pageHeight - 15) {
+        doc.addPage();
+        y = 15;
+      }
+    }
+
+    function addTitle(textValue) {
+      addPageIfNeeded(12);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text(textValue, pageWidth / 2, y, {
+        align: "center"
+      });
+
+      y += 10;
+    }
+
+    function addSection(textValue) {
+      addPageIfNeeded(12);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(12);
+      doc.text(textValue, margin, y);
+
+      y += 7;
+    }
+
+    function addField(label, value) {
+      const safeValue =
+        value === null ||
+        value === undefined ||
+        value === ""
+          ? "-"
+          : String(value);
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+
+      const labelText = label + ":";
+
+      doc.text(labelText, margin, y);
+
+      const labelWidth = doc.getTextWidth(labelText) + 3;
+
+      doc.setFont("helvetica", "normal");
+
+      const lines = doc.splitTextToSize(
+        safeValue,
+        contentWidth - labelWidth
+      );
+
+      const lineHeight = 4.5;
+
+      addPageIfNeeded(lines.length * lineHeight + 2);
+
+      doc.text(
+        lines,
+        margin + labelWidth,
+        y
+      );
+
+      y += Math.max(lines.length * lineHeight, 5);
+    }
+
+    function addYesNoField(label, value) {
+      let displayValue = "-";
+
+      if (value === true) {
+        displayValue = "Yes";
+      } else if (value === false) {
+        displayValue = "No";
+      } else if (value !== null && value !== undefined && value !== "") {
+        displayValue = String(value);
+      }
+
+      addField(label, displayValue);
+    }
+
+    function addSeparator() {
+      addPageIfNeeded(5);
+
+      doc.setDrawColor(180);
+      doc.line(
+        margin,
+        y,
+        pageWidth - margin,
+        y
+      );
+
+      y += 5;
+    }
+
+    // ==============================
+    // PDF HEADER
+    // ==============================
+
+    addTitle("Yerukula Kaikadi Janganna");
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+
+    doc.text(
+      "Family Census / Family Details",
+      pageWidth / 2,
+      y,
+      {
+        align: "center"
+      }
+    );
+
+    y += 8;
+
+    // ==============================
+    // FAMILY DETAILS
+    // ==============================
+
+    addSection("FAMILY DETAILS");
+
+    addField("Family Head Name", family.family_head_name);
+    addField("Mobile Number", family.family_mobile);
+    addField("Date of Birth", family.family_head_dob);
+    addField("Age", family.family_head_age);
+    addField("Gender", family.family_head_gender);
+    addField("Marital Status", family.family_head_marital_status);
+
+    addYesNoField(
+      "Family Head Disability",
+      family.family_head_disability
+    );
+
+    addField(
+      "Occupation",
+      family.family_head_occupation
+    );
+
+    addField(
+      "Employment Status",
+      family.family_head_employment_status
+    );
+
+    addField("State", family.state);
+    addField("District", family.district);
+    addField("City / Village", family.city_village);
+    addField("Full Address", family.full_address);
+
+    addField(
+      "Housing Type",
+      family.housing_type
+    );
+
+    addField(
+      "Own House",
+      family.own_house === true
+        ? "Yes"
+        : family.own_house === false
+          ? "No"
+          : "-"
+    );
+
+    addField(
+      "House Condition",
+      family.house_condition
+    );
+
+    addField(
+      "Total Family Members",
+      family.total_members
+    );
+
+    addSeparator();
+
+    // ==============================
+    // FAMILY HEAD EDUCATION
+    // ==============================
+
+    addSection("FAMILY HEAD - EDUCATION");
+
+    addField(
+      "Education",
+      family.family_head_education
+    );
+
+    addField(
+      "Education Status",
+      family.family_head_education_status
+    );
+
+    if (
+      family.family_head_education_status ===
+      "Education Discontinued"
+    ) {
+
+      addField(
+        "Discontinue Reason",
+        family.family_head_education_discontinue_reason
+      );
+
+      addField(
+        "Future Education",
+        family.family_head_future_education
+      );
+
+      if (
+        family.family_head_future_education ===
+        "Yes"
+      ) {
+
+        addField(
+          "Education Help Required",
+          family.family_head_education_help
+        );
+
+        if (
+          family.family_head_education_help ===
+          "Yes"
+        ) {
+
+          addField(
+            "Education Help Details",
+            family.family_head_education_help_details
+          );
+
+        }
+      }
+    }
+
+    addSeparator();
+
+    // ==============================
+    // FAMILY HEAD HEALTH
+    // ==============================
+
+    addSection("FAMILY HEAD - HEALTH");
+
+    addField(
+      "Any Health Problem",
+      family.healthcare_access_problem
+    );
+
+    if (
+      family.healthcare_access_problem ===
+      "Yes"
+    ) {
+
+      addField(
+        "Health Problem Details",
+        family.healthcare_access_details
+      );
+
+      addField(
+        "Healthcare Help Required",
+        family.healthcare_help_required
+      );
+
+      if (
+        family.healthcare_help_required ===
+        "Yes"
+      ) {
+
+        addField(
+          "Healthcare Help Details",
+          family.healthcare_help_details
+        );
+
+      }
+    }
+
+    addSeparator();
+
+    // ==============================
+    // INSURANCE DETAILS
+    // ==============================
+
+    addSection("INSURANCE DETAILS");
+
+    addField(
+      "Health Insurance",
+      family.health_insurance
+    );
+
+    addField(
+      "Would Like Health Insurance",
+      family.health_insurance_needed
+    );
+
+    if (
+      family.health_insurance_needed ===
+      "Yes"
+    ) {
+
+      addField(
+        "Health Insurance Help Details",
+        family.health_insurance_help_details
+      );
+
+    }
+
+    addField(
+      "Term Life Insurance",
+      family.term_life_insurance
+    );
+
+    addField(
+      "Other Insurance",
+      family.other_insurance
+    );
+
+    addSeparator();
+
+    // ==============================
+    // FAMILY MEMBERS
+    // ==============================
+
+    addSection("FAMILY MEMBERS");
+
+    if (!members || members.length === 0) {
+
+      addField(
+        "Members",
+        "No additional family members"
+      );
+
+    } else {
+
+      members.forEach((member, index) => {
+
+        addPageIfNeeded(15);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+
+        doc.text(
+          "Member " + (index + 1),
+          margin,
+          y
+        );
+
+        y += 7;
+
+        // BASIC DETAILS
+        addField(
+          "Full Name",
+          member.full_name
+        );
+
+        addField(
+          "Date of Birth",
+          member.dob
+        );
+
+        addField(
+          "Age",
+          member.age
+        );
+
+        addField(
+          "Gender",
+          member.gender
+        );
+
+        addField(
+          "Relationship to Family Head",
+          member.relationship_to_family_head
+        );
+
+        addField(
+          "Mobile Number",
+          member.mobile_number
+        );
+
+        addField(
+          "Marital Status",
+          member.marital_status
+        );
+
+        addYesNoField(
+          "Disability",
+          member.disability
+        );
+
+        // EDUCATION
+        addField(
+          "Education",
+          member.education
+        );
+
+        addField(
+          "Education Status",
+          member.education_status
+        );
+
+        if (
+          member.education_status ===
+          "Education Discontinued"
+        ) {
+
+          addField(
+            "Discontinue Reason",
+            member.education_discontinue_reason
+          );
+
+          addField(
+            "Future Education",
+            member.future_education
+          );
+
+          if (
+            member.future_education ===
+            "Yes"
+          ) {
+
+            addField(
+              "Education Help Required",
+              member.education_help
+            );
+
+            if (
+              member.education_help ===
+              "Yes"
+            ) {
+
+              addField(
+                "Education Help Details",
+                member.education_help_details
+              );
+
+            }
+          }
+        }
+
+        // OCCUPATION
+        addField(
+          "Occupation",
+          member.occupation
+        );
+
+        addField(
+          "Employment Status",
+          member.employment_status
+        );
+
+        // HEALTH
+        addField(
+          "Health Condition",
+          member.health_condition
+        );
+
+        if (
+          member.health_condition ===
+          "Yes"
+        ) {
+
+          addField(
+            "Disease Details",
+            member.disease_details
+          );
+
+          addField(
+            "Long Term Condition",
+            member.long_term_condition
+          );
+
+          addField(
+            "Treatment Status",
+            member.treatment_status
+          );
+
+          addField(
+            "Health Help Required",
+            member.health_help_required
+          );
+
+          if (
+            member.health_help_required ===
+            "Yes"
+          ) {
+
+            addField(
+              "Health Help Details",
+              member.health_help_details
+            );
+
+          }
+        }
+
+        // MEMBER SEPARATOR
+        if (
+          index <
+          members.length - 1
+        ) {
+          addSeparator();
+        }
+
+      });
+    }
+
+    // ==============================
+    // FOOTER / DATE
+    // ==============================
+
+    addSeparator();
+
+    addPageIfNeeded(10);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+
+    doc.text(
+      "Generated from Yerukula Kaikadi Janganna",
+      margin,
+      y
+    );
+
+    // ==============================
+    // ADD PAGE NUMBERS
+    // ==============================
+
+    const totalPages =
+      doc.internal.getNumberOfPages();
+
+    for (
+      let page = 1;
+      page <= totalPages;
+      page++
+    ) {
+
+      doc.setPage(page);
+
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+
+      doc.text(
+        "Page " + page + " of " + totalPages,
+        pageWidth - margin,
+        pageHeight - 8,
+        {
+          align: "right"
+        }
+      );
+    }
+
+    // ==============================
+    // FILE NAME
+    // ==============================
+
+    const safeFileName =
+      String(
+        family.family_head_name ||
+        "family"
+      )
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .trim();
+
+    doc.save(
+      safeFileName +
+      "-details.pdf"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Generate Family PDF Error:",
+      error
+    );
+
+    alert(
+      "PDF generate failed: " +
+      error.message
+    );
+  }
+}
 
   const { jsPDF } = window.jspdf;
 
