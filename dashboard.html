@@ -2805,10 +2805,10 @@ function setupEditConditionalFields() {
   });
 }
 
+function editGet(id) {
   const el = document.getElementById(id);
   return el ? el.value : null;
 }
-
 function editBoolToDb(value) {
   if (value === "Yes") return true;
   if (value === "No") return false;
