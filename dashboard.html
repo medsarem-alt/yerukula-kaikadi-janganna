@@ -2481,15 +2481,44 @@ async function editFamily(familyId) {
 
   setupEditConditionalFields();
 }
+
 function setupEditConditionalFields() {
 
-  function show(id, visible) {
-    const el = document.getElementById(id);
+  // Hide karte waqt uske andar ki purani values bhi clear hongi
+  function showElement(el, visible) {
 
-    if (el) {
-      el.style.display = visible ? "" : "none";
+    if (!el) return;
+
+    el.style.display = visible ? "" : "none";
+
+    if (!visible) {
+
+      const fields = el.querySelectorAll(
+        "input, select, textarea"
+      );
+
+      fields.forEach(field => {
+
+        if (
+          field.type === "checkbox" ||
+          field.type === "radio"
+        ) {
+          field.checked = false;
+        } else {
+          field.value = "";
+        }
+
+      });
     }
   }
+
+  function show(id, visible) {
+
+    const el = document.getElementById(id);
+
+    showElement(el, visible);
+  }
+
 
   function setupEducation(prefix) {
 
@@ -2702,63 +2731,60 @@ function setupEditConditionalFields() {
 
   function setupInsurance() {
 
-  const healthInsurance =
-    document.getElementById(
-      "edit_health_insurance"
-    );
-
-  const insuranceNeeded =
-    document.getElementById(
-      "edit_health_insurance_needed"
-    );
-
-  if (!healthInsurance || !insuranceNeeded) {
-    return;
-  }
-
-  function updateInsurance() {
-
-    const hasHealthInsurance =
-      healthInsurance.value === "Yes";
-
-    const neededWrap =
-      insuranceNeeded.closest(".edit-field");
-
-    if (neededWrap) {
-      neededWrap.style.display =
-        hasHealthInsurance ? "none" : "";
-    }
-
-    const showHelp =
-      !hasHealthInsurance &&
-      insuranceNeeded.value === "Yes";
-
-    const helpWrap =
+    const healthInsurance =
       document.getElementById(
-        "edit_health_insurance_help_details_wrap"
+        "edit_health_insurance"
       );
 
-    if (helpWrap) {
-      helpWrap.style.display =
-        showHelp ? "" : "none";
+    const insuranceNeeded =
+      document.getElementById(
+        "edit_health_insurance_needed"
+      );
+
+    if (!healthInsurance || !insuranceNeeded) {
+      return;
     }
+
+    function updateInsurance() {
+
+      const hasHealthInsurance =
+        healthInsurance.value === "Yes";
+
+      const neededWrap =
+        insuranceNeeded.closest(".edit-field");
+
+      showElement(
+        neededWrap,
+        !hasHealthInsurance
+      );
+
+      const showHelp =
+        !hasHealthInsurance &&
+        insuranceNeeded.value === "Yes";
+
+      show(
+        "edit_health_insurance_help_details_wrap",
+        showHelp
+      );
+    }
+
+    healthInsurance.addEventListener(
+      "change",
+      updateInsurance
+    );
+
+    insuranceNeeded.addEventListener(
+      "change",
+      updateInsurance
+    );
+
+    updateInsurance();
   }
 
-  healthInsurance.addEventListener(
-    "change",
-    updateInsurance
-  );
 
-  insuranceNeeded.addEventListener(
-    "change",
-    updateInsurance
-  );
+  setupFamilyHeadHealth();
 
-  updateInsurance();
-}
-setupFamilyHeadHealth();
-
-setupInsurance();
+  setupInsurance();
 
 
   // All Family Members
@@ -2778,7 +2804,7 @@ setupInsurance();
 
   });
 }
-function editGet(id) {
+
   const el = document.getElementById(id);
   return el ? el.value : null;
 }
