@@ -1999,25 +1999,11 @@ async function editFamily(familyId) {
         ["Yes", "No"]
       )}
 
-      ${editSelect(
-        "Occupation",
-        "edit_family_head_occupation",
-        family.family_head_occupation,
-        [
-          "Government Job",
-          "Private Job",
-          "Business",
-          "Self Employed",
-          "Farmer",
-          "Driver",
-          "House Wife",
-          "Student",
-          "Retired",
-          "Unemployed",
-          "Other"
-        ]
-      )}
-
+      ${editField(
+  "Occupation",
+  "edit_family_head_occupation",
+  family.family_head_occupation
+)}
       ${editSelect(
         "Employment Status",
         "edit_family_head_employment_status",
