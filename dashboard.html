@@ -2353,51 +2353,54 @@ async function editFamily(familyId) {
         </div>
 
 
-        <div class="edit-section-title">
-          Occupation & Employment
+                <div
+          id="${p}employment_section"
+        >
+
+          <div class="edit-section-title">
+            Occupation & Employment
+          </div>
+
+          <div class="edit-grid">
+
+            ${editSelect(
+              "Occupation",
+              p + "occupation",
+              member.occupation,
+              [
+                "Government Job",
+                "Private Job",
+                "Business",
+                "Self Employed",
+                "Farmer",
+                "Driver",
+                "House Wife",
+                "Student",
+                "Retired",
+                "Unemployed",
+                "Other"
+              ]
+            )}
+
+            ${editSelect(
+              "Employment Status",
+              p + "employment_status",
+              member.employment_status,
+              [
+                "Employed",
+                "Self-employed",
+                "Self Employed",
+                "Business",
+                "Unemployed",
+                "Student",
+                "Currently Studying",
+                "Homemaker",
+                "Retired",
+                "Other"
+              ]
+            )}
+
         </div>
-
-        <div class="edit-grid">
-
-          ${editSelect(
-            "Occupation",
-            p + "occupation",
-            member.occupation,
-            [
-              "Government Job",
-              "Private Job",
-              "Business",
-              "Self Employed",
-              "Farmer",
-              "Driver",
-              "House Wife",
-              "Student",
-              "Retired",
-              "Unemployed",
-              "Other"
-            ]
-          )}
-
-          ${editSelect(
-            "Employment Status",
-            p + "employment_status",
-            member.employment_status,
-            [
-              "Employed",
-              "Self-employed",
-              "Self Employed",
-              "Business",
-              "Unemployed",
-              "Student",
-              "Currently Studying",
-              "Homemaker",
-              "Retired",
-              "Other"
-            ]
-          )}
-
-        </div>
-
 
         <div class="edit-section-title">
           Health
@@ -2501,7 +2504,36 @@ function setupEditConditionalFields() {
       });
     }
   }
+  function setupMemberEmployment(prefix) {
 
+    const educationStatus = document.getElementById(
+      prefix + "education_status"
+    );
+
+    const employmentSection = document.getElementById(
+      prefix + "employment_section"
+    );
+
+    if (!educationStatus || !employmentSection) return;
+
+    function updateEmployment() {
+
+      const currentlyStudying =
+        educationStatus.value === "Currently Studying";
+
+      showElement(
+        employmentSection,
+        !currentlyStudying
+      );
+    }
+
+    educationStatus.addEventListener(
+      "change",
+      updateEmployment
+    );
+
+    updateEmployment();
+  }
   function show(id, visible) {
 
     const el = document.getElementById(id);
@@ -2818,15 +2850,11 @@ setupInsurance();
       ".edit-member-card"
     );
 
-  familyMembers.forEach((card, index) => {
-
-    const prefix =
-      `edit_member_${index}_`;
-
+   familyMembers.forEach((card, index) => {
+    const prefix = `edit_member_${index}_`;
     setupEducation(prefix);
-
     setupHealth(prefix);
-
+    setupMemberEmployment(prefix);
   });
 }
 
