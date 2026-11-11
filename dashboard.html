@@ -2382,25 +2382,11 @@ async function editFamily(familyId) {
 
           <div class="edit-grid">
 
-            ${editSelect(
-              "Occupation",
-              p + "occupation",
-              member.occupation,
-              [
-                "Government Job",
-                "Private Job",
-                "Business",
-                "Self Employed",
-                "Farmer",
-                "Driver",
-                "House Wife",
-                "Student",
-                "Retired",
-                "Unemployed",
-                "Other"
-              ]
-            )}
-
+            ${editMemberField(
+  "Occupation",
+  p + "occupation",
+  member.occupation
+)}
             ${editSelect(
               "Employment Status",
               p + "employment_status",
