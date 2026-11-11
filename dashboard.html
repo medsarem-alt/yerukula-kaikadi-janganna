@@ -2663,37 +2663,6 @@ function setupEditConditionalFields() {
 
   function setupFamilyHeadEmployment() {
 
-    const educationStatus = document.getElementById(
-      "edit_family_head_education_status"
-    );
-
-    const employmentSection = document.getElementById(
-      "edit_family_head_employment_section"
-    );
-
-    if (!educationStatus || !employmentSection) return;
-
-    function updateEmployment() {
-
-      const currentlyStudying =
-        educationStatus.value === "Currently Studying";
-
-      showElement(
-        employmentSection,
-        !currentlyStudying
-      );
-    }
-
-    educationStatus.addEventListener(
-      "change",
-      updateEmployment
-    );
-
-    updateEmployment();
-  }
-
-  function setupFamilyHeadEmployment() {
-
   const educationStatus = document.getElementById(
     "edit_family_head_education_status"
   );
@@ -2713,7 +2682,6 @@ function setupEditConditionalFields() {
       employmentSection,
       !currentlyStudying
     );
-
   }
 
   educationStatus.addEventListener(
@@ -2723,126 +2691,126 @@ function setupEditConditionalFields() {
 
   updateEmployment();
 }
-  
-  function setupFamilyHeadHealth() {
 
-    const health = document.getElementById(
-      "edit_healthcare_access_problem"
+
+function setupFamilyHeadHealth() {
+
+  const health = document.getElementById(
+    "edit_healthcare_access_problem"
+  );
+
+  if (!health) return;
+
+  function updateHealth() {
+
+    const hasProblem =
+      health.value === "Yes";
+
+    show(
+      "edit_healthcare_access_details_wrap",
+      hasProblem
     );
 
-    if (!health) return;
-
-    function updateHealth() {
-
-      const hasProblem =
-        health.value === "Yes";
-
-      show(
-        "edit_healthcare_access_details_wrap",
-        hasProblem
-      );
-
-      show(
-        "edit_healthcare_help_required_wrap",
-        hasProblem
-      );
-
-      const help = document.getElementById(
-        "edit_healthcare_help_required"
-      );
-
-      const helpYes =
-        hasProblem &&
-        help &&
-        help.value === "Yes";
-
-      show(
-        "edit_healthcare_help_details_wrap",
-        helpYes
-      );
-    }
-
-    health.addEventListener(
-      "change",
-      updateHealth
+    show(
+      "edit_healthcare_help_required_wrap",
+      hasProblem
     );
 
     const help = document.getElementById(
       "edit_healthcare_help_required"
     );
 
-    if (help) {
-      help.addEventListener(
-        "change",
-        updateHealth
-      );
-    }
+    const helpYes =
+      hasProblem &&
+      help &&
+      help.value === "Yes";
 
-    updateHealth();
+    show(
+      "edit_healthcare_help_details_wrap",
+      helpYes
+    );
   }
 
+  health.addEventListener(
+    "change",
+    updateHealth
+  );
 
-  function setupInsurance() {
+  const help = document.getElementById(
+    "edit_healthcare_help_required"
+  );
 
-    const healthInsurance =
-      document.getElementById(
-        "edit_health_insurance"
-      );
-
-    const insuranceNeeded =
-      document.getElementById(
-        "edit_health_insurance_needed"
-      );
-
-    if (!healthInsurance || !insuranceNeeded) {
-      return;
-    }
-
-    function updateInsurance() {
-
-      const hasHealthInsurance =
-        healthInsurance.value === "Yes";
-
-      const neededWrap =
-        insuranceNeeded.closest(".edit-field");
-
-      showElement(
-        neededWrap,
-        !hasHealthInsurance
-      );
-
-      const showHelp =
-        !hasHealthInsurance &&
-        insuranceNeeded.value === "Yes";
-
-      show(
-        "edit_health_insurance_help_details_wrap",
-        showHelp
-      );
-    }
-
-    healthInsurance.addEventListener(
+  if (help) {
+    help.addEventListener(
       "change",
-      updateInsurance
+      updateHealth
     );
-
-    insuranceNeeded.addEventListener(
-      "change",
-      updateInsurance
-    );
-
-    updateInsurance();
   }
 
+  updateHealth();
+}
 
-  setupEducation("edit_family_head_");
+
+function setupInsurance() {
+
+  const healthInsurance =
+    document.getElementById(
+      "edit_health_insurance"
+    );
+
+  const insuranceNeeded =
+    document.getElementById(
+      "edit_health_insurance_needed"
+    );
+
+  if (!healthInsurance || !insuranceNeeded) {
+    return;
+  }
+
+  function updateInsurance() {
+
+    const hasHealthInsurance =
+      healthInsurance.value === "Yes";
+
+    const neededWrap =
+      insuranceNeeded.closest(".edit-field");
+
+    showElement(
+      neededWrap,
+      !hasHealthInsurance
+    );
+
+    const showHelp =
+      !hasHealthInsurance &&
+      insuranceNeeded.value === "Yes";
+
+    show(
+      "edit_health_insurance_help_details_wrap",
+      showHelp
+    );
+  }
+
+  healthInsurance.addEventListener(
+    "change",
+    updateInsurance
+  );
+
+  insuranceNeeded.addEventListener(
+    "change",
+    updateInsurance
+  );
+
+  updateInsurance();
+}
+
+
+setupEducation("edit_family_head_");
 
 setupFamilyHeadEmployment();
 
 setupFamilyHeadHealth();
 
 setupInsurance();
-
 
   // All Family Members
   const familyMembers =
