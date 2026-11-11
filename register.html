@@ -265,7 +265,21 @@ Family Census / Registration Form
   placeholder="10-digit mobile number"
   required
 >
-
+  
+<label>Family Head Aadhaar Number *</label>
+<input
+  type="text"
+  id="familyHeadAadhaar"
+  name="family_head_aadhaar"
+  inputmode="numeric"
+  pattern="[0-9]{12}"
+  maxlength="12"
+  minlength="12"
+  placeholder="Enter 12-digit Aadhaar number"
+  title="Please enter exactly 12 digits"
+  required
+>
+  
 <label>State *</label>
 <input
   type="text"
@@ -1144,6 +1158,20 @@ function addMember() {
       name="member_${id}_full_name"
       required
     >
+    
+<label>Aadhaar Number *</label>
+
+<input
+  type="text"
+  name="member_${id}_aadhaar_number"
+  inputmode="numeric"
+  pattern="[0-9]{12}"
+  maxlength="12"
+  minlength="12"
+  placeholder="Enter 12-digit Aadhaar number"
+  title="Please enter exactly 12 digits"
+  required
+>
 
     <label>Date of Birth</label>
 
@@ -2203,6 +2231,11 @@ const familyHeadEducationHelpValue =
             "family_head_name"
           ) || null,
 
+        family_head_aadhaar:
+  formData.get(
+    "family_head_aadhaar"
+  ) || null,
+
         family_head_dob:
           formData.get(
             "family_head_dob"
@@ -2542,6 +2575,12 @@ member_order:
                 get(
                   `member_${member.dataset.id}_full_name`
                 ),
+
+              aadhaar_number:
+  get(
+    `member_${member.dataset.id}_aadhaar_number`
+  ),
+              
 
               dob:
                 get(
