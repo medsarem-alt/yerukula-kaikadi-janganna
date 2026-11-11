@@ -2128,43 +2128,62 @@ async function editFamily(familyId) {
     </div>
 
 
-    <div class="edit-section-title">Family Head Health</div>
+    
+<div class="edit-section-title">Family Head Health</div>
 
-    <div class="edit-grid">
+<div class="edit-grid">
 
-      ${editSelect(
-        "Any Health Problem",
-        "edit_healthcare_access_problem",
-        family.healthcare_access_problem,
-        ["Yes", "No"]
-      )}
+  ${editSelect(
+    "Any Health Problem",
+    "edit_healthcare_access_problem",
+    family.healthcare_access_problem,
+    ["Yes", "No"]
+  )}
 
-      <div id="edit_healthcare_access_details_wrap">
-        ${editTextarea(
-          "Disease / Health Details",
-          "edit_healthcare_access_details",
-          family.healthcare_access_details
-        )}
-      </div>
+  <div id="edit_healthcare_access_details_wrap">
+    ${editTextarea(
+      "Disease / Health Details",
+      "edit_healthcare_access_details",
+      family.healthcare_access_details
+    )}
+  </div>
 
-      <div id="edit_healthcare_help_required_wrap">
-        ${editSelect(
-          "Healthcare Help / Support Required",
-          "edit_healthcare_help_required",
-          family.healthcare_help_required,
-          ["Yes", "No"]
-        )}
-      </div>
+  <div id="edit_family_head_long_term_condition_wrap">
+    ${editSelect(
+      "Long-term Health Problem",
+      "edit_family_head_long_term_condition",
+      family.family_head_long_term_condition,
+      ["Yes", "No"]
+    )}
+  </div>
 
-      <div id="edit_healthcare_help_details_wrap">
-        ${editTextarea(
-          "Healthcare Help / Support Details",
-          "edit_healthcare_help_details",
-          family.healthcare_help_details
-        )}
-      </div>
+  <div id="edit_family_head_treatment_status_wrap">
+    ${editSelect(
+      "Regular Treatment Required",
+      "edit_family_head_treatment_status",
+      family.family_head_treatment_status,
+      ["Yes", "No"]
+    )}
+  </div>
 
-    </div>
+  <div id="edit_healthcare_help_required_wrap">
+    ${editSelect(
+      "Healthcare Help / Support Required",
+      "edit_healthcare_help_required",
+      family.healthcare_help_required,
+      ["Yes", "No"]
+    )}
+  </div>
+
+  <div id="edit_healthcare_help_details_wrap">
+    ${editTextarea(
+      "Healthcare Help / Support Details",
+      "edit_healthcare_help_details",
+      family.healthcare_help_details
+    )}
+  </div>
+
+</div>
 
 
     <div class="edit-section-title">Insurance</div>
@@ -2727,63 +2746,38 @@ function setupEditConditionalFields() {
 }
 
 
+
 function setupFamilyHeadHealth() {
-
-  const health = document.getElementById(
-    "edit_healthcare_access_problem"
-  );
-
+  const health = document.getElementById("edit_healthcare_access_problem");
   if (!health) return;
 
   function updateHealth() {
+    const hasProblem = health.value === "Yes";
 
-    const hasProblem =
-      health.value === "Yes";
+    show("edit_healthcare_access_details_wrap", hasProblem);
 
-    show(
-      "edit_healthcare_access_details_wrap",
-      hasProblem
-    );
+    show("edit_family_head_long_term_condition_wrap", hasProblem);
 
-    show(
-      "edit_healthcare_help_required_wrap",
-      hasProblem
-    );
+    show("edit_family_head_treatment_status_wrap", hasProblem);
 
-    const help = document.getElementById(
-      "edit_healthcare_help_required"
-    );
+    show("edit_healthcare_help_required_wrap", hasProblem);
 
-    const helpYes =
-      hasProblem &&
-      help &&
-      help.value === "Yes";
+    const help = document.getElementById("edit_healthcare_help_required");
+    const helpYes = hasProblem && help && help.value === "Yes";
 
-    show(
-      "edit_healthcare_help_details_wrap",
-      helpYes
-    );
+    show("edit_healthcare_help_details_wrap", helpYes);
   }
 
-  health.addEventListener(
-    "change",
-    updateHealth
-  );
+  health.addEventListener("change", updateHealth);
 
-  const help = document.getElementById(
-    "edit_healthcare_help_required"
-  );
+  const help = document.getElementById("edit_healthcare_help_required");
 
   if (help) {
-    help.addEventListener(
-      "change",
-      updateHealth
-    );
+    help.addEventListener("change", updateHealth);
   }
 
   updateHealth();
 }
-
 
 function setupInsurance() {
 
@@ -2910,6 +2904,8 @@ async function saveEditedFamily() {
       family_head_education_help_details: editGet("edit_family_head_education_help_details"),
       healthcare_access_problem: editGet("edit_healthcare_access_problem"),
       healthcare_access_details: editGet("edit_healthcare_access_details"),
+      family_head_long_term_condition: editGet("edit_family_head_long_term_condition"),
+      family_head_treatment_status: editGet("edit_family_head_treatment_status"),
       healthcare_help_required: editGet("edit_healthcare_help_required"),
       healthcare_help_details: editGet("edit_healthcare_help_details"),
       health_insurance: editGet("edit_health_insurance"),
