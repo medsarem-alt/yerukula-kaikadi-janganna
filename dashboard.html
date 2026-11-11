@@ -1999,6 +1999,8 @@ async function editFamily(familyId) {
         ["Yes", "No"]
       )}
 
+<div id="edit_family_head_employment_section">
+
       ${editField(
   "Occupation",
   "edit_family_head_occupation",
@@ -2019,7 +2021,9 @@ async function editFamily(familyId) {
           "Retired",
           "Other"
         ]
-      )}
+        )}
+
+      </div>
 
       ${editField("State", "edit_state", family.state)}
 
@@ -2657,6 +2661,37 @@ function setupEditConditionalFields() {
   }
 
 
+  function setupFamilyHeadEmployment() {
+
+    const educationStatus = document.getElementById(
+      "edit_family_head_education_status"
+    );
+
+    const employmentSection = document.getElementById(
+      "edit_family_head_employment_section"
+    );
+
+    if (!educationStatus || !employmentSection) return;
+
+    function updateEmployment() {
+
+      const currentlyStudying =
+        educationStatus.value === "Currently Studying";
+
+      showElement(
+        employmentSection,
+        !currentlyStudying
+      );
+    }
+
+    educationStatus.addEventListener(
+      "change",
+      updateEmployment
+    );
+
+    updateEmployment();
+  }
+
   function setupFamilyHeadHealth() {
 
     const health = document.getElementById(
@@ -2771,6 +2806,16 @@ function setupEditConditionalFields() {
   setupFamilyHeadHealth();
 
   setupInsurance();
+
+  
+  setupEducation("edit_family_head_");
+
+  setupFamilyHeadEmployment();
+
+  setupFamilyHeadHealth();
+
+  setupInsurance();
+
 
 
   // All Family Members
