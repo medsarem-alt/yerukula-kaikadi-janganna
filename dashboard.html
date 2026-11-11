@@ -2692,6 +2692,38 @@ function setupEditConditionalFields() {
     updateEmployment();
   }
 
+  function setupFamilyHeadEmployment() {
+
+  const educationStatus = document.getElementById(
+    "edit_family_head_education_status"
+  );
+
+  const employmentSection = document.getElementById(
+    "edit_family_head_employment_section"
+  );
+
+  if (!educationStatus || !employmentSection) return;
+
+  function updateEmployment() {
+
+    const currentlyStudying =
+      educationStatus.value === "Currently Studying";
+
+    showElement(
+      employmentSection,
+      !currentlyStudying
+    );
+
+  }
+
+  educationStatus.addEventListener(
+    "change",
+    updateEmployment
+  );
+
+  updateEmployment();
+}
+  
   function setupFamilyHeadHealth() {
 
     const health = document.getElementById(
@@ -2803,19 +2835,13 @@ function setupEditConditionalFields() {
   }
 
 
-  setupFamilyHeadHealth();
-
-  setupInsurance();
-
-  
   setupEducation("edit_family_head_");
 
-  setupFamilyHeadEmployment();
+setupFamilyHeadEmployment();
 
-  setupFamilyHeadHealth();
+setupFamilyHeadHealth();
 
-  setupInsurance();
-
+setupInsurance();
 
 
   // All Family Members
